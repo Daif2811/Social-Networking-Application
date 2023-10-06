@@ -31,7 +31,7 @@ namespace Forum
             builder.Services.AddScoped<ICommentRepository, CommentRepository>();
             builder.Services.AddScoped<ILikeRepository, LikeRepository>();
             builder.Services.AddScoped<IReplyToCommentRepository, ReplyToCommentRepository>();
-
+            builder.Services.AddScoped<IFriendRepository, FriendRepository>();
 
 
             // Add services to the container.

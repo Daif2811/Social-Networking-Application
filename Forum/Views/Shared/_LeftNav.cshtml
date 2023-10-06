@@ -1,4 +1,19 @@
-﻿
+﻿@*@model IEnumerable<FriendRequest>
+
+@using System.Security.Claims
+
+@{
+    int countRequest = 0;
+    string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    foreach (var item in Model)
+    {
+        if (item.RecieverId == userId)
+        {
+            countRequest++;
+        }
+    }
+}*@
+
 <div class="sidenav">
     <ul>
         @if (User.IsInRole("Admin"))
@@ -8,9 +23,15 @@
             <li><a href="#">Blocks</a></li>
             <li><a href="#">Reports</a></li>
         }
+        @if (User.Identity.IsAuthenticated)
+        {
+            <li><a href="~/Friend/MyRequest">Friend Requests </a></li>
+            <li><a href="~/Friend/RequestFromMe">My Requests </a></li>
+            <li><a href="~/Friend/MyFriend">My Friends</a></li>
+            <li><a href="~/Post/MyProfile">My Profile</a></li>
+        }
 
         <li><a href="#">Home</a></li>
-        <li><a href="~/Post/MyProfile">My Profile</a></li>
         <li><a href="#">Services</a></li>
         <li><a href="#">Contact</a></li>
     </ul>

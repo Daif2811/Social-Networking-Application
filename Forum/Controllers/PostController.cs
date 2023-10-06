@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.Win32;
+using NuGet.Versioning;
 using System.Security.Claims;
 
 namespace Forum.Controllers
@@ -16,38 +17,50 @@ namespace Forum.Controllers
         private readonly IPostRepository _postRepository;
         private readonly IWebHostEnvironment _environment;
         private UserManager<ApplicationUser> _userManager;
+        private readonly IFriendRepository _friendRepository;
 
-        public PostController(IPostRepository postRepository, IWebHostEnvironment environment, UserManager<ApplicationUser> userManager)
+        public PostController(IPostRepository postRepository, IWebHostEnvironment environment, UserManager<ApplicationUser> userManager, IFriendRepository friendRepository)
         {
             _postRepository = postRepository;
             _environment = environment;
             _userManager = userManager;
+            _friendRepository = friendRepository;
         }
 
 
-        public async Task<IActionResult> MyProfile()
+        public ApplicationUser CurrentUser()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            ApplicationUser user = await _userManager.FindByIdAsync(userId);
+            ApplicationUser currentUser = _userManager.FindByIdAsync(userId).Result;
+            return currentUser;
+        }
+
+
+        public IActionResult MyProfile()
+        {
+            ApplicationUser user = CurrentUser();
             if (user == null)
             {
                 return NotFound();
             }
 
             ViewBag.User = user;
-            var posts = _postRepository.Profile(userId);
-          
+            var posts = _postRepository.Profile(user.Id);
+
             return View(posts);
         }
+
         public async Task<IActionResult> ProfileSomeOne(string userId)
         {
-            string userIdMe = User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
-            if (userId == userIdMe)
+            ApplicationUser currentUser = CurrentUser();
+            if (userId == currentUser.Id)
             {
                 return RedirectToAction("MyProfile");
             }
 
 
+
+
             ApplicationUser user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
@@ -55,18 +68,53 @@ namespace Forum.Controllers
             }
 
             ViewBag.User = user;
+
+
+            var friend = _friendRepository.CheckFriend(userId, currentUser.Id);
+            if (friend != null)
+            {
+                // He is friend
+                ViewBag.Found = "Friend";
+            }
+            else
+            {
+                var found = _friendRepository.GetRequestByUserId(userId, currentUser.Id);
+                // I sent friend request
+                if (found != null)
+                {
+
+                    ViewBag.Found = "MyRequest";
+                }
+                else
+                {
+                    var me = _friendRepository.GetRequestByUserId(currentUser.Id, userId);
+                    // He sent to me friend request
+                    if (me != null)
+                    {
+                        ViewBag.Found = "HisRequest";
+
+                    }
+                    else
+                    {
+                        ViewBag.Found = "NoRequest";
+
+                    }
+                }
+            }
+
+
+
             var posts = _postRepository.Profile(userId);
 
             return View(posts);
         }
-
-
 
 
 
         // GET: PostController
         public IActionResult Index()
         {
+            ViewBag.CurrentUser = CurrentUser();
             var posts = _postRepository.GetAll();
             return View(posts);
         }
@@ -126,7 +174,7 @@ namespace Forum.Controllers
                         post.PublishDate = DateTime.Now;
                         //ApplicationUser user = _userManager.Users.Where(a => a.Id == userId).SingleOrDefault();
 
-                        await _postRepository.Add(post, image);
+                        _postRepository.Add(post, image);
                         return RedirectToAction("Index");
                     }
                 }
@@ -231,7 +279,7 @@ namespace Forum.Controllers
 
 
         // GET: PostController/Delete/5
-        public async Task<IActionResult> Delete (int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var userId = User.Claims.FirstOrDefault(a => a.Type == (ClaimTypes.NameIdentifier)).Value;
 
@@ -263,7 +311,7 @@ namespace Forum.Controllers
             try
             {
                 var userId = User.Claims.FirstOrDefault(a => a.Type == (ClaimTypes.NameIdentifier)).Value;
-                
+
                 var post = await _postRepository.GetById(id);
                 if (post == null)
                 {
@@ -319,5 +367,5 @@ namespace Forum.Controllers
 
 
 
-    }   
+    }
 }

@@ -25,35 +25,6 @@ body {
     margin-left: 20px;
 }
 
-/*.like-button-comment {
-    background-color: #3498db;*/ /* Blue background color */
-    /*color: #fff;*/ /* White text color */
-    /*border: none;
-    padding: 8px 16px;*/ /* Adjust padding as needed */
-    /*font-size: 14px;*/ /* Adjust font size as needed */
-    /*cursor: pointer;
-}*/
-
-    /* Hover effect when mouse is over the button */
-    /*.like-button-comment:hover {
-        background-color: #2980b9;*/ /* Darker blue background color on hover */
-    /*}*/
-
-/* Style for the "Unlike" button (you can customize this as well) */
-/*.unlike-button-comment {
-    background-color: #e74c3c;*/ /* Red background color */
-    /*color: #fff;*/ /* White text color */
-    /*border: none;
-    padding: 8px 16px;*/ /* Adjust padding as needed */
-    /*font-size: 14px;*/ /* Adjust font size as needed */
-    /*cursor: pointer;
-}*/
-
-    /* Hover effect for the "Unlike" button */
-    /*.unlike-button-comment:hover {
-        background-color: #c0392b;*/ /* Darker red background color on hover */
-    /*}*/
-
 
 .like-button {
     background-color: #3498db; /* Blue background color */
@@ -214,10 +185,10 @@ body {
 
     .profile-actions button {
         padding: 10px 20px;
-        background-color: #1877f2;
+        /*background-color: #1877f2;
         color: #fff;
         border: none;
-        cursor: pointer;
+        cursor: pointer;*/
     }
 
 .profile-posts {
@@ -230,3 +201,70 @@ body {
     padding: 10px;
     margin-bottom: 20px;
 }
+
+
+
+
+
+.friend-button {
+    background-color: #3498db; /* Blue background color */
+    color: #fff; /* White text color */
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px; /* Adjust padding as needed */
+    font-size: 14px; /* Adjust font size as needed */
+    cursor: pointer;
+}
+
+    /* Hover effect when mouse is over the button */
+    .friend-button:hover {
+        background-color: #2980b9; /* Darker blue background color on hover */
+    }
+
+/* Style for the "Unlike" button (you can customize this as well) */
+.unfriend-button {
+    background-color: #e74c3c; /* Red background color */
+    color: #fff; /* White text color */
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px; /* Adjust padding as needed */
+    font-size: 14px; /* Adjust font size as needed */
+    cursor: pointer;
+}
+
+    /* Hover effect for the "Unlike" button */
+    .unfriend-button:hover {
+        background-color: #c0392b; /* Darker red background color on hover */
+    }
+
+
+.accept-button {
+    background-color: #9154c2; /* Blue background color */
+    color: black; /* White text color */
+    border: none;
+    border-radius:5px;
+    padding: 11px 18px; /* Adjust padding as needed */
+    font-size: 15px; /* Adjust font size as needed */
+    cursor: pointer;
+    text-decoration:none;
+}
+
+    /* Hover effect when mouse is over the button */
+    .accept-button:hover {
+        background-color: #8501ee; /* Darker blue background color on hover */
+        color : white;
+    }
+.message-button {
+    background-color: #3498db; /* Blue background color */
+    color: #fff; /* White text color */
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px; /* Adjust padding as needed */
+    font-size: 14px; /* Adjust font size as needed */
+    cursor: pointer;
+}
+
+    /* Hover effect when mouse is over the button */
+    .message-button:hover {
+        background-color: #2980b9; /* Darker blue background color on hover */
+    }

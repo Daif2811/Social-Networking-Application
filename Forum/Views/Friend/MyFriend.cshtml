@@ -1,0 +1,92 @@
+﻿@model IEnumerable<Forum.Models.Friend>
+@using System.Security.Claims
+@{
+    ViewData["Title"] = "MyFriend";
+    string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+}
+
+<h1 class="text-center bg-dark text-light p-3">My Friends</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-info">Add New Friends</a>
+</p>
+<table class="table table-hover table-bordered">
+    <tr>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr class="row">
+
+
+
+            @if (item.UserOneId == userId)
+            {
+                <td class="col-sm-6">
+                    <a href="~/Post/ProfileSomeOne?userId=@item.UserTwoId" style="text-decoration:none;">
+                        
+                            @if (item.UserTwo.Picture != null)
+                            {
+                                <img src="~/images/@item.UserTwo.Picture" class="rounded-circle img-thumbnail" width="55px;" />
+
+                            }
+                            else
+                            {
+                                <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" width="55px;" />
+                            }
+                        <span> @item.UserTwo.UserName</span>
+                    </a>
+                </td>
+
+
+                <td class="col-sm-6">
+
+                    <sub>
+                        <sub>
+                            <sub>
+                                <sub>
+                                    <a asp-action="DeleteFriend" asp-route-id="@item.Id" class="btn btn-danger">Delete Friend</a>
+                                    | <a asp-action="DeleteFriend" asp-route-id="@item.Id" class="btn btn-danger">Block</a>
+                                </sub>
+                            </sub>
+                        </sub>
+                    </sub>
+                </td>
+
+
+
+            }
+            else
+            {
+                <td class="col-sm-6">
+                    <a href="~/Post/ProfileSomeOne?userId=@item.UserOneId" style="text-decoration:none;">
+                        @if (item.UserOne.Picture != null)
+                        {
+                            <img src="~/images/@item.UserOne.Picture" class="rounded-circle img-thumbnail" width="55px;" />
+                        }
+                        else
+                        {
+                            <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" width="55px;" />
+                        }
+                        <span> @item.UserOne.UserName</span>
+                    </a>
+                </td>
+
+                <td class="col-sm-6">
+
+                    <sub>
+                        <sub>
+                            <sub>
+                                <sub>
+                                    <a asp-action="DeleteFriend" asp-route-id="@item.Id" class="btn btn-danger">Delete Friend</a>
+                                     | <a asp-action="DeleteFriend" asp-route-id="@item.Id" class="btn btn-danger">Block</a>
+                                </sub>
+                            </sub>
+                        </sub>
+                    </sub>
+
+                </td>
+
+            }
+        </tr>
+    }
+</table>

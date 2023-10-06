@@ -16,8 +16,25 @@
         <div class="profile-info">@ViewBag.User.Summary</div>
         <hr />
         <div class="profile-actions">
-            <button>Add Friend</button>
-            <button>Message</button>
+            @{
+                if (ViewBag.Found == "Friend")
+                {
+                    <button  class="message-button">My Friend</button>
+                }
+                if (ViewBag.Found == "MyRequest")
+                {
+                    <button type="button" data-userid="@ViewBag.User.Id" class="unfriend-button">Cancel Request</button>
+                }
+                if (ViewBag.Found == "NoRequest")
+                {
+                    <button type="button" data-userid="@ViewBag.User.Id" class="friend-button">Add Friend</button>
+                }
+                if (ViewBag.Found == "HisRequest")
+                {
+                    <a  asp-action="MyRequest" asp-controller="Friend" data-userid="@ViewBag.User.Id" class="accept-button">Accept</a>
+                }
+            }
+            <button class="message-button">Message</button>
         </div>
         <hr class="border border-3 border-dark mb-3" />
     </div>
@@ -30,15 +47,15 @@
 
                 <!-- Header of Post  -->
                 <div class="col-sm-2 text-center">
-                     <a href="~/Post/ProfileSomeOne?userId=@item.UserId">
-                    @if (item.User.Picture != null)
-                    {
-                        <img src="~/images/@item.User.Picture" class="rounded-circle img-thumbnail" width="55px;" />
-                    }
-                    else
-                    {
-                        <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" width="55px;" />
-                    }
+                    <a href="~/Post/ProfileSomeOne?userId=@item.UserId">
+                        @if (item.User.Picture != null)
+                        {
+                            <img src="~/images/@item.User.Picture" class="rounded-circle img-thumbnail" width="55px;" />
+                        }
+                        else
+                        {
+                            <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" width="55px;" />
+                        }
                     </a>
                 </div>
 
@@ -202,6 +219,43 @@
                 });
             });
 
+
+
+
+            // Friend button
+            $(".friend-button, .unfriend-button").click(function () {
+                var userId = $(this).data("userid");
+                var actionUrl = $(this).hasClass("friend-button") ? "/Friend/AddRequest" : "/Friend/CancelRequest";
+                var button = $(this);
+
+                $.ajax({
+                    type: "POST",
+                    url: actionUrl + "?userId=" + userId,
+                    success: function (data) {
+                        if (data.success) {
+                            // Toggle the button's class to indicate the like status
+                            button.toggleClass("friend-button unfriend-button");
+
+                            if (button.hasClass("friend-button")) {
+                                button.text("Add Friend");
+
+                            }
+                            else if (button.hasClass("accept-button")) {
+                                button.text("Accept Request");
+                            }
+                            else {
+                                button.text("Cancel Request");
+                            }
+
+                        } else {
+                            console.error("Something went wrong.");
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.error("Error:", errorThrown);
+                    }
+                });
+            });
         });
     </script>
 

@@ -1,0 +1,63 @@
+﻿@model IEnumerable<Forum.Models.FriendRequest>
+
+@{
+    ViewData["Title"] = "RequestFromMe";
+}
+
+<h1 class="bg-dark text-center text-light p-2">Request From Me</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-info">Add New Friends</a>
+</p>
+<table class="table table-hover">
+    <thead>
+        <tr>
+
+            <th>
+
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+
+
+                <td>
+                    <a href="~/Post/ProfileSomeOne?userId=@item.Reciever.Id" style="text-decoration:none;">
+
+                        @if (item.Reciever.Picture != null)
+                        {
+                            <img src="~/images/@item.Reciever.Picture" class="rounded-circle img-thumbnail" width="55px;" />
+
+                        }
+                        else
+                        {
+                            <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" width="55px;" />
+                        }
+                        <span> @item.Reciever.UserName</span>
+                    </a>
+
+
+
+
+                </td>
+                <td>
+                    <sub>
+                        <sub>
+                            <sub>
+                                <sub>
+                                    <a asp-action="AcceptRequest" asp-route-id="@item.Id" asp-route-accept="false" class="btn btn-outline-danger">Cancel</a>
+                                </sub>
+                            </sub>
+                        </sub>
+                    </sub>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

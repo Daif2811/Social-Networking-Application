@@ -38,10 +38,10 @@ namespace Forum.IRepository.Repository
         }
 
 
-        public async Task Add(Post post, IFormFile image)
+        public void Add(Post post, IFormFile image)
         {
             _context.Posts.Add(post);
-            await _context.SaveChangesAsync();
+             _context.SaveChangesAsync();
         }
 
 
@@ -93,6 +93,7 @@ namespace Forum.IRepository.Repository
         }
 
 
+      
 
 
 
