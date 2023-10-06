@@ -1,0 +1,64 @@
+﻿@model ApplicationUser
+
+<h1>Change Picture</h1>
+
+
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="ChangePicture" enctype="multipart/form-data" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            
+            <div class="form-group mb-3">
+                
+                <img src="~/images/@Model.Picture" class="rounded-circle img-thumbnail" style="width:100px;" id="photo"/>
+                
+                <div id="photoModal" class="modal text-xl-center">
+                    <img src="" alt="Photo" id="bigPhoto" />
+                </div>
+
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Picture" class="control-label">Change Picture</label>
+                <input type="file" asp-for="Picture" name="picture" class="form-control" />
+                <span asp-validation-for="Picture" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                
+                <label for="password" class="control-label">Password</label>
+                <input type="password" name="password" class="form-control" />
+            </div>
+            <div class="form-group">
+                
+                <input type="submit" value="Save" name="sub" class="btn btn-outline-success col" />
+                <a asp-action="Index" asp-controller="Home" class="btn btn-outline-dark col">Home</a>
+
+
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <script>
+
+        var photo = document.getElementById("photo");
+        var div = document.getElementById("photoModal");
+        var bigPhoto = document.getElementById("bigPhoto");
+
+        // On click open the photo
+        photo.addEventListener("click", function () {
+            bigPhoto.src = this.src;
+            div.style.display = "block";
+        });
+
+        // Close the modal when clicking outside of the image
+        div.addEventListener("click", function () {
+            div.style.display = "none";
+        });
+    </script>
+}
+

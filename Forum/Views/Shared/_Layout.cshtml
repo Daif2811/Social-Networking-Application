@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Forum</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Forum.styles.css" asp-append-version="true" />
+    @*<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-compact-down" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M1.553 6.776a.5.5 0 0 1 .67-.223L8 9.44l5.776-2.888a.5.5 0 1 1 .448.894l-6 3a.5.5 0 0 1-.448 0l-6-3a.5.5 0 0 1-.223-.67z" />
+    </svg>*@
+</head>
+<body>
+    <header class="mt-6" style="margin-bottom:60px;">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm text-light navbar-dark bg-dark border-bottom box-shadow mb-0 fixed-top">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Forum</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-light " asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Post" asp-action="Index">Posts</a>
+                        </li>
+                       
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Post" asp-action="Create">New</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Like" asp-action="LikedPost">Liked</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown">Dropdown</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Link</a></li>
+                                <li><a class="dropdown-item" href="#">Another link</a></li>
+                                <li><a class="dropdown-item" href="#">A third link</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            @using (Html.BeginForm("Search", "Student", FormMethod.Post, new { @class = "form-inline my-2 my-lg-0 d-md-inline-flex" }))
+                            {
+                                <input class="form-control mr-sm-2  " type="text" name="searchName" placeholder="Search" aria-label="Search" width="40px;">
+                                //<button class="btn btn-outline-success my-2 my-sm-0 " type="submit">Search</button>
+                            }
+
+                        </li>
+
+                    </ul>
+
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+
+
+    
+
+
+
+
+    <div class="container row">
+        <div class="col-md-4">
+            <partial name="_LeftNav" />
+        </div>
+
+
+        <div class="main-content col-md-8" style=" min-height: 100vh;">
+            @RenderBody()
+            <!-- Main content goes here -->
+        </div>
+    </div>
+
+
+
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2023 - Forum - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    @* <script>
+    // JavaScript to control side navigation behavior
+    document.addEventListener("DOMContentLoaded", function () {
+    const sidenav = document.querySelector(".sidenav");
+    const footer = document.querySelector("footer");
+    const windowHeight = window.innerHeight;
+    const footerOffset = footer.offsetTop;
+
+    window.addEventListener("scroll", function () {
+    if (window.innerWidth >= 768) { // Apply behavior only on medium screens and above
+    if (window.pageYOffset >= windowHeight) {
+    sidenav.style.left = "0";
+    } else {
+    sidenav.style.left = "-250px";
+    }
+
+    // Check if the footer is reached
+    if (window.pageYOffset + windowHeight >= footerOffset) {
+    sidenav.style.left = "-250px";
+    }
+    }
+    });
+    });
+
+    </script>*@
+
+</body>
+</html>

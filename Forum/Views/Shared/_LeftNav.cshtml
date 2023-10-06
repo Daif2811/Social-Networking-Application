@@ -1,0 +1,47 @@
+﻿
+<div class="sidenav">
+    <ul>
+        @if (User.IsInRole("Admin"))
+        {
+            <li><a href="~/Account/Users">Users</a></li>
+            <li><a href="~/Account/Roles">Roles</a></li>
+            <li><a href="#">Blocks</a></li>
+            <li><a href="#">Reports</a></li>
+        }
+
+        <li><a href="#">Home</a></li>
+        <li><a href="~/Post/MyProfile">My Profile</a></li>
+        <li><a href="#">Services</a></li>
+        <li><a href="#">Contact</a></li>
+    </ul>
+</div>
+
+
+
+
+
+  @*  <script>
+        // JavaScript to control side navigation behavior
+        document.addEventListener("DOMContentLoaded", function () {
+            const sidenav = document.querySelector(".sidenav");
+            const footer = document.querySelector("footer");
+            const windowHeight = window.innerHeight;
+            const footerOffset = footer.offsetTop;
+
+            window.addEventListener("scroll", function () {
+                if (window.innerWidth >= 768) { // Apply behavior only on medium screens and above
+                    if (window.pageYOffset >= windowHeight) {
+                        sidenav.style.left = "0";
+                    } else {
+                        sidenav.style.left = "-250px";
+                    }
+
+                    // Check if the footer is reached
+                    if (window.pageYOffset + windowHeight >= footerOffset) {
+                        sidenav.style.left = "-250px";
+                    }
+                }
+            });
+        });
+
+    </script>*@

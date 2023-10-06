@@ -1,0 +1,76 @@
+﻿@model Forum.Models.Post
+@using System.Security.Claims;
+@{
+    var userId = User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
+
+}
+
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+
+
+<h1 class="text-center bg-black text-light">Delete</h1>
+<hr />
+
+
+<form asp-action="Delete">
+
+    <div class="container">
+        <div class="container justify-content-between row">
+            <div class="col-sm-8 row">
+                @if (Model.User.Picture != null)
+                {
+
+                    <div class="col">
+                        <img src="~/images/@Model.User.Picture" class="rounded-circle img-thumbnail" style="width:50px;" />
+                        @Model.User.UserName
+                    </div>
+                }
+                else
+                {
+                    <div class="col">
+                        <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" style="width:50px;" />
+                        @Model.User.UserName
+                    </div>
+                }
+                <p class="col">
+
+                </p>
+            </div>
+            <div class="col-sm-4 text-center">
+                @Model.PublishDate.ToString("dd-MM-yyyy  hh:mm tt")
+            </div>
+        </div>
+        <hr />
+
+        @if (Model.Content != null)
+        {
+            <div class="bg-secondary bg-opacity-25 p-3 m-1 row">
+                <div class="col-md-12 post-container">
+                    @Model.Content
+                </div>
+            </div>
+        }
+
+
+
+
+        @if (Model.Image != null)
+        {
+            <div class="row mt-2 p-3">
+
+                <img src="~/Post-Images/@Html.DisplayFor(modelItem => Model.Image)" class=" img-thumbnail" />
+
+            </div>
+        }
+
+        <div>
+            <button asp-action="Delete" type="submit" asp-route-id="@Model.Id" class="btn btn-outline-danger">Delete</button> |
+            <a asp-action="Index" class="btn btn-outline-primary">Home</a>
+        </div>
+        <br />
+    </div>
+</form>

@@ -1,0 +1,88 @@
+﻿@model Forum.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h1>Register</h1>
+<hr />
+<div>
+    <div >
+        <form asp-action="Register" method="post" enctype="multipart/form-data" class="row">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group col-md-6 mb-4">
+                <label asp-for="UserName" class="control-label">User Name <span class="text-danger">*</span></label>
+                <input asp-for="UserName" class="form-control" placeholder="User Name" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6 mb-4">
+                <label asp-for="Email" class="control-label">Email <span class="text-danger">*</span></label>
+                <input asp-for="Email" class="form-control" placeholder="example@gmail.com" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6 mb-4">
+                <label asp-for="Password" class="control-label">Password <span class="text-danger">*</span></label>
+                <input asp-for="Password" class="form-control" placeholder="Password"/>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6 mb-4">
+                <label asp-for="ConfirmPassword" class="control-label">Confirm Password <span class="text-danger">*</span></label>
+                <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm Password"/>
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6 mb-4">
+                <label asp-for="PhoneNumber" class="control-label">Phone Number <span class="text-info">(Optional)</span></label>
+                <input asp-for="PhoneNumber" class="form-control" placeholder="Your Phone Number" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6 mb-4">
+                <label asp-for="Summary" class="control-label">Summary <span class="text-info">(Optional)</span></label>
+                <input asp-for="Summary" class="form-control" placeholder="Information About You"/>
+                <span asp-validation-for="Summary" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group col-md-6 mb-4">
+                <label asp-for="Picture" class="control-label">Picture <span class="text-info">(Optional)</span></label>
+                <input asp-for="Picture" type="file" id="Picture" accept="image/*" class="form-control" />
+              
+                
+                <span asp-validation-for="Picture" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6 mb-4 row">
+               
+                <p class="m-0 p-0 text-primary">Confirm Or Cancel</p>
+                <input type="submit" value="Register" class="btn btn-outline-success col"/>
+                <a asp-action="Index" asp-controller="Home" class="btn btn-outline-dark col">Home</a>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@*@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function GetPicture() {
+            var dept_id = document.getElementById("dept").value;
+            console.log(dept_id);
+            $.ajax(
+                {
+                    //url: "/Trainee/TraineeDept?dept_Id=" + dept_id,
+                    url: "/Trainee/TraineeDept",
+                    data: { "deptId": dept_id },
+                    success: function (result) {
+                        console.log(result);
+                        document.getElementById("train").innerHTML = "";  // to empty tha dialog and start again
+                        for (let emp of result) {                         // loop in trainee
+                            document.getElementById("train").innerHTML +=   // + =  to collect all items  not the last one
+                                "<option value='" + emp.id + "'>" + emp.name + "</option>";
+                        }
+                    }
+                }
+            )
+        }
+
+    </script>
+}*@

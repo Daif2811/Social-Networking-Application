@@ -1,0 +1,527 @@
+﻿@model Forum.Models.Post
+@using System.Security.Claims;
+@{
+    var userId = User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
+    var comments = Model.Comments.OrderByDescending(a => a.PublishDate);
+}
+
+
+@{
+    ViewData["Title"] = "ShowComments";
+}
+<h1 class="text-center bg-black text-light">All Comments</h1>
+
+<hr />
+<div class="container">
+
+
+    <!-- This is the header of post-->
+    <div class="container d-sm-inline-flex row">
+
+
+
+        <div class="col-sm-2 text-center">
+             <a href="~/Post/ProfileSomeOne?userId=@Model.UserId">
+            @if (Model.User.Picture != null)
+            {
+                <img src="~/images/@Model.User.Picture" class="rounded-circle img-thumbnail" width="55px;" />
+            }
+            else
+            {
+                <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" width="55px;" />
+            }
+           </a>
+        </div>
+
+        <div style="text-align:left; " class="col-sm-8">
+            @Model.User.UserName<br>
+            @Model.PublishDate.ToString("dd-MM-yyyy  hh:mm tt")
+
+        </div>
+
+
+
+
+
+        <!-- List of options for post-->
+        <div style="text-align:right;  right:10px;" class="col-sm-2">
+            <div class="">
+                <a class="collapsed btn" data-bs-toggle="collapse" href="#collapse_@Model.Id">
+                    <strong style="font-size:24px;">...</strong>
+
+
+                </a>
+            </div>
+            <div id="collapse_@Model.Id" class="collapse text-center" data-bs-parent="#accordion">
+                <div class="card-body">
+                    <ul>
+                        @if (Model.UserId == userId)
+                        {
+                            <li><a asp-action="Edit" asp-controller="Post" asp-route-id="@Model.Id">Edit</a></li>
+                            <li><a asp-action="Delete" asp-controller="Post" asp-route-id="@Model.Id">Delete</a></li>
+                            <li><a asp-action="#" asp-route-id="@Model.Id">Save Post</a></li>
+                            <li><a asp-action="#" asp-route-id="@Model.Id">Copy URL</a></li>
+                        }
+                        else
+                        {
+                            <li><a asp-action="#" asp-route-id="@Model.Id">Save Post</a></li>
+                            <li><a asp-action="#" asp-route-id="@Model.Id">Report</a></li>
+                            <li><a asp-action="#" asp-route-id="@Model.Id">Hide Post</a></li>
+                            <li><a asp-action="#" asp-route-id="@Model.Id">Copy url</a></li>
+                            //<li><a asp-action="#" asp-route-id="@item.Id">Turn on Notifications</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+    </div>    <hr />
+
+
+    <!-- This is the body of post-->
+    @if (Model.Content != null)
+    {
+        <div class="bg-secondary bg-opacity-25 p-3 m-1 row">
+            <div class="col-md-12 post-container">
+                @Model.Content
+            </div>
+        </div>
+    }
+
+
+    @if (Model.Image != null)
+    {
+        <div class="row mt-2 p-3">
+
+            <img src="~/Post-Images/@Html.DisplayFor(modelItem => Model.Image)" class=" img-thumbnail" />
+
+        </div>
+    }
+
+
+    <!-- This is the Comment form -->
+    <div>
+        <form asp-action="AddComment" asp-controller="Comment" method="post" data-postId="@Model.Id" asp-route-postId="@Model.Id" enctype="multipart/form-data">
+            <div class="container">
+                <div class="row">
+                    <input type="text" name="commentText" class="col-12 form-control" placeholder="Write a comment" />
+                </div>
+            </div>
+        </form>
+    </div>
+    <br />
+
+
+
+
+
+
+
+    <!-- This is buttons of Like And Share -->
+    <div class="container">
+        <a asp-action="ShowComments" asp-route-postId="@Model.Id" style="text-decoration:none; color:indigo;">@Model.LikeCount Likes </a> - <a asp-action="ShowComments" asp-route-postId="@Model.Id" style="text-decoration:none;"> @Model.CommentCount Comments</a>
+
+        <div class="row">
+            <div class="col-sm-2 row">
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    var userLiked = Model.Likes != null && Model.Likes.Any(l => l.UserId == userId);
+                    //var userLiked = item.Likes.Any(a => a.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier));
+                    if (!userLiked)
+                    {
+                        <button type="button" class="like-button col-sm-12" data-postid="@Model.Id">Like</button>
+                    }
+                    else
+                    {
+                        <button type="button" class="unlike-button col-sm-12" data-postid="@Model.Id">Unlike</button>
+                    }
+                }
+            </div>
+            <a asp-action="Index" class="btn btn-outline-primary col-sm-2">Share</a>
+            <div class="col-sm-8">
+            </div>
+
+        </div>
+    </div>
+    <hr class="border border-3 border-dark mb-3" />
+
+
+
+
+
+
+
+    <!-- This is All Comment of the post -->
+    <div class="container">
+
+        @foreach (var item in comments)
+        {
+            <div class="row">
+                <div class="col-sm-2 text-center">
+                     <a href="~/Post/ProfileSomeOne?userId=@item.UserId">
+                    @if (item.User.Picture != null)
+                    {
+                        <img src="~/images/@item.User.Picture" class="rounded-circle img-thumbnail" style="width:50px;" />
+                    }
+                    else
+                    {
+                        <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" style="width:50px;" />
+                    }
+                    </a>
+                </div>
+                <div class="bg-info bg-opacity-25 text-black p-3 mt-1 mb-1 col-sm-10 ">
+                    <div class="row justify-content-between">
+
+
+                        <h5 class="col-sm-4">@item.User.UserName</h5>
+
+
+                        <!-- List of options for post-->
+                        <div class="col-sm-4" style="text-align:right;">
+
+                            <div>
+                                <a class="collapsed btn" data-bs-toggle="collapse" href="#collapse_@item.Id">
+                                    <sup style="font-size:24px;"> <strong>...</strong></sup>
+                                </a>
+                            </div>
+                            <div id="collapse_@item.Id" class="collapse text-center" data-bs-parent="#accordion">
+                                <div class="card-body">
+                                    <ul>
+                                        @if (item.UserId == userId)
+                                        {
+                                            <li><a asp-action="Edit" asp-controller="Comment" asp-route-id="@item.Id">Edit</a></li>
+                                            <li><a asp-action="Delete" asp-controller="Comment" asp-route-id="@item.Id">Delete</a></li>
+                                        }
+                                        else
+                                        {
+                                            <li><a asp-action="#" asp-controller="#" asp-route-commentId="@item.Id" class="btn btn-outline-primary">Report</a></li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @*<span> Comment to <span class="text-primary">@item.Post.User.UserName </span> : </span>*@
+                    @item.Content
+                    <hr />
+                    <div class="container">
+                        <form class="row" asp-action="AddReply" asp-controller="ReplyToComment" asp-route-commentId="@item.Id">
+                            <input type="text" class="col-12 form-control" name="content" placeholder="Write a reply" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+            <div>
+                <!-- This is buttons of Like And Share -->
+                <div class="container">
+                    <a asp-action="#" asp-route-postId="@item.Id" style="text-decoration:none; color:indigo; margin-left:85px;">@item.LikeCount Likes </a> - <a asp-action="ShowComments" asp-route-postId="@item.Id" style="text-decoration:none;"> @item.CommentCount Reply</a>
+
+                    <div class="row">
+                        <div class="col-sm-2">
+                        </div>
+                        <div class="col-sm-2 row">
+
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                var userLiked = item.Likes != null && item.Likes.Any(l => l.UserId == userId);
+                                //var userLiked = item.Likes.Any(a => a.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier));
+                                if (!userLiked)
+                                {
+                                    <button type="button" class="like-button col-sm-12" data-commentid="@item.Id">Like</button>
+                                }
+                                else
+                                {
+                                    <button type="button" class="unlike-button col-sm-12" data-commentid="@item.Id">Unlike</button>
+                                }
+                            }
+                        </div>
+                        <a asp-action="#" asp-controller="#" asp-route-commentId="@item.Id" class="btn btn-outline-primary col-sm-2 ReplyComment">Share</a>
+
+
+                        <div class="col-sm-4">
+                            <small>
+                                @item.PublishDate.ToString("dd-MM-yyyy  hh:mm tt")
+                            </small>
+                        </div>
+
+
+                        <div class="replies-button col-sm-2 p-0 m-0 " data-comment-id="@item.Id" style="border:none; background-color:white; cursor:pointer"><small class="text-primary">Show </small><small class="text-danger">@item.CommentCount</small> <small class="text-primary"> Reply</small>  </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <hr />
+
+
+
+
+
+            <div class="reply-section" id="@item.Id-Replies" style="display:none;">
+                @foreach (var reply in item.ReplyToComments)
+                {
+
+
+                    <!-- Reply Session -->
+                    <div class="bg-light " style="margin-left:80px;">
+                        <div class="row">
+                            <div class="col-sm-2 text-center">
+                                 <a href="~/Post/ProfileSomeOne?userId=@reply.UserId">
+                                @if (reply.User.Picture != null) 
+                                {
+                                    <img src="~/images/@reply.User.Picture" class="rounded-circle img-thumbnail" style="width:50px;" />
+                                }
+                                else
+                                {
+                                    <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" style="width:50px;" />
+                                }
+                            </a>
+                            </div>
+                            <div class="bg-info bg-opacity-25 text-black p-3 mt-1 mb-1 col-sm-10 ">
+                                <div class="row justify-content-between">
+
+
+                                    <h5 class="col-sm-4">@reply.User.UserName</h5>
+
+
+                                    <!-- List of options for post-->
+                                    <div class="col-sm-4" style="text-align:right;">
+
+                                        <div>
+                                            <a class="collapsed btn" data-bs-toggle="collapse" href="#collapse_@reply.Id">
+                                                <sup style="font-size:24px;"> <strong>...</strong></sup>
+                                            </a>
+                                        </div>
+                                        <div id="collapse_@reply.Id" class="collapse text-center" data-bs-parent="#accordion">
+                                            <div class="card-body">
+                                                <ul>
+                                                    @if (reply.UserId == userId)
+                                                    {
+                                                        <li><a asp-action="DeleteReply" asp-controller="ReplytoComment" asp-route-replyId="@reply.Id" asp-route-commentId="@item.Id">Delete</a></li>
+                                                    }
+                                                    else
+                                                    {
+                                                        <li><a asp-action="#" asp-controller="#" asp-route-commentId="@reply.Id" class="btn btn-outline-primary">Report</a></li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                               @* <span> Replied to <span class="text-primary">@reply.Comment.User.UserName </span> : </span>*@
+                                @reply.Content
+                                <hr />
+                                <div class="container">
+                                    <form class="row" asp-action="AddReply" asp-controller="ReplyToComment" asp-route-commentId="@item.Id" asp-route-userName="@reply.User.UserName">
+                                        <input type="text" class="col-12 form-control" name="content" placeholder="Write a reply" />
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- This is buttons of Like And Share -->
+                        <div class="container">
+                            <a asp-action="#" asp-route-postId="@reply.Id" style="text-decoration:none; color:indigo; margin-left:80px;">@reply.LikeCount Likes </a>
+
+                            <div class="row">
+                                <div class="col-sm-2">
+                                </div>
+                                <div class="col-sm-2 row">
+
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        var userLiked = reply.Likes != null && reply.Likes.Any(l => l.UserId == userId);
+                                        //var userLiked = item.Likes.Any(a => a.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier));
+                                        if (!userLiked)
+                                        {
+                                            <button type="button" class="like-button col-sm-12" data-replyid="@reply.Id">Like</button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="unlike-button col-sm-12" data-replyid="@reply.Id">Unlike</button>
+                                        }
+                                    }
+                                </div>
+
+
+                                <div class="col-sm-4">
+                                    <small>
+                                        @reply.PublishDate.ToString("dd-MM-yyyy  hh:mm tt")
+                                    </small>
+                                </div>
+                                <div class="col-sm-2">
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+
+
+
+
+                  
+
+                }
+            <hr />
+            </div>
+
+
+
+
+
+        }
+    </div>
+
+</div>
+
+@section Scripts{
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+
+    <script>
+        // Get all "Replies" buttons
+        var replyButtons = document.querySelectorAll('.replies-button');
+
+        // Add click event handlers for each "Replies" button
+        replyButtons.forEach(function (button) {
+            button.addEventListener('click', function () {
+                var commentId = button.getAttribute('data-comment-id');
+                var replySection = document.getElementById(commentId + '-Replies');
+
+                // Toggle the visibility of the Reply Section for the clicked comment
+                if (replySection.style.display === 'none') {
+                    replySection.style.display = 'block';
+                } else {
+                    replySection.style.display = 'none';
+                }
+            });
+        });
+    </script>
+
+
+    <script>
+
+
+        $(document).ready(function () {
+
+            // Like post button
+            $(".like-button, .unlike-button").click(function () {
+                var postId = $(this).data("postid");
+                var actionUrl = $(this).hasClass("like-button") ? "/Like/LikePost" : "/Like/UnlikePost";
+                var button = $(this);
+
+                $.ajax({
+                    type: "POST",
+                    url: actionUrl + "?postId=" + postId,
+                    success: function (data) {
+                        if (data.success) {
+                            console.log("Like Post");
+                            // Toggle the button's class to indicate the like status
+                            button.toggleClass("like-button unlike-button");
+
+                            if (button.hasClass("like-button")) {
+                                button.text("Like");
+                            } else {
+                                button.text("Unlike");
+                            }
+
+                        } else {
+                            console.error("Something went wrong.");
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.error("Error:", errorThrown);
+                    }
+                });
+
+
+            });
+
+
+
+            // Like comment button
+            $(".like-button, .unlike-button").click(function () {
+                var commentId = $(this).data("commentid");
+                var actionUrl = $(this).hasClass("like-button") ? "/Like/LikeComment" : "/Like/UnLikeComment";
+                var button = $(this);
+
+                $.ajax({
+                    type: "POST",
+                    url: actionUrl + "?commentId=" + commentId,
+                    success: function (data) {
+                        if (data.success) {
+                            console.log("Like Comment");
+                            // Toggle the button's class to indicate the like status
+                            button.toggleClass("like-button unlike-button");
+
+                            if (button.hasClass("like-button")) {
+                                button.text("Like");
+
+                            } else {
+                                button.text("Unlike");
+                            }
+
+                        } else {
+                            console.error("Something went wrong.");
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.error("Error:", errorThrown);
+                    }
+                });
+            });
+
+
+
+
+            // Like reply to Comment button
+            $(".like-button, .unlike-button").click(function () {
+                var replyId = $(this).data("replyid");
+                var actionUrl = $(this).hasClass("like-button") ? "/Like/LikeReplyToComment" : "/Like/UnLikeReplyToComment";
+                var button = $(this);
+
+                $.ajax({
+                    type: "POST",
+                    url: actionUrl + "?replyId=" + replyId,
+                    success: function (data) {
+                        console.log("Like Reply To Comment");
+                        if (data.success) {
+                            // Toggle the button's class to indicate the like status
+                            button.toggleClass("like-button unlike-button");
+
+                            if (button.hasClass("like-button")) {
+                                button.text("Like");
+
+                            } else {
+                                button.text("Unlike");
+                            }
+
+                        } else {
+                            console.error("Something went wrong.");
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.error("Error:", errorThrown);
+                    }
+                });
+            });
+
+        });
+
+
+    </script>
+
+        }   

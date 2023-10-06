@@ -1,0 +1,232 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+* {
+    box-sizing: border-box;
+}
+
+body {
+  margin-bottom: 60px;
+ 
+}
+
+.flex-grow-1 li a {
+    margin-left: 20px;
+}
+
+/*.like-button-comment {
+    background-color: #3498db;*/ /* Blue background color */
+    /*color: #fff;*/ /* White text color */
+    /*border: none;
+    padding: 8px 16px;*/ /* Adjust padding as needed */
+    /*font-size: 14px;*/ /* Adjust font size as needed */
+    /*cursor: pointer;
+}*/
+
+    /* Hover effect when mouse is over the button */
+    /*.like-button-comment:hover {
+        background-color: #2980b9;*/ /* Darker blue background color on hover */
+    /*}*/
+
+/* Style for the "Unlike" button (you can customize this as well) */
+/*.unlike-button-comment {
+    background-color: #e74c3c;*/ /* Red background color */
+    /*color: #fff;*/ /* White text color */
+    /*border: none;
+    padding: 8px 16px;*/ /* Adjust padding as needed */
+    /*font-size: 14px;*/ /* Adjust font size as needed */
+    /*cursor: pointer;
+}*/
+
+    /* Hover effect for the "Unlike" button */
+    /*.unlike-button-comment:hover {
+        background-color: #c0392b;*/ /* Darker red background color on hover */
+    /*}*/
+
+
+.like-button {
+    background-color: #3498db; /* Blue background color */
+    color: #fff; /* White text color */
+    border: none;
+    padding: 8px 16px; /* Adjust padding as needed */
+    font-size: 14px; /* Adjust font size as needed */
+    cursor: pointer;
+}
+
+    /* Hover effect when mouse is over the button */
+    .like-button:hover {
+        background-color: #2980b9; /* Darker blue background color on hover */
+    }
+
+/* Style for the "Unlike" button (you can customize this as well) */
+.unlike-button {
+    background-color: #e74c3c; /* Red background color */
+    color: #fff; /* White text color */
+    border: none;
+    padding: 8px 16px; /* Adjust padding as needed */
+    font-size: 14px; /* Adjust font size as needed */
+    cursor: pointer;
+}
+
+    /* Hover effect for the "Unlike" button */
+    .unlike-button:hover {
+        background-color: #c0392b; /* Darker red background color on hover */
+    }
+
+
+
+.card-body {
+    width: 110px;
+    background-color: #A9A9A9;
+}
+.card-body ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+ }
+
+   
+
+/* Style for the links */
+.card-body a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    transition: color 0.3s;
+    padding: 5px;
+}
+.card-body a:hover {
+    color: #2F4F4F;
+    background-color: #FFFAF0;
+}
+.sidenav {
+    width: 250px;
+    position: fixed;
+    top: 55px;
+    left: 0px;
+    height: 100%;
+    overflow-y: scroll;
+    transition: 0.3s;
+    background-color: #A9A9A9;
+}
+
+/* Style for the main content area */
+.main-content {
+    margin-left: 250px;
+    transition: margin-left 0.3s;
+    border-left:solid 3px black;
+    border-right:solid 3px black;
+}
+.sidenav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Style for the list items */
+.sidenav li {
+    
+    text-align: center;
+}
+
+/* Style for the links */
+.sidenav a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    transition: color 0.3s;
+    padding: 10px;
+}
+
+    /* Hover effect for links */
+    .sidenav a:hover {
+        color: #2F4F4F;
+        background-color: #FFFAF0;
+    }
+
+.post-container {
+    max-width: 100%; /* Adjust this value as needed */
+    overflow-wrap: break-word; /* Enable word wrapping for long words */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.PostContainer {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+    text-align: center;
+}
+
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #ccc;
+    margin: 0 auto 10px;
+}
+
+.profile-name {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.profile-info {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #555;
+}
+
+.profile-actions {
+    margin-top: 20px;
+}
+
+    .profile-actions button {
+        padding: 10px 20px;
+        background-color: #1877f2;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+
+.profile-posts {
+    margin-top: 30px;
+}
+
+.post {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 20px;
+}

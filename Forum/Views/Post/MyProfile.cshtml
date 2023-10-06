@@ -1,0 +1,225 @@
+﻿@model IEnumerable<Post>
+@using System.Security.Claims;
+@{
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+}
+
+
+<div class="PostContainer">
+    <div class="profile-header">
+        <div class="bg-dark p-3 mb-3" ><img src="~/images/@ViewBag.User.Picture" class="profile-picture rounded-circle" id="photo"/></div>
+        <div id="photoModal" class="modal text-xl-center">
+            <img src="" alt="Photo" id="bigPhoto" />
+        </div>
+        
+        <div class="profile-name">@ViewBag.User.UserName</div>
+        <div class="profile-info">@ViewBag.User.Summary</div>
+        <hr />
+        <div class="profile-actions">
+            <a asp-action="Index" asp-controller="Home" class="btn btn-outline-primary">Friends</a>
+            <a asp-controller="Account" asp-action="Index" class="btn btn-outline-success">Edit Profile</a>
+        </div>
+        <hr class="border border-3 border-dark mb-3" />
+    </div>
+    @foreach (var item in Model)
+    {
+        <div class="container">
+            <div class="container d-sm-inline-flex row">
+
+
+
+                <!-- Header of Post  -->
+                <div class="col-sm-2 text-center">
+                     <a href="~/Post/ProfileSomeOne?userId=@item.UserId">
+                    @if (item.User.Picture != null)
+                    {
+                        <img src="~/images/@item.User.Picture" class="rounded-circle img-thumbnail" width="55px;" />
+                    }
+                    else
+                    {
+                        <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" width="55px;" />
+                    }
+                    </a>
+                </div>
+
+
+
+
+                <div style="text-align:left; " class="col-sm-8">
+                    @item.User.UserName<br>
+                    @item.PublishDate.ToString("dd-MM-yyyy  hh:mm tt")
+                </div>
+
+
+
+
+                <!-- List of options for post-->
+                <div style="text-align:right;  right:10px;" class="col-sm-2">
+                    <div class="">
+                        <a class="collapsed btn" data-bs-toggle="collapse" href="#collapse_@item.Id">
+                            <strong style="font-size:24px;">...</strong>
+
+
+                        </a>
+                    </div>
+                    <div id="collapse_@item.Id" class="collapse text-center" data-bs-parent="#accordion">
+                        <div class="card-body">
+                            <ul>
+                                @if (item.UserId == userId)
+                                {
+                                    <li><a asp-action="Edit" asp-controller="Post" asp-route-id="@item.Id">Edit</a></li>
+                                    <li><a asp-action="Delete" asp-controller="Post" asp-route-id="@item.Id">Delete</a></li>
+                                    <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
+                                    <li><a asp-action="#" asp-route-id="@item.Id">Copy URL</a></li>
+                                }
+                                else
+                                {
+                                    <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
+                                    <li><a asp-action="#" asp-route-id="@item.Id">Report</a></li>
+                                    <li><a asp-action="#" asp-route-id="@item.Id">Hide Post</a></li>
+                                    <li><a asp-action="#" asp-route-id="@item.Id">Copy url</a></li>
+                                    //<li><a asp-action="#" asp-route-id="@item.Id">Turn on Notifications</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            <hr />
+
+
+
+            <!-- Post Comtent-->
+            @if (item.Content != null)
+            {
+                <div class="bg-secondary bg-opacity-25 p-3 m-1 row">
+                    <div class="col-md-12 post-container">
+                        @item.Content
+                    </div>
+                </div>
+            }
+
+            @if (item.Image != null)
+            {
+                <div class="row p-3">
+                    <img src="~/Post-Images/@Html.DisplayFor(modelItem => item.Image)" class=" img-thumbnail" />
+                </div>
+            }
+
+
+
+
+            <!-- Form New Comment and see all comments -->
+            <div>
+                <form asp-action="AddComment" asp-controller="Comment" method="post" asp-route-postId="@item.Id">
+                    <div class="container">
+                        <div class="row">
+                            <input type="text" name="commentText" class="col-12 form-control" placeholder="Write a comment" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <br />
+
+
+
+
+
+            <!-- Buttons under posts -->
+            <div class="container">
+
+                <a asp-action="ShowComments" asp-route-postId="@item.Id" style="text-decoration:none; color:indigo;">@item.LikeCount Likes </a> - <a asp-action="ShowComments" asp-route-postId="@item.Id" style="text-decoration:none;"> @item.CommentCount Comments</a>
+                <div class="row">
+                    <div class="col-sm-2 row">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            var userLikedCom = item.Likes != null && item.Likes.Any(l => l.UserId == userId);
+                            //var userLiked = item.Likes.Any(a => a.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier));
+                            if (!userLikedCom)
+                            {
+                                <button type="button" class="like-button col-sm-12" data-postid="@item.Id">Like</button>
+                            }
+                            else
+                            {
+                                <button type="button" class="unlike-button col-sm-12" data-postid="@item.Id">Unlike</button>
+                            }
+                        }
+                    </div>
+
+                    <a asp-action="Index" class="btn btn-outline-primary col-sm-2">Share</a>
+                    <div class="col-sm-2"></div>
+
+                </div>
+            </div>
+            <hr class="border border-3 border-dark mb-3" />
+        </div>
+
+
+    }
+
+
+    </div>
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+
+        <script>
+            $(document).ready(function () {
+
+                // Like button
+                $(".like-button, .unlike-button").click(function () {
+                    var postId = $(this).data("postid");
+                    var actionUrl = $(this).hasClass("like-button") ? "/Like/LikePost" : "/Like/UnlikePost";
+                    var button = $(this);
+
+                    $.ajax({
+                        type: "POST",
+                        url: actionUrl + "?postId=" + postId,
+                        success: function (data) {
+                            if (data.success) {
+                                // Toggle the button's class to indicate the like status
+                                button.toggleClass("like-button unlike-button");
+
+                                if (button.hasClass("like-button")) {
+                                    button.text("Like");
+
+                                } else {
+                                    button.text("Unlike");
+                                }
+
+                            } else {
+                                console.error("Something went wrong.");
+                            }
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            console.error("Error:", errorThrown);
+                        }
+                    });
+                });
+
+            });
+        </script>
+
+    <script>
+
+        var photo = document.getElementById("photo");
+        var div = document.getElementById("photoModal");
+        var bigPhoto = document.getElementById("bigPhoto");
+
+        // On click open the photo
+        photo.addEventListener("click", function () {
+            bigPhoto.src = this.src;
+            div.style.display = "block";
+        });
+
+        // Close the modal when clicking outside of the image
+        div.addEventListener("click", function () {
+            div.style.display = "none";
+        });
+    </script>
+}
