@@ -24,7 +24,7 @@ namespace Forum.Controllers
 
 
 
-
+        // Get Current User
         public ApplicationUser CurrentUser()
         {
             //// Way to get UserId
@@ -39,7 +39,7 @@ namespace Forum.Controllers
         }
 
 
-
+        // Add Request
         public IActionResult AddRequest(string userId)
         {
             if (string.IsNullOrEmpty(userId))
@@ -55,10 +55,12 @@ namespace Forum.Controllers
 
             };
 
-            _friendRepository.Request(request);
+            _friendRepository.AddRequest(request);
             return Json(new { success = true });
         }
 
+
+        // Cancel Request
         public IActionResult CancelRequest(string userId)
         {
             if (string.IsNullOrEmpty(userId))
@@ -73,37 +75,38 @@ namespace Forum.Controllers
         }
 
 
+
+        // Accept and Reject Request
         public IActionResult AcceptRequest(int id, bool accept)
         {
             FriendRequest request = _friendRepository.GetRequestById(id);
+            // If Accept
             if (accept == true)
             {
-
                 Friend friend = new Friend()
                 {
                     UserOneId = request.SenderId,
                     UserTwoId = request.RecieverId,
                 };
+                // Add friend and delete request
                 _friendRepository.AcceptRequest(friend);
                 _friendRepository.RejectRequest(request);
 
             }
             else
             {
+                // if Reject 
+                // Delete request
                 _friendRepository.RejectRequest(request);
             }
             return Json(new {success = true});
         }
 
 
-        public IActionResult MyFriend()
-        {
-            ApplicationUser currentUser = CurrentUser();
-            var friends = _friendRepository.MyFriends(currentUser.Id);
-            return View(friends);
-        }
 
 
+
+        // All Request to me
         public IActionResult MyRequest()
         {
             ApplicationUser currentUser = CurrentUser();
@@ -111,6 +114,10 @@ namespace Forum.Controllers
             return View(requests);
         }
 
+
+
+
+        // All Request to other
         public IActionResult RequestFromMe()
         {
             ApplicationUser currentUser = CurrentUser();
@@ -119,10 +126,19 @@ namespace Forum.Controllers
         }
 
 
+
+        // All My friends
+        public IActionResult MyFriend()
+        {
+            ApplicationUser currentUser = CurrentUser();
+            var friends = _friendRepository.MyFriends(currentUser.Id);
+            return View(friends);
+        }
+
+
+        // UnFriend someone
         public IActionResult DeleteFriend(int id)
         {
-            
-
             var friend = _friendRepository.GetFriendById(id);
             if (friend == null)
             {

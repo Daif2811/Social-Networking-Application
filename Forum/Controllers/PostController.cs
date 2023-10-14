@@ -27,7 +27,7 @@ namespace Forum.Controllers
             _friendRepository = friendRepository;
         }
 
-
+        // Get Current User
         public ApplicationUser CurrentUser()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -36,6 +36,7 @@ namespace Forum.Controllers
         }
 
 
+        // My Profile
         public IActionResult MyProfile()
         {
             ApplicationUser user = CurrentUser();
@@ -50,6 +51,8 @@ namespace Forum.Controllers
             return View(posts);
         }
 
+
+        // Profile Someone
         public async Task<IActionResult> ProfileSomeOne(string userId)
         {
             ApplicationUser currentUser = CurrentUser();
@@ -57,9 +60,6 @@ namespace Forum.Controllers
             {
                 return RedirectToAction("MyProfile");
             }
-
-
-
 
             ApplicationUser user = await _userManager.FindByIdAsync(userId);
             if (user == null)
@@ -96,13 +96,12 @@ namespace Forum.Controllers
                     }
                     else
                     {
+                        // No request
                         ViewBag.Found = "NoRequest";
 
                     }
                 }
             }
-
-
 
             var posts = _postRepository.Profile(userId);
 
@@ -111,7 +110,7 @@ namespace Forum.Controllers
 
 
 
-        // GET: PostController
+        // GET All Posts
         public IActionResult Index()
         {
             ViewBag.CurrentUser = CurrentUser();
@@ -121,24 +120,34 @@ namespace Forum.Controllers
 
 
 
-        // GET: PostController/Details/5
-        public async Task<IActionResult> Details(int id)
+
+
+        // Details and Show All Comments
+        public IActionResult ShowComments(int postId)
         {
-            var post = await _postRepository.GetById(id);
+            var post = _postRepository.GetAllComments(postId);
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+
             return View(post);
         }
 
 
 
-        // GET: PostController/Create
+
+
+
+
+        // Create New Post
         public ActionResult Create()
         {
             return View();
         }
 
-
-
-        // POST: PostController/Create
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Post post, IFormFile image)
@@ -190,10 +199,10 @@ namespace Forum.Controllers
 
 
 
-        // GET: PostController/Edit/5
+        // Edit Post
         public async Task<IActionResult> Edit(int id)
         {
-            var userId = User.Claims.Where(a => a.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            var currentUser = CurrentUser(); 
             if (id == null)
             {
                 return BadRequest();
@@ -203,7 +212,7 @@ namespace Forum.Controllers
             {
                 return NotFound();
             }
-            if (post.UserId != userId)
+            if (post.UserId != currentUser.Id)
             {
                 ModelState.AddModelError("", "Sorry You can't Edit this post , Because it is not yours");
             }
@@ -211,7 +220,7 @@ namespace Forum.Controllers
             return View(post);
         }
 
-        // POST: PostController/Edit/5
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Post post, IFormFile image)
@@ -253,8 +262,9 @@ namespace Forum.Controllers
                         post.Image = fileName;
                     }
 
-                    Claim userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-                    string userId = userIdClaim.Value;   // Get the value
+                    //Claim userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+                    //string userId = userIdClaim.Value;   // Get the value
+                   string userId  = CurrentUser().Id;
 
                     post.UserId = userId;
                     post.PublishDate = DateTime.Now;
@@ -277,11 +287,10 @@ namespace Forum.Controllers
 
 
 
-
-        // GET: PostController/Delete/5
+        // Delete Post
         public async Task<IActionResult> Delete(int id)
         {
-            var userId = User.Claims.FirstOrDefault(a => a.Type == (ClaimTypes.NameIdentifier)).Value;
+            string userId = CurrentUser().Id;
 
             if (id == null)
             {
@@ -303,7 +312,6 @@ namespace Forum.Controllers
 
         }
 
-        // POST: PostController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken, ActionName("Delete")]
         public async Task<IActionResult> ConfirmDelete(int id)
@@ -334,34 +342,6 @@ namespace Forum.Controllers
 
 
         }
-
-
-
-
-
-
-
-
-        public IActionResult ShowComments(int postId)
-        {
-            var post = _postRepository.GetAllComments(postId);
-
-            if (post == null)
-            {
-                return NotFound();
-            }
-
-            return View(post);
-        }
-
-
-
-
-
-
-
-
-
 
 
 

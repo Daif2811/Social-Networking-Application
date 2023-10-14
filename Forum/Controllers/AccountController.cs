@@ -21,26 +21,49 @@ namespace Forum.Controllers
             _environment = environment;
         }
 
-       
 
+
+        // Get Current User
+        public ApplicationUser CurrentUser()
+        {
+            //// Way to get UserId
+            ////Claim userClaim = User.Claims.SingleOrDefault(a => a.Type == (ClaimTypes.NameIdentifier));
+            ////string userId = userClaim.Value;
+
+
+            // another way to get userId
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ApplicationUser currentUser = _userManager.FindByIdAsync(userId).Result;
+            return currentUser;
+        }
+
+
+
+
+        // Dashboard For Users
         public IActionResult Index()
         {
             return View();
         }
 
+
+
+        // All Users
         public IActionResult Users()
         {
             var users = _userManager.Users.ToList();
             return View(users);
         }
 
-        // GET: /UserAccount/Register
+
+
+        // GET: Account/Register
         public IActionResult Register()
         {
             return View();
         }
 
-        // POST: /UserAccount/Register
+        // POST: Account/Register
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
@@ -106,13 +129,14 @@ namespace Forum.Controllers
 
 
 
-
+        // GET: Account/login
         public IActionResult Login()
         {
             return View();
         }
 
 
+        // POST: Account/login
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -143,6 +167,7 @@ namespace Forum.Controllers
 
 
 
+        // POST: Account/logOut
         public IActionResult LogOut()
         {
             _signInManager.SignOutAsync();
@@ -153,14 +178,12 @@ namespace Forum.Controllers
 
 
 
+        // GET: Account/Editprofile
         public IActionResult EditProfile()
         {
-            // Claims is  type and value
-            // Search in claims   in the type  NameIdentifier
-            Claim userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            string userId = userIdClaim.Value;   // Get the value
+            ApplicationUser user = CurrentUser();
 
-            ApplicationUser user = _userManager.Users.Where(a => a.Id == userId).SingleOrDefault();
+
             EditProfileViewModel profile = new EditProfileViewModel()
             {
                 UserName = user.UserName,
@@ -174,16 +197,12 @@ namespace Forum.Controllers
             return View(profile);
         }
 
+
+        // POST: Account/Editprofile
         [HttpPost]
         public async Task<IActionResult> EditProfile(EditProfileViewModel model, IFormFile picture)
         {
-            // Claims is  type and value
-            // Search in claims   in the type  NameIdentifier
-            Claim userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            string userId = userIdClaim.Value;   // Get the value
-
-            ApplicationUser currentUser = _userManager.Users.Where(a => a.Id == userId).SingleOrDefault();
-
+            ApplicationUser currentUser = CurrentUser();
 
             if (ModelState.IsValid)
             {
@@ -233,20 +252,22 @@ namespace Forum.Controllers
         }
 
 
+
+
+        // GET: Account/ChangePassword
         public IActionResult ChangePassword()
         {
             return View();
         }
 
+
+
+
+        // POST: Account/ChangePassword
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
-            // Claims is  type and value
-            // Search in claims   in the type  NameIdentifier
-            Claim userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            string userId = userIdClaim.Value;   // Get the value
-
-            ApplicationUser currentUser = _userManager.Users.Where(a => a.Id == userId).SingleOrDefault();
+            ApplicationUser currentUser = CurrentUser();
 
 
             if (ModelState.IsValid)
@@ -267,25 +288,26 @@ namespace Forum.Controllers
                     }
                 }
                 ModelState.AddModelError("", "Sorry, Current Password is wrong");
-
             }
 
             return View(model);
         }
 
+
+
+
+        // GET: Account/ChangePicture
         public IActionResult ChangePicture()
         {
-            // Claims is  type and value
-            // Search in claims   in the type  NameIdentifier
-            Claim userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            string userId = userIdClaim.Value;   // Get the value
+            ApplicationUser currentUser = CurrentUser();
 
-            ApplicationUser user = _userManager.Users.Where(a => a.Id == userId).SingleOrDefault();
-
-
-            return View(user);
+            return View(currentUser);
         }
 
+
+
+
+        // POST: Account/ChangePicture
         [HttpPost]
         public async Task<IActionResult> ChangePicture(IFormFile picture, string password)
         {
@@ -293,12 +315,8 @@ namespace Forum.Controllers
             {
                 ModelState.AddModelError("", "Please enter your password");
             }
-            // Claims is  type and value
-            // Search in claims   in the type  NameIdentifier
-            Claim userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            string userId = userIdClaim.Value;   // Get the value
 
-            ApplicationUser currentUser = _userManager.Users.Where(a => a.Id == userId).SingleOrDefault();
+            ApplicationUser currentUser = CurrentUser();
 
 
             if (ModelState.IsValid)
@@ -352,11 +370,17 @@ namespace Forum.Controllers
         // =======================================================================
         // =======================================================================
 
+
+        // Roles
         public IActionResult Roles()
         {
             var roles = _roleManager.Roles.ToList();
             return View(roles);
         }
+
+
+
+        // GET: Account/DetailRole/id
         public async Task<IActionResult> DetailRole(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -373,12 +397,16 @@ namespace Forum.Controllers
         }
 
 
-
+        
+        // GET: Account/AddRole
         public IActionResult AddRole()
         {
             return View();
         }
 
+
+
+        // POST: Account/AddRole
         [HttpPost]
         public async Task<IActionResult> AddRole(RoleViewModel model)
         {
@@ -403,6 +431,7 @@ namespace Forum.Controllers
 
 
 
+        // GET: Account/EditRole/id
         public async Task<IActionResult> EditRole(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -415,10 +444,13 @@ namespace Forum.Controllers
                 return NotFound();
             }
 
-
             return View(role);
         }
 
+
+
+
+        // POST: Account/EditRole/id
         [HttpPost]
         public async Task<IActionResult> EditRole(IdentityRole model)
         {
@@ -440,6 +472,7 @@ namespace Forum.Controllers
 
 
 
+        // GET: Account/DeleteRole/id
         public async Task<ActionResult> DeleteRole(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -455,6 +488,9 @@ namespace Forum.Controllers
             return View(role);
         }
 
+
+
+        // POST: Account/DeleteRole/id
         [HttpPost, ActionName("DeleteRole")]
         public async Task<ActionResult> ConfirmDeleteRole(string id)
         {
