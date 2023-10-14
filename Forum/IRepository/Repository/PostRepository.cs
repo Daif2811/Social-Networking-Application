@@ -22,8 +22,17 @@ namespace Forum.IRepository.Repository
         {
             return _context.Posts.Include(a => a.User).Include(a => a.Likes).Include(a => a.Comments).OrderByDescending(a => a.PublishDate).ToList();
 
-        }  
-        
+        }
+
+        public ICollection<Post> Search(string searchName)
+        {
+            return _context.Posts.Where
+                (a => a.User.UserName.Contains(searchName)
+                || a.Content.Contains(searchName)).
+                Include(a => a.User).Include(a => a.Likes).Include(a => a.Comments).OrderByDescending(a => a.PublishDate).ToList();
+
+        }
+
         public ICollection<Post> Profile(string userId)
         {
             return _context.Posts.Where(a => a.UserId == userId).Include(a => a.User).Include(a => a.Likes).Include(a => a.Comments).OrderByDescending(a => a.PublishDate).ToList();

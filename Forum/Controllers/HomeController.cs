@@ -1,4 +1,6 @@
-﻿using Forum.Models;
+﻿using Forum.IRepository;
+using Forum.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -7,10 +9,14 @@ namespace Forum.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IPostRepository _postRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IPostRepository postRepository, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
+            _postRepository = postRepository;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
@@ -22,6 +28,13 @@ namespace Forum.Controllers
         {
             return View();
         }
+        public IActionResult Search(string searchName)
+        {
+            var searchResult = _postRepository.Search(searchName);
+            return View(searchResult);
+        }
+
+
 
         //[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         //public IActionResult Error()

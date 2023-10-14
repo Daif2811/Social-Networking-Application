@@ -18,6 +18,8 @@ namespace Forum.DAL
         public DbSet<Block> Blocks { get; set; }
 
 
+
+
         public DbSet<LikePost> LikePosts { get; set; }
         public DbSet<LikeComment> LikeComments { get; set; }
         public DbSet<LikeReplyToComment> LikeReplyToComments { get; set; }

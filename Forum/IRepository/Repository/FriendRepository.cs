@@ -13,24 +13,14 @@ namespace Forum.IRepository.Repository
             _context = context;
         }
 
-        // Request
-        public void Request(FriendRequest request)
+        // Add Request
+        public void AddRequest(FriendRequest request)
         {
             _context.FriendRequests.Add(request);
             _context.SaveChanges();
         }
 
-        public FriendRequest GetRequestById(int id)
-        {
-            FriendRequest request = _context.FriendRequests.Where(a => a.Id == id).FirstOrDefault();
-            return request;
-        }
-        public FriendRequest GetRequestByUserId(string userId, string currentUserId)
-        {
-            FriendRequest request = _context.FriendRequests.Where(a => a.RecieverId == userId && a .SenderId == currentUserId).FirstOrDefault();
-            return request;
-        }
-
+        // Cancel Request
         public void CancelRequest(string userId, string currentUserId)
         {
            FriendRequest request =  _context.FriendRequests.Where(a => a.SenderId == currentUserId && a.RecieverId == userId).SingleOrDefault();
@@ -38,14 +28,22 @@ namespace Forum.IRepository.Repository
             _context.SaveChanges();
         }
 
-
-
-        // Cancel Request
-        public void RejectRequest(FriendRequest request)
+        // Get Request By Id
+        public FriendRequest GetRequestById(int id)
         {
-            _context.FriendRequests.Remove(request);
-            _context.SaveChanges();
+            FriendRequest request = _context.FriendRequests.Where(a => a.Id == id).FirstOrDefault();
+            return request;
         }
+
+
+        // Get Request By User Id and Current User Id
+        public FriendRequest CheckRequest(string userId, string currentUserId)
+        {
+            FriendRequest request = _context.FriendRequests.Where(a => a.RecieverId == userId && a.SenderId == currentUserId).FirstOrDefault();
+            return request;
+        }
+
+
 
 
         // Accept Request
@@ -55,15 +53,25 @@ namespace Forum.IRepository.Repository
             _context.SaveChanges();
         }
 
-        // All Requests
-        public ICollection<FriendRequest> FriendRequests(string userId)
+
+        // Reject Request
+        public void RejectRequest(FriendRequest request)
         {
-           var requsts =  _context.FriendRequests.Where(a => a.RecieverId == userId).Include(a => a.Sender).ToList();
+            _context.FriendRequests.Remove(request);
+            _context.SaveChanges();
+        }
+
+
+
+        // All Requests
+        public ICollection<FriendRequest> FriendRequests(string currentUserId)
+        {
+           var requsts =  _context.FriendRequests.Where(a => a.RecieverId == currentUserId).Include(a => a.Sender).ToList();
            return requsts;
         }
-        public ICollection<FriendRequest> MyFriendRequests(string userId)
+        public ICollection<FriendRequest> MyFriendRequests(string currentUserId)
         {
-           var requsts =  _context.FriendRequests.Where(a => a.SenderId == userId).Include(a => a.Reciever).ToList();
+           var requsts =  _context.FriendRequests.Where(a => a.SenderId == currentUserId).Include(a => a.Reciever).ToList();
            return requsts;
         }
 
@@ -79,22 +87,24 @@ namespace Forum.IRepository.Repository
 
 
         // My Friends
-        public ICollection<Friend> MyFriends(string userId)
+        public ICollection<Friend> MyFriends(string currentUserId)
         {
-            var friends = _context.Friends.Where(a => a.UserOneId == userId || a .UserTwoId == userId).Include(a => a.UserOne).Include( a => a.UserTwo).ToList();
+            var friends = _context.Friends.Where(a => a.UserOneId == currentUserId || a .UserTwoId == currentUserId).Include(a => a.UserOne).Include( a => a.UserTwo).ToList();
             return friends;
         }
 
 
 
 
-        // Delete Friend
+        // UnFriend or Delete Friend
         public void DeleteFriend(Friend friend)
         {
             _context.Friends.Remove(friend);
             _context.SaveChanges();
         }
 
+
+        // Get Friend by id
         public Friend GetFriendById(int id)
         {
             return _context.Friends.SingleOrDefault(f => f.Id == id);

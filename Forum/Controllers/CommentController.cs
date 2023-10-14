@@ -10,30 +10,42 @@ namespace Forum.Controllers
     {
         private readonly ICommentRepository _commentRepository;
         private readonly IPostRepository _postRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public CommentController(ICommentRepository commentRepository, IPostRepository postRepository)
+        public CommentController(ICommentRepository commentRepository, IPostRepository postRepository, UserManager<ApplicationUser> userManager)
         {
             _commentRepository = commentRepository;
             _postRepository = postRepository;
+            _userManager = userManager;
+        }
+
+        // Get CurrentUser
+        public ApplicationUser CurrentUser()
+        {
+            //Claim userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            //string userId = userIdClaim.Value;   // Get the value
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ApplicationUser currentUser = _userManager.FindByIdAsync(userId).Result;
+            return currentUser;
         }
 
 
 
+
+
+        // Add Comment
         public async Task<IActionResult> AddComment(int postId, string commentText)
         {
-
             try
             {
-
                 if (string.IsNullOrWhiteSpace(commentText))
                 {
                     ModelState.AddModelError(string.Empty, "Sorry, You can not publish an empty comment");
-
                 }
                 else
                 {
-                    var userId = User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier).Value;
-                    
+                    var userId = CurrentUser().Id; 
                     Comment comment = new Comment()
                     {
                         UserId = userId,
@@ -47,22 +59,20 @@ namespace Forum.Controllers
 
                     await _commentRepository.Add(comment);
                     return RedirectToAction("ShowComments", "Post", new { postId });
-
-                    //return PartialView("_CommentPartial", comment);
                 }
-
             }
             catch (Exception ex)
             {
-
                 ModelState.AddModelError("", ex.Message);
             }
-
             return RedirectToAction("ShowComments", "Post", new { postId });
-
         }
 
 
+
+
+
+        // Edit Comment
         public async Task<IActionResult> Edit(int id)
         {
             Comment comment = await _commentRepository.GetById(id);
@@ -70,9 +80,7 @@ namespace Forum.Controllers
             {
                 return NotFound();
             }
-
             return View(comment);
-
         }
 
         [HttpPost]
@@ -80,17 +88,13 @@ namespace Forum.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 if (string.IsNullOrWhiteSpace(comment.Content))
                 {
                     ModelState.AddModelError("", "You can not comment nothing");
                 }
                 else
                 {
-
-                    //Claim userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-                    //string userId = userIdClaim.Value;   // Get the value
-                    string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    string userId = CurrentUser().Id;
 
                     comment.UserId = userId;
                     comment.PublishDate = DateTime.Now;
@@ -98,12 +102,16 @@ namespace Forum.Controllers
                     await _commentRepository.Update(comment);
                     return RedirectToAction("ShowComments", "Post", new {comment.PostId});
                 }
-
             }
             return View(comment);
         }
 
 
+
+
+
+
+        // Delete Comment
         public async Task<IActionResult> Delete(int id)
         {
             Comment comment = await _commentRepository.GetById(id);
@@ -112,9 +120,7 @@ namespace Forum.Controllers
                 return NotFound();
             }
             return View(comment);
-
         }
-
 
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> ConfirmDelete(int id)
@@ -125,7 +131,9 @@ namespace Forum.Controllers
                 return NotFound();
             }
 
+            // Get post id to delete count of comment and reply from post comment count
             Post post = await _postRepository.GetById(comment.PostId);
+
             post.CommentCount -= (comment.ReplyToComments.Count + 1);
 
             await _commentRepository.Delete(id);

@@ -1,0 +1,85 @@
+﻿
+<h1 class="text-white text-center bg-dark p-2">Settings</h1>
+
+<hr />
+
+
+
+<div class="container">
+    <div id="accordion">
+
+        <!-- Card Numbr one-->
+        <div class="card">
+            <div class="card-header">
+                <a class="collapsed btn" data-bs-toggle="collapse" href="#collapseOne">
+                    Account Setting
+                </a>
+            </div>
+            <div id="collapseOne" class="collapse " data-bs-parent="#accordion">
+                <div class="card-body">
+                    <ul class="list-unstyled text-center setting">
+
+                        <li><a asp-action="EditProfile" class="text-decoration-none">Edit Your profile</a></li>
+                   
+                        <li><a asp-action="ChangePassword" class="text-decoration-none">Change Password</a></li>
+                       
+                        <li> <a asp-action="ChangePicture" class="text-decoration-none">Change Picture</a></li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- Card Numbr Two-->
+        <div class="card">
+            <div class="card-header">
+                <a class="collapsed btn" data-bs-toggle="collapse" href="#collapseTwo">
+                    General Setting
+                </a>
+            </div>
+            <div id="collapseTwo" class="collapse " data-bs-parent="#accordion">
+                <div class="card-body">
+                    <ul class="list-unstyled text-center setting">
+
+                        <li><a asp-action="#" class="text-decoration-none">Number 1</a></li>
+                      
+                        <li><a asp-action="#" class="text-decoration-none">Number 2</a></li>
+                     
+                        <li> <a asp-action="#" class="text-decoration-none">Number 3</a></li>
+                      
+
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Numbr Three-->
+        <div class="card">
+            <div class="card-header">
+                <a class="collapsed btn" data-bs-toggle="collapse" href="#collapseThree">
+                    Friendship Setting
+                </a>
+            </div>
+            <div id="collapseThree" class="collapse " data-bs-parent="#accordion">
+                <div class="card-body">
+                    <ul class="list-unstyled text-center setting">
+
+                        <li><a href="~/Friend/MyRequest">Friend Requests</a></li>
+                      
+                        <li><a href="~/Friend/RequestFromMe">My Requests To Others</a></li>
+                       
+                        <li><a href="~/Friend/MyFriend">My Friends</a></li>
+
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

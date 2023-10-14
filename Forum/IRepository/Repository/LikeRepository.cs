@@ -43,6 +43,14 @@ namespace Forum.IRepository.Repository
 
             return posts;
         }
+         public async Task<ICollection<LikePost>> PostLikeUsers(int id)
+        {
+            var posts = await _context.LikePosts.Where(a => a.PostId == id).Include(a => a.User)
+                .Include(a => a.Post).ThenInclude(a => a.User)
+                .ToListAsync();
+
+            return posts;
+        }
 
 
 
@@ -72,6 +80,12 @@ namespace Forum.IRepository.Repository
             }
         }
 
+        public async Task<ICollection<LikeComment>> CommentLikeUsers(int id)
+        {
+            var comments = await _context.LikeComments.Where(a => a.CommentId == id).Include(a => a.User).ToListAsync();
+
+            return comments;
+        }
 
 
 
@@ -102,6 +116,12 @@ namespace Forum.IRepository.Repository
             }
         }
 
+        public async Task<ICollection<LikeReplyToComment>> ReplyLikeUsers(int id)
+        {
+            var reply = await _context.LikeReplyToComments.Where(a => a.ReplyId == id).Include(a => a.User).ToListAsync();
+
+            return reply;
+        }
 
 
 
@@ -111,7 +131,7 @@ namespace Forum.IRepository.Repository
 
 
 
-        
+
 
 
 

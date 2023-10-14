@@ -57,29 +57,22 @@ body {
 
 
 
-.card-body {
-    width: 110px;
-    background-color: #A9A9A9;
-}
-.card-body ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
- }
 
    
 
 /* Style for the links */
-.card-body a {
+.modal-body a {
     text-decoration: none;
-    color: #333;
+    color: black;
     display: block;
     transition: color 0.3s;
     padding: 5px;
+    font-size:20px;
+    font:500;
 }
-.card-body a:hover {
-    color: #2F4F4F;
-    background-color: #FFFAF0;
+.modal-body a:hover {
+    color: #fff;
+    background-color: #7d93bb;
 }
 .sidenav {
     width: 250px;
@@ -137,10 +130,21 @@ body {
 
 
 
+.setting a {
+    text-decoration: none;
+    color: black;
+    display: block;
+    transition: color 0.3s;
+    padding: 5px;
+    font-size: 20px;
+    font: 500;
+}
 
 
-
-
+.setting a:hover {
+    color: #fff;
+    background-color: #7d93bb;
+}
 
 
 
@@ -254,7 +258,7 @@ body {
         background-color: #8501ee; /* Darker blue background color on hover */
         color : white;
     }
-.message-button {
+.profile-button {
     background-color: #3498db; /* Blue background color */
     color: #fff; /* White text color */
     border: none;
@@ -265,6 +269,6 @@ body {
 }
 
     /* Hover effect when mouse is over the button */
-    .message-button:hover {
+    .profile-button:hover {
         background-color: #2980b9; /* Darker blue background color on hover */
     }

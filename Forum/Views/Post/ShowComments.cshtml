@@ -21,16 +21,16 @@
 
 
         <div class="col-sm-2 text-center">
-             <a href="~/Post/ProfileSomeOne?userId=@Model.UserId">
-            @if (Model.User.Picture != null)
-            {
-                <img src="~/images/@Model.User.Picture" class="rounded-circle img-thumbnail" width="55px;" />
-            }
-            else
-            {
-                <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" width="55px;" />
-            }
-           </a>
+            <a href="~/Post/ProfileSomeOne?userId=@Model.UserId">
+                @if (Model.User.Picture != null)
+                {
+                    <img src="~/images/@Model.User.Picture" class="rounded-circle img-thumbnail" width="55px;" />
+                }
+                else
+                {
+                    <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" width="55px;" />
+                }
+            </a>
         </div>
 
         <div style="text-align:left; " class="col-sm-8">
@@ -43,37 +43,68 @@
 
 
 
+
+
+
         <!-- List of options for post-->
-        <div style="text-align:right;  right:10px;" class="col-sm-2">
-            <div class="">
-                <a class="collapsed btn" data-bs-toggle="collapse" href="#collapse_@Model.Id">
-                    <strong style="font-size:24px;">...</strong>
+        <!-- The Modal -->
+        <div class="col-sm-2">
 
-
-                </a>
+            <div class="container mt-1">
+                <button type="button" class="btn btn-outline-primary border-0" data-bs-toggle="modal" data-bs-target="#modal_@Model.Id">
+                    <strong>...</strong>
+                </button>
             </div>
-            <div id="collapse_@Model.Id" class="collapse text-center" data-bs-parent="#accordion">
-                <div class="card-body">
-                    <ul>
-                        @if (Model.UserId == userId)
-                        {
-                            <li><a asp-action="Edit" asp-controller="Post" asp-route-id="@Model.Id">Edit</a></li>
-                            <li><a asp-action="Delete" asp-controller="Post" asp-route-id="@Model.Id">Delete</a></li>
-                            <li><a asp-action="#" asp-route-id="@Model.Id">Save Post</a></li>
-                            <li><a asp-action="#" asp-route-id="@Model.Id">Copy URL</a></li>
-                        }
-                        else
-                        {
-                            <li><a asp-action="#" asp-route-id="@Model.Id">Save Post</a></li>
-                            <li><a asp-action="#" asp-route-id="@Model.Id">Report</a></li>
-                            <li><a asp-action="#" asp-route-id="@Model.Id">Hide Post</a></li>
-                            <li><a asp-action="#" asp-route-id="@Model.Id">Copy url</a></li>
-                            //<li><a asp-action="#" asp-route-id="@item.Id">Turn on Notifications</a></li>
-                        }
-                    </ul>
+
+
+
+            <div class="modal fade" id="modal_@Model.Id">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">Options</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <ul class="list-unstyled text-center ">
+                                @if (Model.UserId == userId)
+                                {
+                                    <li><a asp-action="Edit" asp-controller="Post" asp-route-id="@Model.Id">Edit</a></li>
+                                    <li><a asp-action="Delete" asp-controller="Post" asp-route-id="@Model.Id">Delete</a></li>
+                                    <li><a asp-action="#" asp-route-id="@Model.Id">Save Post</a></li>
+                                    <li><a asp-action="#" asp-route-id="@Model.Id">Copy URL</a></li>
+                                }
+                                else
+                                {
+                                    <li><a asp-action="#" asp-route-id="@Model.Id">Save Post</a></li>
+                                    <li><a asp-action="#" asp-route-id="@Model.Id">Report</a></li>
+                                    <li><a asp-action="#" asp-route-id="@Model.Id">Hide Post</a></li>
+                                    <li><a asp-action="#" asp-route-id="@Model.Id">Copy url</a></li>
+                                    //<li><a asp-action="#" asp-route-id="@item.Id">Turn on Notifications</a></li>
+                                }
+                            </ul>
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+
         </div>
+
+
+
+
+
+
 
 
     </div>    <hr />
@@ -90,14 +121,42 @@
     }
 
 
+
+
+    <!-- Show Image or video -->
     @if (Model.Image != null)
     {
-        <div class="row mt-2 p-3">
+        string filePath = Model.Image;
 
-            <img src="~/Post-Images/@Html.DisplayFor(modelItem => Model.Image)" class=" img-thumbnail" />
+        string fileExtension = System.IO.Path.GetExtension(filePath).ToLower();
 
-        </div>
+        bool isImage = false;
+        bool isVideo = false;
+
+        if (fileExtension == ".jpg" || fileExtension == ".png" || fileExtension == ".gif")
+        {
+            isImage = true;
+        }
+        else if (fileExtension == ".mp4" || fileExtension == ".avi" || fileExtension == ".mov")
+        {
+            isVideo = true;
+        }
+
+        @if (isImage)
+        {
+            <div class="row p-3">
+                <img src="~/Post-Images/@Html.DisplayFor(modelItem => Model.Image)" class=" img-thumbnail" />
+            </div>
+        }
+        else if (isVideo)
+        {
+            <div class="row p-3">
+                <video src="~/Post-Images/@Html.DisplayFor(modelItem => Model.Image)" class=" img-thumbnail" style="max-height:400px;" controls></video>
+            </div>
+        }
     }
+
+
 
 
     <!-- This is the Comment form -->
@@ -120,7 +179,8 @@
 
     <!-- This is buttons of Like And Share -->
     <div class="container">
-        <a asp-action="ShowComments" asp-route-postId="@Model.Id" style="text-decoration:none; color:indigo;">@Model.LikeCount Likes </a> - <a asp-action="ShowComments" asp-route-postId="@Model.Id" style="text-decoration:none;"> @Model.CommentCount Comments</a>
+
+        <a asp-action="PostLikeUsers" asp-controller="Like" asp-route-id="@Model.Id" style="text-decoration:none; color:indigo;">@Model.LikeCount Likes </a>  - <a asp-action="ShowComments" asp-route-postId="@Model.Id" style="text-decoration:none;"> @Model.CommentCount Comments</a>
 
         <div class="row">
             <div class="col-sm-2 row">
@@ -145,6 +205,8 @@
 
         </div>
     </div>
+
+
     <hr class="border border-3 border-dark mb-3" />
 
 
@@ -160,15 +222,15 @@
         {
             <div class="row">
                 <div class="col-sm-2 text-center">
-                     <a href="~/Post/ProfileSomeOne?userId=@item.UserId">
-                    @if (item.User.Picture != null)
-                    {
-                        <img src="~/images/@item.User.Picture" class="rounded-circle img-thumbnail" style="width:50px;" />
-                    }
-                    else
-                    {
-                        <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" style="width:50px;" />
-                    }
+                    <a href="~/Post/ProfileSomeOne?userId=@item.UserId">
+                        @if (item.User.Picture != null)
+                        {
+                            <img src="~/images/@item.User.Picture" class="rounded-circle img-thumbnail" style="width:50px;" />
+                        }
+                        else
+                        {
+                            <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" style="width:50px;" />
+                        }
                     </a>
                 </div>
                 <div class="bg-info bg-opacity-25 text-black p-3 mt-1 mb-1 col-sm-10 ">
@@ -178,36 +240,64 @@
                         <h5 class="col-sm-4">@item.User.UserName</h5>
 
 
-                        <!-- List of options for post-->
-                        <div class="col-sm-4" style="text-align:right;">
 
-                            <div>
-                                <a class="collapsed btn" data-bs-toggle="collapse" href="#collapse_@item.Id">
-                                    <sup style="font-size:24px;"> <strong>...</strong></sup>
-                                </a>
+                        <!-- List of options for post-->
+                        <!-- The Modal -->
+                        <div class="col-sm-4">
+
+                            <div class="container mt-1">
+                                <button type="button" class="btn btn-outline-primary border-0" data-bs-toggle="modal" data-bs-target="#comment_@item.Id">
+                                    <strong>...</strong>
+                                </button>
                             </div>
-                            <div id="collapse_@item.Id" class="collapse text-center" data-bs-parent="#accordion">
-                                <div class="card-body">
-                                    <ul>
-                                        @if (item.UserId == userId)
-                                        {
-                                            <li><a asp-action="Edit" asp-controller="Comment" asp-route-id="@item.Id">Edit</a></li>
-                                            <li><a asp-action="Delete" asp-controller="Comment" asp-route-id="@item.Id">Delete</a></li>
-                                        }
-                                        else
-                                        {
-                                            <li><a asp-action="#" asp-controller="#" asp-route-commentId="@item.Id" class="btn btn-outline-primary">Report</a></li>
-                                        }
-                                    </ul>
+
+
+
+                            <div class="modal fade" id="comment_@item.Id">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+
+                                        <!-- Modal Header -->
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Options</h4>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>   
+                                                 
+                                        <!-- Modal body -->
+                                        <div class="modal-body">
+                                            <ul class="list-unstyled text-center ">
+                                                @if (item.UserId == userId)
+                                                {
+                                                    <li><a asp-action="Edit" asp-controller="Comment" asp-route-id="@item.Id">Edit</a></li>
+                                                    <li><a asp-action="Delete" asp-controller="Comment" asp-route-id="@item.Id">Delete</a></li>
+                                                }
+                                                else
+                                                {
+                                                    <li><a asp-action="#" asp-controller="#" asp-route-commentId="@item.Id" class="btn btn-outline-primary">Report</a></li>
+                                                }
+                                            </ul>
+                                        </div>
+
+                                        <!-- Modal footer -->
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+
+
                         </div>
+
+
+
                     </div>
-                    @*<span> Comment to <span class="text-primary">@item.Post.User.UserName </span> : </span>*@
+
+
                     @item.Content
                     <hr />
                     <div class="container">
-                        <form class="row" asp-action="AddReply" asp-controller="ReplyToComment" asp-route-commentId="@item.Id">
+                        <form class="row" asp-action="AddReply" asp-controller="ReplyToComment" asp-route-commentId="@item.Id" asp-route-userName="@item.User.UserName">
                             <input type="text" class="col-12 form-control" name="content" placeholder="Write a reply" />
                         </form>
                     </div>
@@ -223,9 +313,12 @@
             <div>
                 <!-- This is buttons of Like And Share -->
                 <div class="container">
-                    <a asp-action="#" asp-route-postId="@item.Id" style="text-decoration:none; color:indigo; margin-left:85px;">@item.LikeCount Likes </a> - <a asp-action="ShowComments" asp-route-postId="@item.Id" style="text-decoration:none;"> @item.CommentCount Reply</a>
 
+                    @*<a asp-action="#" asp-route-postId="@item.Id" style="text-decoration:none; color:indigo; margin-left:85px;">@item.LikeCount Likes </a> - <a asp-action="ShowComments" asp-route-postId="@item.Id" style="text-decoration:none;"> @item.CommentCount Reply</a>*@
+                        <a asp-action="CommentLikeUsers" asp-controller="Like" asp-route-id="@item.Id" style="text-decoration:none; color:indigo; margin-left:85px;">@item.LikeCount Likes </a> - <span
+                            > @item.CommentCount Reply</span>
                     <div class="row">
+                    
                         <div class="col-sm-2">
                         </div>
                         <div class="col-sm-2 row">
@@ -244,7 +337,6 @@
                                 }
                             }
                         </div>
-                        <a asp-action="#" asp-controller="#" asp-route-commentId="@item.Id" class="btn btn-outline-primary col-sm-2 ReplyComment">Share</a>
 
 
                         <div class="col-sm-4">
@@ -275,16 +367,16 @@
                     <div class="bg-light " style="margin-left:80px;">
                         <div class="row">
                             <div class="col-sm-2 text-center">
-                                 <a href="~/Post/ProfileSomeOne?userId=@reply.UserId">
-                                @if (reply.User.Picture != null) 
-                                {
-                                    <img src="~/images/@reply.User.Picture" class="rounded-circle img-thumbnail" style="width:50px;" />
-                                }
-                                else
-                                {
-                                    <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" style="width:50px;" />
-                                }
-                            </a>
+                                <a href="~/Post/ProfileSomeOne?userId=@reply.UserId">
+                                    @if (reply.User.Picture != null)
+                                    {
+                                        <img src="~/images/@reply.User.Picture" class="rounded-circle img-thumbnail" style="width:50px;" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" style="width:50px;" />
+                                    }
+                                </a>
                             </div>
                             <div class="bg-info bg-opacity-25 text-black p-3 mt-1 mb-1 col-sm-10 ">
                                 <div class="row justify-content-between">
@@ -294,31 +386,57 @@
 
 
                                     <!-- List of options for post-->
-                                    <div class="col-sm-4" style="text-align:right;">
+                                    <div class="col-sm-4">
 
-                                        <div>
-                                            <a class="collapsed btn" data-bs-toggle="collapse" href="#collapse_@reply.Id">
-                                                <sup style="font-size:24px;"> <strong>...</strong></sup>
-                                            </a>
+                                        <div class="container mt-1">
+                                            <button type="button" class="btn btn-outline-primary border-0" data-bs-toggle="modal" data-bs-target="#reply_@reply.Id">
+                                                <strong>...</strong>
+                                            </button>
                                         </div>
-                                        <div id="collapse_@reply.Id" class="collapse text-center" data-bs-parent="#accordion">
-                                            <div class="card-body">
-                                                <ul>
-                                                    @if (reply.UserId == userId)
-                                                    {
-                                                        <li><a asp-action="DeleteReply" asp-controller="ReplytoComment" asp-route-replyId="@reply.Id" asp-route-commentId="@item.Id">Delete</a></li>
-                                                    }
-                                                    else
-                                                    {
-                                                        <li><a asp-action="#" asp-controller="#" asp-route-commentId="@reply.Id" class="btn btn-outline-primary">Report</a></li>
-                                                    }
-                                                </ul>
+
+
+
+                                        <div class="modal fade" id="reply_@reply.Id">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+
+                                                    <!-- Modal Header -->
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Options</h4>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+
+                                                    <!-- Modal body -->
+                                                    <div class="modal-body">
+                                                        <ul class="list-unstyled text-center ">
+                                                            @if (reply.UserId == userId)
+                                                            {
+                                                                <li><a asp-action="DeleteReply" asp-controller="ReplytoComment" asp-route-replyId="@reply.Id" asp-route-commentId="@item.Id" class="btn btn-outline-primary">Delete</a></li>
+                                                            }
+                                                            else
+                                                            {
+                                                                <li><a asp-action="#" asp-controller="#" asp-route-commentId="@reply.Id" class="btn btn-outline-primary">Report</a></li>
+                                                            }
+                                                        </ul>
+                                                    </div>
+
+                                                    <!-- Modal footer -->
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+
+
                                     </div>
+
+
                                 </div>
-                               @* <span> Replied to <span class="text-primary">@reply.Comment.User.UserName </span> : </span>*@
-                                @reply.Content
+                                @* <span> Replied to <span class="text-primary">@reply.Comment.User.UserName </span> : </span>*@
+                                
+                                    <span class="text-primary">@reply.ReplyUserName</span> @reply.Content
+
                                 <hr />
                                 <div class="container">
                                     <form class="row" asp-action="AddReply" asp-controller="ReplyToComment" asp-route-commentId="@item.Id" asp-route-userName="@reply.User.UserName">
@@ -326,12 +444,14 @@
                                     </form>
                                 </div>
                             </div>
+
                         </div>
 
                         <!-- This is buttons of Like And Share -->
                         <div class="container">
-                            <a asp-action="#" asp-route-postId="@reply.Id" style="text-decoration:none; color:indigo; margin-left:80px;">@reply.LikeCount Likes </a>
+                            @*<a asp-action="#" asp-route-postId="@reply.Id" style="text-decoration:none; color:indigo; margin-left:80px;">@reply.LikeCount Likes </a>*@
 
+                                <a asp-action="ReplyLikeUsers" asp-controller="Like" asp-route-id="@reply.Id" style="text-decoration:none; color:indigo; margin-left:80px;">@reply.LikeCount Likes </a>
                             <div class="row">
                                 <div class="col-sm-2">
                                 </div>
@@ -364,15 +484,16 @@
                             </div>
                         </div>
                     </div>
+
                     <br />
 
 
 
 
-                  
+
 
                 }
-            <hr />
+                <hr />
             </div>
 
 

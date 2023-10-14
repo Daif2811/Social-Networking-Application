@@ -16,8 +16,9 @@
         <div class="profile-info">@ViewBag.User.Summary</div>
         <hr />
         <div class="profile-actions">
-            <a asp-action="Index" asp-controller="Home" class="btn btn-outline-primary">Friends</a>
-            <a asp-controller="Account" asp-action="Index" class="btn btn-outline-success">Edit Profile</a>
+           
+            <a asp-action="MyFriend" asp-controller="Friend" class="btn btn-outline-primary">Friends</a>
+            <a asp-controller="Account" asp-action="Setting" class="btn btn-outline-success">Edit Profile</a>
         </div>
         <hr class="border border-3 border-dark mb-3" />
     </div>
@@ -52,40 +53,63 @@
 
 
 
-
                 <!-- List of options for post-->
-                <div style="text-align:right;  right:10px;" class="col-sm-2">
-                    <div class="">
-                        <a class="collapsed btn" data-bs-toggle="collapse" href="#collapse_@item.Id">
-                            <strong style="font-size:24px;">...</strong>
+                <!-- The Modal -->
+                <div class="col-sm-2">
 
-
-                        </a>
+                    <div class="container mt-1">
+                        <button type="button" class="btn btn-outline-primary border-0" data-bs-toggle="modal" data-bs-target="#modal_@item.Id">
+                            <strong>...</strong>
+                        </button>
                     </div>
-                    <div id="collapse_@item.Id" class="collapse text-center" data-bs-parent="#accordion">
-                        <div class="card-body">
-                            <ul>
-                                @if (item.UserId == userId)
-                                {
-                                    <li><a asp-action="Edit" asp-controller="Post" asp-route-id="@item.Id">Edit</a></li>
-                                    <li><a asp-action="Delete" asp-controller="Post" asp-route-id="@item.Id">Delete</a></li>
-                                    <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
-                                    <li><a asp-action="#" asp-route-id="@item.Id">Copy URL</a></li>
-                                }
-                                else
-                                {
-                                    <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
-                                    <li><a asp-action="#" asp-route-id="@item.Id">Report</a></li>
-                                    <li><a asp-action="#" asp-route-id="@item.Id">Hide Post</a></li>
-                                    <li><a asp-action="#" asp-route-id="@item.Id">Copy url</a></li>
-                                    //<li><a asp-action="#" asp-route-id="@item.Id">Turn on Notifications</a></li>
-                                }
-                            </ul>
+
+
+
+                    <div class="modal fade" id="modal_@item.Id">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Options</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                    <ul class="list-unstyled text-center ">
+                                        @if (item.UserId == userId)
+                                        {
+                                            <li><a asp-action="Edit" asp-controller="Post" asp-route-id="@item.Id">Edit</a></li>
+                                            <li><a asp-action="Delete" asp-controller="Post" asp-route-id="@item.Id">Delete</a></li>
+                                            <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
+                                            <li><a asp-action="#" asp-route-id="@item.Id">Copy URL</a></li>
+                                        }
+                                        else
+                                        {
+                                            <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
+                                            <li><a asp-action="#" asp-route-id="@item.Id">Report</a></li>
+                                            <li><a asp-action="#" asp-route-id="@item.Id">Hide Post</a></li>
+                                            <li><a asp-action="#" asp-route-id="@item.Id">Copy url</a></li>
+                                            //<li><a asp-action="#" asp-route-id="@item.Id">Turn on Notifications</a></li>
+                                        }
+                                    </ul>
+                                </div>
+
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+
                 </div>
 
 
+
+               
             </div>
 
 
@@ -103,12 +127,43 @@
                 </div>
             }
 
+
+
+
+
+            <!-- Show Image or video -->
             @if (item.Image != null)
             {
-                <div class="row p-3">
-                    <img src="~/Post-Images/@Html.DisplayFor(modelItem => item.Image)" class=" img-thumbnail" />
-                </div>
+                string filePath = item.Image;
+
+                string fileExtension = System.IO.Path.GetExtension(filePath).ToLower();
+
+                bool isImage = false;
+                bool isVideo = false;
+
+                if (fileExtension == ".jpg" || fileExtension == ".png" || fileExtension == ".gif")
+                {
+                    isImage = true;
+                }
+                else if (fileExtension == ".mp4" || fileExtension == ".avi" || fileExtension == ".mov")
+                {
+                    isVideo = true;
+                }
+
+                @if (isImage)
+                {
+                    <div class="row p-3">
+                        <img src="~/Post-Images/@Html.DisplayFor(modelItem => item.Image)" class=" img-thumbnail" />
+                    </div>
+                }
+                else if (isVideo)
+                {
+                    <div class="row p-3">
+                        <video src="~/Post-Images/@Html.DisplayFor(modelItem => item.Image)" class=" img-thumbnail" style="max-height:400px;" controls></video>
+                    </div>
+                }
             }
+
 
 
 
@@ -132,7 +187,7 @@
             <!-- Buttons under posts -->
             <div class="container">
 
-                <a asp-action="ShowComments" asp-route-postId="@item.Id" style="text-decoration:none; color:indigo;">@item.LikeCount Likes </a> - <a asp-action="ShowComments" asp-route-postId="@item.Id" style="text-decoration:none;"> @item.CommentCount Comments</a>
+                <a asp-action="PostLikeUsers" asp-controller="Like" asp-route-id="@item.Id" style="text-decoration:none; color:indigo;">@item.LikeCount Likes </a> - <a asp-action="ShowComments" asp-route-postId="@item.Id" style="text-decoration:none;"> @item.CommentCount Comments</a>
                 <div class="row">
                     <div class="col-sm-2 row">
                         @if (User.Identity.IsAuthenticated)

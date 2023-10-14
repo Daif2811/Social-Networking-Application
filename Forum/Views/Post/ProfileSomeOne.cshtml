@@ -7,43 +7,146 @@
 
 <div class="PostContainer">
     <div class="profile-header">
+        <!--User Image-->
         <div class="bg-dark p-3 mb-3"><img src="~/images/@ViewBag.User.Picture" class="profile-picture rounded-circle" id="photo" /></div>
-        <div id="photoModal" class="modal text-xl-center">
-            <img src="" alt="Photo" id="bigPhoto" />
+        <!--Show Image-->
+        <div id="photoModal" class="modal text-xl-center" style="margin:auto;">
+            <img src="" alt="Photo" id="bigPhoto" style="margin:auto;"/>
         </div>
 
+        <!--Information-->
         <div class="profile-name">@ViewBag.User.UserName</div>
         <div class="profile-info">@ViewBag.User.Summary</div>
         <hr />
-        <div class="profile-actions">
+
+
+
+        <!--Profile Buttons-->
+        <div class="profile-actions" id="accordion">
+
+            <!-- Friendship button-->
             @{
                 if (ViewBag.Found == "Friend")
                 {
-                    <button  class="message-button">My Friend</button>
+                    <button class="profile-button">Friend</button>
                 }
                 if (ViewBag.Found == "MyRequest")
                 {
                     <button type="button" data-userid="@ViewBag.User.Id" class="unfriend-button">Cancel Request</button>
                 }
+                if (ViewBag.Found == "HisRequest")
+                {
+                    <button data-bs-toggle="collapse" href="#collapseAccept" class="accept-button">Accept</button>
+                }
                 if (ViewBag.Found == "NoRequest")
                 {
                     <button type="button" data-userid="@ViewBag.User.Id" class="friend-button">Add Friend</button>
                 }
-                if (ViewBag.Found == "HisRequest")
-                {
-                    <a  asp-action="MyRequest" asp-controller="Friend" data-userid="@ViewBag.User.Id" class="accept-button">Accept</a>
-                }
             }
-            <button class="message-button">Message</button>
+
+
+            <!-- Message button-->
+            <button class="profile-button">Message</button>
+
+            
+            <!-- About button-->
+            <button class="profile-button" data-bs-toggle="collapse" href="#collapseOne">About</button>
+
+            
+            <!-- More button-->
+            <button class="profile-button" data-bs-toggle="modal" data-bs-target="#modalOne"> More</button>
+            <!-- More PopUp-->
+            <div class="modal fade" id="modalOne">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">Options</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <ul class="list-unstyled text-center ">
+                                @{
+                                    if (ViewBag.Found == "Friend")
+                                    {
+                                        <li><a asp-action="RemoveFriend" asp-controller="Friend" asp-route-userId="@ViewBag.User.Id">Cancel Friend</a></li>
+                                        <li><a asp-action="#" asp-route-id="#">Cancel Follw</a></li>
+                                        <li><a asp-action="#" asp-controller="#" asp-route-id="#">Block</a></li>
+                                        <li><a asp-action="#" asp-controller="#" asp-route-id="#">Report</a></li>
+                                        <li><a asp-action="#" asp-route-id="#">Copy URL</a></li>
+                                    }
+                                    if (ViewBag.Found == "MyRequest" || ViewBag.Found == "NoRequest")
+                                    {
+                                        <li><a asp-action="#" asp-route-id="#"> Follow</a></li>
+                                        <li><a asp-action="#" asp-controller="#" asp-route-id="#">Block</a></li>
+                                        <li><a asp-action="#" asp-controller="#" asp-route-id="#">Report</a></li>
+                                        <li><a asp-action="#" asp-route-id="#">Copy URL</a></li>
+                                    }
+                                    if (ViewBag.Found == "HisRequest")
+                                    {
+                                        <li><a asp-action="#" asp-controller="#" asp-route-id="#">Block</a></li>
+                                        <li><a asp-action="#" asp-controller="#" asp-route-id="#">Report</a></li>
+                                        <li><a asp-action="#" asp-controller="#" asp-route-id="#">Copy URL</a></li>
+                                    }
+
+                                }
+                            </ul>
+                        </div>
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- About Modal -->
+            <div id="collapseOne" class="collapse " data-bs-parent="#accordion">
+                <div class="card-body">
+                        <hr />
+                    <ul class="list-unstyled text-center setting">
+                        <li><a asp-action="EditProfile" class="text-decoration-none">some information</a></li>
+                        <li><a asp-action="EditProfile" class="text-decoration-none">some information</a></li>
+                        <li><a asp-action="EditProfile" class="text-decoration-none">some information</a></li>
+                        <li><a asp-action="EditProfile" class="text-decoration-none">some information</a></li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <!-- Accept Modal -->
+            <div id="collapseAccept" class="collapse " data-bs-parent="#accordion">
+                <div class="card-body">
+                    <hr />
+                    <ul class="list-unstyled text-center setting row" style="margin:auto;">
+                        <li class="col-sm-3"></li>
+                        <li class="col-sm-3"><a asp-controller="Friend" asp-action="AcceptRequestOnProfile" asp-route-userId="@ViewBag.User.Id" asp-route-accept="true" class="btn btn-outline-success">Accept</a></li>
+                        <li class="col-sm-3"><a asp-controller="Friend" asp-action="AcceptRequestOnProfile" asp-route-userId="@ViewBag.User.Id" asp-route-accept="false" class="btn btn-outline-danger">Reject</a></li>
+                        <li class="col-sm-3"></li>
+                    </ul>
+                </div>
+            </div>
+
         </div>
+
+
         <hr class="border border-3 border-dark mb-3" />
     </div>
+
+
+
+
+
     @foreach (var item in Model)
     {
         <div class="container">
+
+            <!-- Post User header-->
             <div class="container d-sm-inline-flex row">
-
-
 
                 <!-- Header of Post  -->
                 <div class="col-sm-2 text-center">
@@ -59,58 +162,70 @@
                     </a>
                 </div>
 
-
-
-
                 <div style="text-align:left; " class="col-sm-8">
                     @item.User.UserName<br>
                     @item.PublishDate.ToString("dd-MM-yyyy  hh:mm tt")
                 </div>
 
 
-
-
                 <!-- List of options for post-->
-                <div style="text-align:right;  right:10px;" class="col-sm-2">
-                    <div class="">
-                        <a class="collapsed btn" data-bs-toggle="collapse" href="#collapse_@item.Id">
-                            <strong style="font-size:24px;">...</strong>
+                <div class="col-sm-2">
 
-
-                        </a>
+                    <div class="container mt-1">
+                        <button type="button" class="btn btn-outline-primary border-0" data-bs-toggle="modal" data-bs-target="#modal_@item.Id">
+                            <strong>...</strong>
+                        </button>
                     </div>
-                    <div id="collapse_@item.Id" class="collapse text-center" data-bs-parent="#accordion">
-                        <div class="card-body">
-                            <ul>
-                                @if (item.UserId == userId)
-                                {
-                                    <li><a asp-action="Edit" asp-controller="Post" asp-route-id="@item.Id">Edit</a></li>
-                                    <li><a asp-action="Delete" asp-controller="Post" asp-route-id="@item.Id">Delete</a></li>
-                                    <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
-                                    <li><a asp-action="#" asp-route-id="@item.Id">Copy URL</a></li>
-                                }
-                                else
-                                {
-                                    <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
-                                    <li><a asp-action="#" asp-route-id="@item.Id">Report</a></li>
-                                    <li><a asp-action="#" asp-route-id="@item.Id">Hide Post</a></li>
-                                    <li><a asp-action="#" asp-route-id="@item.Id">Copy url</a></li>
-                                    //<li><a asp-action="#" asp-route-id="@item.Id">Turn on Notifications</a></li>
-                                }
-                            </ul>
+
+
+
+                    <div class="modal fade" id="modal_@item.Id">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Options</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                    <ul class="list-unstyled text-center ">
+                                        @if (item.UserId == userId)
+                                        {
+                                            <li><a asp-action="Edit" asp-controller="Post" asp-route-id="@item.Id">Edit</a></li>
+                                            <li><a asp-action="Delete" asp-controller="Post" asp-route-id="@item.Id">Delete</a></li>
+                                            <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
+                                            <li><a asp-action="#" asp-route-id="@item.Id">Copy URL</a></li>
+                                        }
+                                        else
+                                        {
+                                            <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
+                                            <li><a asp-action="#" asp-route-id="@item.Id">Report</a></li>
+                                            <li><a asp-action="#" asp-route-id="@item.Id">Hide Post</a></li>
+                                            <li><a asp-action="#" asp-route-id="@item.Id">Copy url</a></li>
+                                            //<li><a asp-action="#" asp-route-id="@item.Id">Turn on Notifications</a></li>
+                                        }
+                                    </ul>
+                                </div>
+
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+
                 </div>
 
-
             </div>
-
-
             <hr />
 
 
-
-            <!-- Post Comtent-->
+            <!-- Post Content-->
             @if (item.Content != null)
             {
                 <div class="bg-secondary bg-opacity-25 p-3 m-1 row">
@@ -120,14 +235,39 @@
                 </div>
             }
 
+
+            <!-- Show Image or video -->
             @if (item.Image != null)
             {
-                <div class="row p-3">
-                    <img src="~/Post-Images/@Html.DisplayFor(modelItem => item.Image)" class=" img-thumbnail" />
-                </div>
+                string filePath = item.Image;
+
+                string fileExtension = System.IO.Path.GetExtension(filePath).ToLower();
+
+                bool isImage = false;
+                bool isVideo = false;
+
+                if (fileExtension == ".jpg" || fileExtension == ".png" || fileExtension == ".gif")
+                {
+                    isImage = true;
+                }
+                else if (fileExtension == ".mp4" || fileExtension == ".avi" || fileExtension == ".mov")
+                {
+                    isVideo = true;
+                }
+
+                @if (isImage)
+                {
+                    <div class="row p-3">
+                        <img src="~/Post-Images/@Html.DisplayFor(modelItem => item.Image)" class=" img-thumbnail" />
+                    </div>
+                }
+                else if (isVideo)
+                {
+                    <div class="row p-3">
+                        <video src="~/Post-Images/@Html.DisplayFor(modelItem => item.Image)" class=" img-thumbnail" style="max-height:400px;" controls></video>
+                    </div>
+                }
             }
-
-
 
 
             <!-- Form New Comment and see all comments -->
@@ -143,13 +283,10 @@
             <br />
 
 
-
-
-
             <!-- Buttons under posts -->
             <div class="container">
 
-                <a asp-action="ShowComments" asp-route-postId="@item.Id" style="text-decoration:none; color:indigo;">@item.LikeCount Likes </a> - <a asp-action="ShowComments" asp-route-postId="@item.Id" style="text-decoration:none;"> @item.CommentCount Comments</a>
+                <a asp-action="PostLikeUsers" asp-controller="Like" asp-route-id="@item.Id" style="text-decoration:none; color:indigo;">@item.LikeCount Likes </a> - <a asp-action="ShowComments" asp-route-postId="@item.Id" style="text-decoration:none;"> @item.CommentCount Comments</a>
                 <div class="row">
                     <div class="col-sm-2 row">
                         @if (User.Identity.IsAuthenticated)
@@ -177,14 +314,13 @@
 
 
     }
-
-
 </div>
+
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
     <script>
         $(document).ready(function () {
 
@@ -259,6 +395,7 @@
         });
     </script>
 
+    <!-- Show big image -->
     <script>
 
         var photo = document.getElementById("photo");

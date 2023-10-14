@@ -8,6 +8,7 @@ namespace Forum.IRepository
         Task LikePost(LikePost like);
         Task UnLikePost(int postId, string userId);
         Task<ICollection<LikePost>> GetAllLikedPost(string userId);
+        Task<ICollection<LikePost>> PostLikeUsers(int id);
         
         
         
@@ -15,6 +16,7 @@ namespace Forum.IRepository
         // Comment
         Task LikeComment(LikeComment like);
         Task UnLikeComment(int commentId, string userId);
+        Task<ICollection<LikeComment>> CommentLikeUsers(int id);
 
 
 
@@ -25,6 +27,7 @@ namespace Forum.IRepository
         // Reply to Comment
         Task LikeReplyToComment(LikeReplyToComment like);
         Task UnLikeReplyToComment(int replyId, string userId);
+        Task<ICollection<LikeReplyToComment>> ReplyLikeUsers(int id);
 
 
 
@@ -32,7 +35,8 @@ namespace Forum.IRepository
 
 
 
-       
+
+
 
     }
 

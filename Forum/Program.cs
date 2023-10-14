@@ -2,6 +2,7 @@ using Forum.DAL;
 using Forum.IRepository;
 using Forum.IRepository.Repository;
 using Forum.Models;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,6 +27,13 @@ namespace Forum
             {
                 option.SignIn.RequireConfirmedAccount = true;
             }).AddEntityFrameworkStores<ForumContext>();
+
+
+            builder.Services.Configure<FormOptions>(options =>
+            {
+                options.MultipartBodyLengthLimit = 50000000;
+            });
+
 
             builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<ICommentRepository, CommentRepository>();

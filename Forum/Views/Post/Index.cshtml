@@ -51,18 +51,18 @@
 
 
 
-             <!-- Header of Post  -->
+            <!-- Header of Post  -->
             <div class="col-sm-2 text-center">
-             <a href="~/Post/ProfileSomeOne?userId=@item.UserId">
-                @if (item.User.Picture != null)
-                {
-                    <img src="~/images/@item.User.Picture" class="rounded-circle img-thumbnail" width="55px;" />
-                }
-                else
-                {
-                    <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" width="55px;" />
-                }
-            </a>
+                <a href="~/Post/ProfileSomeOne?userId=@item.UserId">
+                    @if (item.User.Picture != null)
+                    {
+                        <img src="~/images/@item.User.Picture" class="rounded-circle img-thumbnail" width="55px;" />
+                    }
+                    else
+                    {
+                        <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" width="55px;" />
+                    }
+                </a>
             </div>
 
 
@@ -74,64 +74,117 @@
             </div>
 
 
+                <!-- List of options for post-->
+                <!-- The Modal -->
+            <div class="col-sm-2">
 
-            
-            <!-- List of options for post-->
-            <div style="text-align:right;  right:10px;" class="col-sm-2">
-                <div class="">
-                    <a class="collapsed btn" data-bs-toggle="collapse" href="#collapse_@item.Id">
-                        <strong style="font-size:24px;">...</strong>
-
-
-                    </a>
+                <div class="container mt-1">
+                    <button type="button" class="btn btn-outline-primary border-0" data-bs-toggle="modal" data-bs-target="#modal_@item.Id">
+                       <strong>...</strong>
+                    </button>
                 </div>
-                <div id="collapse_@item.Id" class="collapse text-center" data-bs-parent="#accordion">
-                    <div class="card-body">
-                        <ul>
-                            @if (item.UserId == userId)
-                            {
-                                <li><a asp-action="Edit" asp-controller="Post" asp-route-id="@item.Id">Edit</a></li>
-                                <li><a asp-action="Delete" asp-controller="Post" asp-route-id="@item.Id">Delete</a></li>
-                                <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
-                                <li><a asp-action="#" asp-route-id="@item.Id">Copy URL</a></li>
-                            }
-                            else
-                            {
-                                <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
-                                <li><a asp-action="#" asp-route-id="@item.Id">Report</a></li>
-                                <li><a asp-action="#" asp-route-id="@item.Id">Hide Post</a></li>
-                                <li><a asp-action="#" asp-route-id="@item.Id">Copy url</a></li>
-                                //<li><a asp-action="#" asp-route-id="@item.Id">Turn on Notifications</a></li>
-                            }
-                        </ul>
+
+
+
+                <div class="modal fade" id="modal_@item.Id">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                                <h4 class="modal-title">Options</h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                                <ul class="list-unstyled text-center ">
+                                    @if (item.UserId == userId)
+                                    {
+                                        <li><a asp-action="Edit" asp-controller="Post" asp-route-id="@item.Id">Edit</a></li>
+                                        <li><a asp-action="Delete" asp-controller="Post" asp-route-id="@item.Id">Delete</a></li>
+                                        <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
+                                        <li><a onclick="copyURLToClipboard()" href="#">Copy URL</a></li>
+                                       
+                                    }
+                                    else
+                                    {
+                                        <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
+                                        <li><a asp-action="#" asp-route-id="@item.Id">Report</a></li>
+                                        <li><a asp-action="#" asp-route-id="@item.Id">Hide Post</a></li>
+                                        <li><a onclick="copyURLToClipboard()" href="#">Copy URL</a></li>
+                                        //<li><a asp-action="#" asp-route-id="@item.Id">Turn on Notifications</a></li>
+                                    }
+                                </ul>
+                            </div>
+
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+
             </div>
 
 
         </div>
 
-        
+
+
         <hr />
 
 
 
         <!-- Post Comtent-->
         @if (item.Content != null)
-        {          
+        {
             <div class="bg-secondary bg-opacity-25 p-3 m-1 row">
                 <div class="col-md-12 post-container">
                     @item.Content
                 </div>
-            </div> 
-        }
-
-        @if (item.Image != null)
-        {
-            <div class="row p-3">
-                <img src="~/Post-Images/@Html.DisplayFor(modelItem => item.Image)" class=" img-thumbnail" />
             </div>
         }
+
+
+
+
+
+        <!-- Show Image or video -->
+        @if (item.Image != null)
+        {
+            string filePath = item.Image;
+
+            string fileExtension = System.IO.Path.GetExtension(filePath).ToLower();
+
+            bool isImage = false;
+            bool isVideo = false;
+
+            if (fileExtension == ".jpg" || fileExtension == ".png" || fileExtension == ".gif")
+            {
+                isImage = true;
+            }
+            else if (fileExtension == ".mp4" || fileExtension == ".avi" || fileExtension == ".mov")
+            {
+                isVideo = true;
+            }
+
+            @if (isImage)
+            {
+                <div class="row p-3">
+                    <img src="~/Post-Images/@Html.DisplayFor(modelItem => item.Image)" class=" img-thumbnail" />
+                </div>
+            }
+            else if (isVideo)
+            {
+                <div class="row p-3">
+                    <video src="~/Post-Images/@Html.DisplayFor(modelItem => item.Image)" class=" img-thumbnail" style="max-height:400px;" controls></video>
+                </div>
+            }
+        }
+
 
 
 
@@ -148,14 +201,15 @@
         </div>
         <br />
 
-
+        
 
 
 
         <!-- Buttons under posts -->
         <div class="container">
-
-            <a asp-action="ShowComments" asp-route-postId="@item.Id" style="text-decoration:none; color:indigo;">@item.LikeCount Likes </a> - <a asp-action="ShowComments" asp-route-postId="@item.Id" style="text-decoration:none;"> @item.CommentCount Comments</a>
+            
+            <a asp-action="PostLikeUsers" asp-controller="Like" asp-route-id="@item.Id" style="text-decoration:none; color:indigo;">@item.LikeCount Likes </a> - <a asp-action="ShowComments" asp-route-postId="@item.Id" style="text-decoration:none;"> @item.CommentCount Comments</a>
+            
             <div class="row">
                 <div class="col-sm-2 row">
                     @if (User.Identity.IsAuthenticated)
@@ -226,5 +280,32 @@
             });
 
         });
+
+
+
     </script>
+
+        <script>
+            function copyURLToClipboard() {
+                var currentURL = window.location.href;
+
+                // Create a temporary input element
+                var tempInput = document.createElement("input");
+                tempInput.value = currentURL;
+                document.body.appendChild(tempInput);
+
+                // Select and copy the URL
+                tempInput.select();
+                document.execCommand("copy");
+
+                // Remove the temporary input element
+                document.body.removeChild(tempInput);
+
+                alert("Current URL copied to clipboard: " + currentURL);
+            }
+
+                // Display the current URL when the page loads
+               // document.getElementById("currentURL").textContent = window.location.href;
+    </script>
+
     }

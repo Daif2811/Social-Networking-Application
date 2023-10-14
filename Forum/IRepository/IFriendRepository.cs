@@ -5,25 +5,28 @@ namespace Forum.IRepository
     public interface IFriendRepository
     {
 
-        // Request
-        ICollection<FriendRequest> FriendRequests(string userId);
-        ICollection<FriendRequest> MyFriendRequests(string userId);
-        void Request(FriendRequest request);
+        // All Requests
+        ICollection<FriendRequest> FriendRequests(string currentUserId);
+        ICollection<FriendRequest> MyFriendRequests(string currentUserId);
+
+        // Add and Cancel Request
+        void AddRequest(FriendRequest request);
         void CancelRequest(string userId, string currentUserId);
+
         FriendRequest GetRequestById(int id);
-        FriendRequest GetRequestByUserId(string userId, string currentUserId);
+        FriendRequest CheckRequest(string userId, string currentUserId);
 
 
 
-        // Accept
+        // Accept and Reject Request
         void AcceptRequest(Friend friend);
         void RejectRequest(FriendRequest request);
 
 
 
-        // Friends
-        Friend CheckFriend(string userId, string currentUserId);
+        // Friends  and  check fiend  and (Delete) Unfriend
         ICollection<Friend> MyFriends(string userId);
+        Friend CheckFriend(string userId, string currentUserId);
         void DeleteFriend(Friend friend);
         Friend GetFriendById(int id);
 

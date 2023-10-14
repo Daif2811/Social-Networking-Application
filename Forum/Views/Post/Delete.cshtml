@@ -58,14 +58,40 @@
 
 
 
+        <!-- Show Image or video -->
         @if (Model.Image != null)
         {
-            <div class="row mt-2 p-3">
+            string filePath = Model.Image;
 
-                <img src="~/Post-Images/@Html.DisplayFor(modelItem => Model.Image)" class=" img-thumbnail" />
+            string fileExtension = System.IO.Path.GetExtension(filePath).ToLower();
 
-            </div>
+            bool isImage = false;
+            bool isVideo = false;
+
+            if (fileExtension == ".jpg" || fileExtension == ".png" || fileExtension == ".gif")
+            {
+                isImage = true;
+            }
+            else if (fileExtension == ".mp4" || fileExtension == ".avi" || fileExtension == ".mov")
+            {
+                isVideo = true;
+            }
+
+            @if (isImage)
+            {
+                <div class="row p-3">
+                    <img src="~/Post-Images/@Html.DisplayFor(modelItem => Model.Image)" class=" img-thumbnail" />
+                </div>
+            }
+            else if (isVideo)
+            {
+                <div class="row p-3">
+                    <video src="~/Post-Images/@Html.DisplayFor(modelItem => Model.Image)" class=" img-thumbnail" controls></video>
+                </div>
+            }
         }
+
+
 
         <div>
             <button asp-action="Delete" type="submit" asp-route-id="@Model.Id" class="btn btn-outline-danger">Delete</button> |

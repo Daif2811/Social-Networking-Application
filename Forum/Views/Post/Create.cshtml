@@ -39,5 +39,18 @@
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+        <script>
+            document.querySelector('form').addEventListener('submit', function (e) {
+                var fileInput = document.querySelector('input[type="file"]');
+                if (fileInput.files.length > 0) {
+                    var file = fileInput.files[0];
+                    if (file.size > 50 * 1024 * 1024) { // 50 MB in bytes
+                        e.preventDefault(); // Prevent form submission
+                        alert('File size exceeds the limit (50 MB).');
+                    }
+                }
+            });
+        </script>
     }
 }
