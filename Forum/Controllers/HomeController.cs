@@ -30,8 +30,23 @@ namespace Forum.Controllers
         }
         public IActionResult Search(string searchName)
         {
+<<<<<<< HEAD
             var searchResult = _postRepository.Search(searchName);
             return View(searchResult);
+=======
+            if (!string.IsNullOrEmpty(searchName))
+            {
+                var searchResult = _postRepository.GetAll().Where(a => a.User.UserName.Contains(searchName)
+                || a.Content.Contains(searchName)).ToList();
+                if (searchResult != null)
+                {
+                    return View(searchResult);
+                }
+
+                return RedirectToAction("Index", "Post");
+            }
+            return RedirectToAction("Index", "Post");
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
         }
 
 

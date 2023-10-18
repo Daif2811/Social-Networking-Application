@@ -19,7 +19,12 @@
 <table>
     @foreach (var user in Model)
     {
+<<<<<<< HEAD
        
+=======
+        @if (user.User != null)
+        {
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
 
             <tr>
                 <td>
@@ -38,7 +43,11 @@
                     </a>
                 </td>
             </tr>
+<<<<<<< HEAD
        
+=======
+        }
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
     }
 
 </table>
@@ -52,7 +61,12 @@
 <!-- All posts -->
 @foreach (var item in Model)
 {
+<<<<<<< HEAD
    
+=======
+    @if (item.Posts != null)
+    {
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
 
         <div class="container">
             <div class="container d-sm-inline-flex row">
@@ -84,6 +98,7 @@
 
 
 
+<<<<<<< HEAD
             <!-- List of options for post-->
             <!-- The Modal -->
             <div class="col-sm-2">
@@ -131,6 +146,36 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                             </div>
+=======
+                <!-- List of options for post-->
+                <div style="text-align:right;  right:10px;" class="col-sm-2">
+                    <div class="">
+                        <a class="collapsed btn" data-bs-toggle="collapse" href="#collapse_@item.Id">
+                            <strong style="font-size:24px;">...</strong>
+
+
+                        </a>
+                    </div>
+                    <div id="collapse_@item.Id" class="collapse text-center" data-bs-parent="#accordion">
+                        <div class="card-body">
+                            <ul>
+                                @if (item.UserId == userId)
+                                {
+                                    <li><a asp-action="Edit" asp-controller="Post" asp-route-id="@item.Id">Edit</a></li>
+                                    <li><a asp-action="Delete" asp-controller="Post" asp-route-id="@item.Id">Delete</a></li>
+                                    <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
+                                    <li><a asp-action="#" asp-route-id="@item.Id">Copy URL</a></li>
+                                }
+                                else
+                                {
+                                    <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
+                                    <li><a asp-action="#" asp-route-id="@item.Id">Report</a></li>
+                                    <li><a asp-action="#" asp-route-id="@item.Id">Hide Post</a></li>
+                                    <li><a asp-action="#" asp-route-id="@item.Id">Copy url</a></li>
+                                    //<li><a asp-action="#" asp-route-id="@item.Id">Turn on Notifications</a></li>
+                                }
+                            </ul>
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
                         </div>
                     </div>
                 </div>
@@ -139,14 +184,21 @@
             </div>
 
 
+<<<<<<< HEAD
             </div>
 
 
+=======
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
             <hr />
 
 
 
+<<<<<<< HEAD
             <!-- Post Content-->
+=======
+            <!-- Post Comtent-->
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
             @if (item.Content != null)
             {
                 <div class="bg-secondary bg-opacity-25 p-3 m-1 row">
@@ -156,6 +208,7 @@
                 </div>
             }
 
+<<<<<<< HEAD
 
 
 
@@ -179,11 +232,15 @@
             }
 
             @if (isImage)
+=======
+            @if (item.Image != null)
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
             {
                 <div class="row p-3">
                     <img src="~/Post-Images/@Html.DisplayFor(modelItem => item.Image)" class=" img-thumbnail" />
                 </div>
             }
+<<<<<<< HEAD
             else if (isVideo)
             {
                 <div class="row p-3">
@@ -193,6 +250,8 @@
         }
 
 
+=======
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
 
 
 
@@ -207,8 +266,11 @@
                     </div>
                 </form>
             </div>
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
             <br />
 
 
@@ -218,7 +280,11 @@
             <!-- Buttons under posts -->
             <div class="container">
 
+<<<<<<< HEAD
             <a asp-action="PostLikeUsers" asp-controller="Like" asp-route-id="@item.Id" style="text-decoration:none; color:indigo;">@item.LikeCount Likes </a> - <a asp-action="ShowComments" asp-controller="Post" asp-route-postId="@item.Id" style="text-decoration:none;"> @item.CommentCount Comments</a>
+=======
+                <a asp-action="ShowComments" asp-route-postId="@item.Id" style="text-decoration:none; color:indigo;">@item.LikeCount Likes </a> - <a asp-action="ShowComments" asp-route-postId="@item.Id" style="text-decoration:none;"> @item.CommentCount Comments</a>
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
                 <div class="row">
                     <div class="col-sm-2 row">
                         @if (User.Identity.IsAuthenticated)
@@ -245,7 +311,11 @@
         </div>
 
 
+<<<<<<< HEAD
    
+=======
+    }
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
 }
 
 

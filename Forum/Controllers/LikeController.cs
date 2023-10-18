@@ -15,16 +15,24 @@ namespace Forum.Controllers
         private readonly ICommentRepository _commentRepository;
         private readonly IReplyToCommentRepository _replyToCommentRepository;
         private readonly UserManager<ApplicationUser> _userManager;
+<<<<<<< HEAD
         private readonly IFriendRepository _friendRepository;
 
         public LikeController(ILikeRepository likeRepository, IPostRepository postRepository, ICommentRepository commentRepository, IReplyToCommentRepository replyToCommentRepository, UserManager<ApplicationUser> userManager, IFriendRepository friendRepository)
+=======
+
+        public LikeController(ILikeRepository likeRepository, IPostRepository postRepository, ICommentRepository commentRepository, IReplyToCommentRepository replyToCommentRepository , UserManager<ApplicationUser> userManager)
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
         {
             _likeRepository = likeRepository;
             _postRepository = postRepository;
             _commentRepository = commentRepository;
             _replyToCommentRepository = replyToCommentRepository;
             _userManager = userManager;
+<<<<<<< HEAD
             _friendRepository = friendRepository;
+=======
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
         }
 
 
@@ -85,7 +93,11 @@ namespace Forum.Controllers
         // UnLike Post
         public async Task<IActionResult> UnlikePost(int postId)
         {
+<<<<<<< HEAD
 
+=======
+           
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
             var userId = CurrentUser().Id;
 
             Post post = await _postRepository.GetById(postId);
@@ -121,6 +133,7 @@ namespace Forum.Controllers
         }
 
 
+<<<<<<< HEAD
 
 
 
@@ -130,6 +143,8 @@ namespace Forum.Controllers
 
 
 
+=======
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
         // Like Comment
         public async Task<IActionResult> LikeComment(int commentId)
         {
@@ -154,12 +169,19 @@ namespace Forum.Controllers
 
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
         // UnLike Comment
         public async Task<IActionResult> UnLikeComment(int commentId)
         {
             var userId = CurrentUser().Id;
+<<<<<<< HEAD
 
+=======
+           
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
             Comment comment = await _commentRepository.GetById(commentId);
             comment.LikeCount--;
 
@@ -178,9 +200,12 @@ namespace Forum.Controllers
         }
 
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
         // Like Reply To Comment
         public async Task<IActionResult> LikeReplyToComment(int replyId)
         {
@@ -226,6 +251,9 @@ namespace Forum.Controllers
             return View(likes);
         }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
     }
 }

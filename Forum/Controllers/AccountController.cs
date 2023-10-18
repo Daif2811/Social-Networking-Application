@@ -41,7 +41,11 @@ namespace Forum.Controllers
 
 
         // Dashboard For Users
+<<<<<<< HEAD
         public IActionResult Setting()
+=======
+        public IActionResult Index()
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
         {
             return View();
         }
