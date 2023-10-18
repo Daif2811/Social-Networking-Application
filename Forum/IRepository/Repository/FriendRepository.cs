@@ -37,15 +37,10 @@ namespace Forum.IRepository.Repository
 
 
         // Get Request By User Id and Current User Id
-<<<<<<< HEAD
+
         public FriendRequest CheckRequest(string userId, string currentUserId)
         {
             FriendRequest request = _context.FriendRequests.Where(a => a.RecieverId == userId && a.SenderId == currentUserId).FirstOrDefault();
-=======
-        public FriendRequest GetRequestByUserId(string userId, string currentUserId)
-        {
-            FriendRequest request = _context.FriendRequests.Where(a => a.RecieverId == userId && a .SenderId == currentUserId).FirstOrDefault();
->>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
             return request;
         }
 

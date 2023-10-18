@@ -40,11 +40,8 @@ namespace Forum.Controllers
 
 
         // Add Reply To Comment
-<<<<<<< HEAD
+
         public async Task<ActionResult> AddReply(int commentId, string content, string userName)
-=======
-        public async Task<ActionResult> AddReply(int commentId, string content)
->>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
         {
             try
             {
