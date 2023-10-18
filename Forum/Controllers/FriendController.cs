@@ -102,6 +102,7 @@ namespace Forum.Controllers
             return Json(new {success = true});
         }
 
+<<<<<<< HEAD
         public IActionResult AcceptRequestOnProfile(string userId, bool accept)
         {
             string currentUserId = CurrentUser().Id;
@@ -133,6 +134,12 @@ namespace Forum.Controllers
 
 
 
+=======
+
+
+
+
+>>>>>>> f9be6153bbe49c4f22427ee2e7852472cf83b471
         // All Request to me
         public IActionResult MyRequest()
         {
