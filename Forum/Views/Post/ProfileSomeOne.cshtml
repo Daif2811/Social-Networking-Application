@@ -22,17 +22,48 @@
 
 
         <!--Profile Buttons-->
-        <div class="profile-actions" id="accordion">
+        <div class="profile-actions" id="accordion2">
 
             <!-- Friendship button-->
             @{
                 if (ViewBag.Found == "Friend")
                 {
-                    <button class="profile-button">Friend</button>
+                    <button data-bs-toggle="modal" data-bs-target="#modalFriend" class="profile-button">Friend</button>
+                    <!-- Friend PopUp-->
+                    <div class="modal fade" id="modalFriend">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Options</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                    <ul class="list-unstyled text-center ">
+                                        @{
+                                            <li><a asp-action="RemoveFriend" asp-controller="Friend" asp-route-userId="@ViewBag.User.Id">Cancel Friend</a></li>
+                                            <li><a asp-action="#" asp-route-id="#">Cancel Follw</a></li>
+                                            <li><a asp-action="#" asp-controller="#" asp-route-id="#">Block</a></li>
+                                        }
+                                    </ul>
+                                </div>
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                 }
                 if (ViewBag.Found == "MyRequest")
                 {
                     <button type="button" data-userid="@ViewBag.User.Id" class="unfriend-button">Cancel Request</button>
+
                 }
                 if (ViewBag.Found == "HisRequest")
                 {
@@ -50,13 +81,13 @@
 
             
             <!-- About button-->
-            <button class="profile-button" data-bs-toggle="collapse" href="#collapseOne">About</button>
+            <button class="profile-button" data-bs-toggle="collapse" href="#collapseAbout">About</button>
 
             
             <!-- More button-->
-            <button class="profile-button" data-bs-toggle="modal" data-bs-target="#modalOne"> More</button>
+            <button class="profile-button" data-bs-toggle="modal" data-bs-target="#modalMore"> More</button>
             <!-- More PopUp-->
-            <div class="modal fade" id="modalOne">
+            <div class="modal fade" id="modalMore">
                 <div class="modal-dialog">
                     <div class="modal-content">
 
@@ -75,21 +106,19 @@
                                         <li><a asp-action="RemoveFriend" asp-controller="Friend" asp-route-userId="@ViewBag.User.Id">Cancel Friend</a></li>
                                         <li><a asp-action="#" asp-route-id="#">Cancel Follw</a></li>
                                         <li><a asp-action="#" asp-controller="#" asp-route-id="#">Block</a></li>
-                                        <li><a asp-action="#" asp-controller="#" asp-route-id="#">Report</a></li>
-                                        <li><a asp-action="#" asp-route-id="#">Copy URL</a></li>
+                                        <li><a asp-action="AddReport" asp-controller="UserReport" asp-route-userId="@ViewBag.User.Id">Report</a></li>
                                     }
                                     if (ViewBag.Found == "MyRequest" || ViewBag.Found == "NoRequest")
                                     {
                                         <li><a asp-action="#" asp-route-id="#"> Follow</a></li>
                                         <li><a asp-action="#" asp-controller="#" asp-route-id="#">Block</a></li>
-                                        <li><a asp-action="#" asp-controller="#" asp-route-id="#">Report</a></li>
-                                        <li><a asp-action="#" asp-route-id="#">Copy URL</a></li>
+                                        <li><a asp-action="AddReport" asp-controller="UserReport" asp-route-userId="@ViewBag.User.Id">Report</a></li>
                                     }
                                     if (ViewBag.Found == "HisRequest")
                                     {
                                         <li><a asp-action="#" asp-controller="#" asp-route-id="#">Block</a></li>
                                         <li><a asp-action="#" asp-controller="#" asp-route-id="#">Report</a></li>
-                                        <li><a asp-action="#" asp-controller="#" asp-route-id="#">Copy URL</a></li>
+                                        <li><a asp-action="AddReport" asp-controller="UserReport" asp-route-userId="@ViewBag.User.Id">Report</a></li>
                                     }
 
                                 }
@@ -104,8 +133,11 @@
             </div>
 
 
-            <!-- About Modal -->
-            <div id="collapseOne" class="collapse " data-bs-parent="#accordion">
+            <!-- CopyUrl button-->
+            <button class="profile-button" onclick="copyURLToClipboard()">Copy URL</button>
+
+            <!-- About Collapse -->
+            <div id="collapseAbout" class="collapse " data-bs-parent="#accordion2">
                 <div class="card-body">
                         <hr />
                     <ul class="list-unstyled text-center setting">
@@ -118,8 +150,8 @@
             </div>
 
 
-            <!-- Accept Modal -->
-            <div id="collapseAccept" class="collapse " data-bs-parent="#accordion">
+            <!-- Accept collapse -->
+            <div id="collapseAccept" class="collapse " data-bs-parent="#accordion2">
                 <div class="card-body">
                     <hr />
                     <ul class="list-unstyled text-center setting row" style="margin:auto;">
@@ -130,7 +162,7 @@
                     </ul>
                 </div>
             </div>
-
+           
         </div>
 
 
@@ -202,7 +234,7 @@
                                         else
                                         {
                                             <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
-                                            <li><a asp-action="#" asp-route-id="@item.Id">Report</a></li>
+                                            <li><a asp-action="AddReport" asp-controller="PostReport" asp-route-postId="@item.Id">Report</a></li>
                                             <li><a asp-action="#" asp-route-id="@item.Id">Hide Post</a></li>
                                             <li><a asp-action="#" asp-route-id="@item.Id">Copy url</a></li>
                                             //<li><a asp-action="#" asp-route-id="@item.Id">Turn on Notifications</a></li>
@@ -392,6 +424,10 @@
                     }
                 });
             });
+
+
+
+            
         });
     </script>
 
@@ -413,4 +449,8 @@
             div.style.display = "none";
         });
     </script>
+
+
+
+   
 }

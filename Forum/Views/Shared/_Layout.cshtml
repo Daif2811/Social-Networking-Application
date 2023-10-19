@@ -50,8 +50,7 @@
                         <li>
                             @using (Html.BeginForm("Search", "Home", FormMethod.Post, new { @class = "form-inline my-2 my-lg-0 d-md-inline-flex" }))
                             {
-                                <input class="form-control mr-sm-2  " type="text" name="searchName" placeholder="Search" aria-label="Search" width="40px;">
-                                //<button class="btn btn-outline-success my-2 my-sm-0 " type="submit">Search</button>
+                                <input class="form-control mr-sm-2  " type="text" name="searchName" placeholder="Search" aria-label="Search" width="40px;" id="searchName">
                             }
 
                         </li>
@@ -90,10 +89,43 @@
             &copy; 2023 - Forum - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
+
+
+    <!--Copy URL-->
+    <script>
+        function copyURLToClipboard() {
+            var currentURL = window.location.href;
+
+            // Create a temporary input element
+            var tempInput = document.createElement("input");
+            tempInput.value = currentURL;
+            document.body.appendChild(tempInput);
+
+            // Select and copy the URL
+            tempInput.select();
+            document.execCommand("copy");
+
+            // Remove the temporary input element
+            document.body.removeChild(tempInput);
+
+            alert("Current URL copied to clipboard: " + currentURL);
+        }
+
+        // Display the current URL when the page loads
+        document.getElementById("currentURL").textContent = window.location.href;
+    </script>
+
+
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+
+
+
     @* <script>
     // JavaScript to control side navigation behavior
     document.addEventListener("DOMContentLoaded", function () {

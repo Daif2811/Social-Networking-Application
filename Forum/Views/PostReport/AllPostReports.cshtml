@@ -1,5 +1,7 @@
-﻿@model IEnumerable<Forum.Models.LikePost>
-
+﻿@model IEnumerable<PostReport>
+@{
+    ViewData["Title"] = "AllReports";
+}
 
 @using System.Security.Claims;
 @{
@@ -7,41 +9,31 @@
 }
 
 
-@{
-    ViewData["Title"] = "Index";
-}
 
-
-<h1 class="text-center bg-black text-light">All Liked Posts</h1>
-
-<hr class="border border-5 border-dark mb-4 mt-4" />
-
-
-
-
+<h1 class="text-light text-center bg-dark p-2">All Post Reports</h1>
 
 @foreach (var item in Model)
 {
     <div class="container">
-    <div class="container d-sm-inline-flex row">
-        <div class="col-sm-2 text-center">
-             <a href="~/Post/ProfileSomeOne?userId=@item.Post.UserId">
-            @if (item.Post.User.Picture != null)
-            {
-                <img src="~/images/@item.Post.User.Picture" class="rounded-circle img-thumbnail" width="55px;" />
-            }
-            else
-            {
-                <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" width="55px;" />
-            }
-            </a>
-        </div>
+        <div class="container d-sm-inline-flex row">
+            <div class="col-sm-2 text-center">
+                <a href="~/Post/ProfileSomeOne?userId=@item.Post.UserId">
+                    @if (item.Post.User.Picture != null)
+                    {
+                        <img src="~/images/@item.Post.User.Picture" class="rounded-circle img-thumbnail" width="55px;" />
+                    }
+                    else
+                    {
+                        <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" width="55px;" />
+                    }
+                </a>
+            </div>
 
-        <div style="text-align:left; " class="col-sm-8">
-            @item.Post.User.UserName<br>
-            @item.Post.PublishDate.ToString("dd-MM-yyyy  hh:mm tt")
+            <div style="text-align:left; " class="col-sm-8">
+                @item.Post.User.UserName<br>
+                @item.Post.PublishDate.ToString("dd-MM-yyyy  hh:mm tt")
 
-        </div>
+            </div>
 
 
 
@@ -71,22 +63,13 @@
                             <!-- Modal body -->
                             <div class="modal-body">
                                 <ul class="list-unstyled text-center ">
-                                    @if (item.Post.UserId == userId)
-                                    {
-                                        <li><a asp-action="Edit" asp-controller="Post" asp-route-id="@item.Post.Id">Edit</a></li>
-                                        <li><a asp-action="Delete" asp-controller="Post" asp-route-id="@item.Post.Id">Delete</a></li>
-                                        <li><a asp-action="#" asp-route-id="@item.Post.Id">Save Post</a></li>
-                                        <li><a asp-action="#" asp-route-id="@item.Post.Id">Copy URL</a></li>
-                                    }
-                                    else
-                                    {
-                                        <li><a asp-action="#" asp-route-id="@item.Post.Id">Save Post</a></li>
-                                        <li><a asp-action="AddReport" asp-controller="PostReport" asp-route-postId="@item.Post.Id">Report</a></li>
+                                   
+                                        <li><a asp-action="Delete" asp-controller="Post" asp-route-id="@item.Post.Id">Delete Post</a></li>
                                         <li><a asp-action="#" asp-route-id="@item.Post.Id">Hide Post</a></li>
                                         <li><a asp-action="#" asp-route-id="@item.Post.Id">Copy url</a></li>
-                                        //<li><a asp-action="#" asp-route-id="@item.Id">Turn on Notifications</a></li>
-                                    }
-                                </ul>
+                                        <li><a asp-action="#" asp-route-id="@item.Id">Turn on Notifications</a></li>
+                                        </ul>
+                                
                             </div>
 
                             <!-- Modal footer -->
@@ -100,71 +83,70 @@
 
             </div>
 
-      
-
-    </div>
 
 
-   
-       
+        </div>
+
         <hr />
 
 
 
+        <h3>Reporter : <a href="~/Post/ProfileSomeOne?userId=@item.ReporterId">@item.Reporter.UserName</a></h3>
+        <h5>Type Of Report : @item.Type</h5>
 
 
-            <!-- Post Content-->
-            @if (item.Post.Content != null)
+        <!-- Post Content-->
+        @if (item.Post.Content != null)
+        {
+            <div class="bg-secondary bg-opacity-25 p-3 m-1 row">
+                <div class="col-md-12 post-container">
+                    @item.Post.Content
+                </div>
+            </div>
+        }
+
+
+
+
+
+
+
+        <!-- Show Image or video -->
+        @if (item.Post.Image != null)
+        {
+            string filePath = item.Post.Image;
+
+            string fileExtension = System.IO.Path.GetExtension(filePath).ToLower();
+
+            bool isImage = false;
+            bool isVideo = false;
+
+            if (fileExtension == ".jpg" || fileExtension == ".png" || fileExtension == ".gif")
             {
-                <div class="bg-secondary bg-opacity-25 p-3 m-1 row">
-                    <div class="col-md-12 post-container">
-                        @item.Post.Content
-                    </div>
+                isImage = true;
+            }
+            else if (fileExtension == ".mp4" || fileExtension == ".avi" || fileExtension == ".mov")
+            {
+                isVideo = true;
+            }
+
+            @if (isImage)
+            {
+                <div class="row p-3">
+                    <img src="~/Post-Images/@Html.DisplayFor(modelItem => item.Post.Image)" class=" img-thumbnail" />
                 </div>
             }
-
-
-
-
-
-
-
-            <!-- Show Image or video -->
-            @if (item.Post.Image != null)
+            else if (isVideo)
             {
-                string filePath = item.Post.Image;
-
-                string fileExtension = System.IO.Path.GetExtension(filePath).ToLower();
-
-                bool isImage = false;
-                bool isVideo = false;
-
-                if (fileExtension == ".jpg" || fileExtension == ".png" || fileExtension == ".gif")
-                {
-                    isImage = true;
-                }
-                else if (fileExtension == ".mp4" || fileExtension == ".avi" || fileExtension == ".mov")
-                {
-                    isVideo = true;
-                }
-
-                @if (isImage)
-                {
-                    <div class="row p-3">
-                        <img src="~/Post-Images/@Html.DisplayFor(modelItem => item.Post.Image)" class=" img-thumbnail" />
-                    </div>
-                }
-                else if (isVideo)
-                {
-                    <div class="row p-3">
+                <div class="row p-3">
                     <video src="~/Post-Images/@Html.DisplayFor(modelItem => item.Post.Image)" class=" img-thumbnail" style="max-height:400px;" controls></video>
-                    </div>
-                }
+                </div>
             }
+        }
 
 
 
-       
+
 
 
         @* Comment and see all comments *@
@@ -177,7 +159,7 @@
                 </div>
             </form>
         </div>
-       
+
 
 
 
@@ -192,15 +174,14 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         var userLikedCom = item.Post.Likes != null && item.Post.Likes.Any(l => l.UserId == userId);
-                        //var userLiked = item.Likes.Any(a => a.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier));
-                        if (!userLikedCom)
+                         if (!userLikedCom)
                         {
                             <button type="button" class="like-button col-sm-12" data-postid="@item.Post.Id">Like</button>
                         }
                         else
                         {
-                            <button type="button" class="unlike-button col-sm-12" data-postid="@item.Post.Id">Unlike</button>
-                        }
+                        <button type="button" class="unlike-button col-sm-12" data-postid="@item.Post.Id">Unlike</button>
+                    }
                     }
                 </div>
 
@@ -260,4 +241,7 @@
     </script>
 
     }
+
+
+
 

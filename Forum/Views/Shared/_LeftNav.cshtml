@@ -20,20 +20,19 @@
         {
             <li><a href="~/Account/Users">Users</a></li>
             <li><a href="~/Account/Roles">Roles</a></li>
+            <li><a href="~/PostReport/AllPostReports">Post Reports</a></li>
+            <li><a href="~/UserReport/AllUserReports">User Reports</a></li>
             <li><a href="#">Blocks</a></li>
-            <li><a href="#">Reports</a></li>
         }
         @if (User.Identity.IsAuthenticated)
         {
             <li><a href="~/Friend/MyRequest">Friend Requests </a></li>
-            <li><a href="~/Friend/RequestFromMe">My Requests </a></li>
+            <li><a href="~/Friend/RequestFromMe">My Friend Requests </a></li>
             <li><a href="~/Friend/MyFriend">My Friends</a></li>
             <li><a href="~/Post/MyProfile">My Profile</a></li>
         }
 
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Services</a></li>
-        <li><a href="#">Contact</a></li>
+        
     </ul>
 </div>
 

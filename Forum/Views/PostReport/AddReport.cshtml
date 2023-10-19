@@ -1,0 +1,47 @@
+﻿@model Forum.Models.PostReport
+
+@{
+    ViewData["Title"] = "AddReport";
+}
+
+<h1 class="text-light text-center bg-dark p-2">Report</h1>
+
+
+<hr />
+<div class="row">
+    <div class="col-md-10" style="margin:auto;">
+        <form asp-action="AddReport">
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="text-center m-3">Type Of Report</div>
+            <ul class="list-group">
+
+                @foreach (ReportText item in Enum.GetValues(typeof(ReportText)))
+                {
+                    <li class="list-group-item">
+                        <label asp-for="Type">
+                            <input asp-for="Type" type="radio" name="SelectedType" value="@item.ToString()">
+                            @item.ToString()
+                        </label>
+                    </li>
+                }
+            </ul>
+
+            <div class="form-group mt-3">
+                <button type="submit" value="Report" class="btn btn-primary">Report</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}

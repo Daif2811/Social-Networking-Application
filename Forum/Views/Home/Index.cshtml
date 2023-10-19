@@ -8,32 +8,9 @@
 </div>
 
 <div>
-   
     <button onclick="copyURLToClipboard()">Copy Current URL</button>
 </div>
-
-<script>
-    function copyURLToClipboard() {
-        var currentURL = window.location.href;
-
-        // Create a temporary input element
-        var tempInput = document.createElement("input");
-        tempInput.value = currentURL;
-        document.body.appendChild(tempInput);
-
-        // Select and copy the URL
-        tempInput.select();
-        document.execCommand("copy");
-
-        // Remove the temporary input element
-        document.body.removeChild(tempInput);
-
-        alert("Current URL copied to clipboard: " + currentURL);
-    }
-
-    // Display the current URL when the page loads
-    document.getElementById("currentURL").textContent = window.location.href;
-</script>
+<div>@ViewBag.url</div>
 
 
 <div class="container mt-3">
@@ -233,8 +210,57 @@
     </ul>
 </div>
 
+
+
+<ul class="list-group">
+    <li class="list-group-item">
+        <input class="form-check-input me-1" type="checkbox" value="" id="firstCheckbox">
+        <label class="form-check-label" for="firstCheckbox">First checkbox</label>
+    </li>
+    <li class="list-group-item">
+        <input class="form-check-input me-1" type="checkbox" value="" id="secondCheckbox">
+        <label class="form-check-label" for="secondCheckbox">Second checkbox</label>
+    </li>
+    <li class="list-group-item">
+        <input class="form-check-input me-1" type="checkbox" value="" id="thirdCheckbox">
+        <label class="form-check-label" for="thirdCheckbox">Third checkbox</label>
+    </li>
+</ul>
+
+
+<ul class="list-group">
+
+<li class="list-group-item">
+    <label>
+        <input type="radio" name="SelectedColor" value="Hamdan">
+        Check
+    </label>
+</li>
+<li class="list-group-item">
+    <label>
+        <input type="radio" name="SelectedColor" value="Hamdan">
+        Check
+    </label>
+</li>
+<li class="list-group-item">
+    <label>
+        <input type="radio" name="SelectedColor" value="Hamdan">
+        Check
+    </label>
+</li>
+<li class="list-group-item">
+    <label>
+        <input type="radio" name="SelectedColor" value="Hamdan">
+        Check
+    </label>
+</li>
+
+</ul>
+
+
+
 @section Scripts{
-    <script>
+    @*<script>
         function copyURLToClipboard() {
             var currentURL = window.location.href;
 
@@ -255,5 +281,30 @@
 
         // Display the current URL when the page loads
        // document.getElementById("currentURL").textContent = window.location.href;
+    </script>*@
+    
+    
+    <script>
+        function copyURLToClipboard() {
+            var currentURL = window.location.href;
+
+            // Create a temporary input element
+            var tempInput = document.createElement("input");
+            tempInput.value = currentURL;
+            document.body.appendChild(tempInput);
+
+            // Select and copy the URL
+            tempInput.select();
+            document.execCommand("copy");
+
+            // Remove the temporary input element
+            document.body.removeChild(tempInput);
+
+            alert("Current URL copied to clipboard: " + currentURL);
+        }
+
+        // Display the current URL when the page loads
+        document.getElementById("currentURL").textContent = window.location.href;
     </script>
+
 }

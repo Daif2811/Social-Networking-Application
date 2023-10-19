@@ -1,5 +1,6 @@
 ﻿using Forum.IRepository;
 using Forum.Models;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -21,6 +22,7 @@ namespace Forum.Controllers
 
         public IActionResult Index()
         {
+            ViewBag.url = TempData["url"];
             return View();
         }
 
@@ -28,6 +30,22 @@ namespace Forum.Controllers
         {
             return View();
         }
+
+        public IActionResult CaptureCurrentURL()
+        {
+            // Get the current URL
+            var currentUrl = HttpContext.Request.GetDisplayUrl();
+
+            // You can also access different parts of the URL, e.g., currentUrl.Scheme, currentUrl.Host, currentUrl.Path, currentUrl.QueryString, etc.
+
+            // You can use currentUrl as needed
+            // ...
+            TempData["url"] =  ViewBag.CurrentURL = currentUrl;
+
+            return RedirectToAction("Index");
+        }
+
+
         //public IActionResult Search(string searchName)
         //{
         //    if (!string.IsNullOrEmpty(searchName))

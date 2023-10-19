@@ -100,17 +100,16 @@
                             <div class="modal-body">
                                 <ul class="list-unstyled text-center ">
                                     @if (item.UserId == userId)
-                                    {
+                                    {     
                                         <li><a asp-action="Edit" asp-controller="Post" asp-route-id="@item.Id">Edit</a></li>
                                         <li><a asp-action="Delete" asp-controller="Post" asp-route-id="@item.Id">Delete</a></li>
                                         <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
                                         <li><a onclick="copyURLToClipboard()" href="#">Copy URL</a></li>
-                                       
-                                    }
-                                    else
+                                    }     
+                                    else  
                                     {
                                         <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
-                                        <li><a asp-action="#" asp-route-id="@item.Id">Report</a></li>
+                                        <li><a asp-action="AddReport" asp-controller="PostReport" asp-route-postId="@item.Id">Report</a></li>
                                         <li><a asp-action="#" asp-route-id="@item.Id">Hide Post</a></li>
                                         <li><a onclick="copyURLToClipboard()" href="#">Copy URL</a></li>
                                         //<li><a asp-action="#" asp-route-id="@item.Id">Turn on Notifications</a></li>
@@ -285,27 +284,6 @@
 
     </script>
 
-        <script>
-            function copyURLToClipboard() {
-                var currentURL = window.location.href;
-
-                // Create a temporary input element
-                var tempInput = document.createElement("input");
-                tempInput.value = currentURL;
-                document.body.appendChild(tempInput);
-
-                // Select and copy the URL
-                tempInput.select();
-                document.execCommand("copy");
-
-                // Remove the temporary input element
-                document.body.removeChild(tempInput);
-
-                alert("Current URL copied to clipboard: " + currentURL);
-            }
-
-                // Display the current URL when the page loads
-               // document.getElementById("currentURL").textContent = window.location.href;
-    </script>
+      
 
     }

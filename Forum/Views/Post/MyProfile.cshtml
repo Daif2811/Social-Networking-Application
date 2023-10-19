@@ -15,21 +15,77 @@
         <div class="profile-name">@ViewBag.User.UserName</div>
         <div class="profile-info">@ViewBag.User.Summary</div>
         <hr />
-        <div class="profile-actions">
+        <div class="profile-actions" id="accordion">
            
-            <a asp-action="MyFriend" asp-controller="Friend" class="btn btn-outline-primary">Friends</a>
-            <a asp-controller="Account" asp-action="Setting" class="btn btn-outline-success">Edit Profile</a>
+            <a asp-action="MyFriend" asp-controller="Friend" class="profile-ancor">Friends</a>
+            <a asp-controller="Account" asp-action="Setting" class="profile-ancor">Edit Profile</a>
+            
+            <!-- About button-->
+            <button class="profile-button" data-bs-toggle="collapse" href="#collapseAbout">About</button>
+
+            <!-- More button-->
+            <button class="profile-button" data-bs-toggle="modal" data-bs-target="#modalMore"> More</button>
+            
+            <!-- More PopUp-->
+            <div class="modal fade" id="modalMore">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">Options</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <ul class="list-unstyled text-center">
+                                @{
+                                        <li><a asp-action="RemoveFriend" asp-controller="Friend" asp-route-userId="@ViewBag.User.Id">Cancel Friend</a></li>
+                                        <li><a asp-action="#" asp-route-id="#">Cancel Follw</a></li>
+                                        <li><a asp-action="#" asp-controller="#" asp-route-id="#">Block</a></li>
+                                        <li><a asp-action="#" asp-controller="#" asp-route-id="#">Report</a></li>
+                                }
+                            </ul>
+                        </div>
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- CopyUrl button-->
+            <button class="profile-button" onclick="copyURLToClipboard()">Copy URL</button>
+            
+            
+            <!-- About Collapse -->
+            <div id="collapseAbout" class="collapse " data-bs-parent="#accordion">
+                <div class="card-body">
+                    <hr />
+                    <ul class="list-unstyled text-center setting">
+                        <li><a asp-action="EditProfile" class="text-decoration-none">some information</a></li>
+                        <li><a asp-action="EditProfile" class="text-decoration-none">some information</a></li>
+                        <li><a asp-action="EditProfile" class="text-decoration-none">some information</a></li>
+                        <li><a asp-action="EditProfile" class="text-decoration-none">some information</a></li>
+                    </ul>
+                </div>
+            </div>
+
+
+
         </div>
         <hr class="border border-3 border-dark mb-3" />
     </div>
     @foreach (var item in Model)
     {
         <div class="container">
-            <div class="container d-sm-inline-flex row">
-
 
 
                 <!-- Header of Post  -->
+            <div class="container d-sm-inline-flex row">
+
+                <!--Picture and User name-->
                 <div class="col-sm-2 text-center">
                      <a href="~/Post/ProfileSomeOne?userId=@item.UserId">
                     @if (item.User.Picture != null)
@@ -43,18 +99,13 @@
                     </a>
                 </div>
 
-
-
-
                 <div style="text-align:left; " class="col-sm-8">
                     @item.User.UserName<br>
                     @item.PublishDate.ToString("dd-MM-yyyy  hh:mm tt")
                 </div>
 
 
-
                 <!-- List of options for post-->
-                <!-- The Modal -->
                 <div class="col-sm-2">
 
                     <div class="container mt-1">
@@ -106,18 +157,16 @@
 
 
                 </div>
-
-
-
                
             </div>
+
 
 
             <hr />
 
 
 
-            <!-- Post Comtent-->
+            <!-- Post Content-->
             @if (item.Content != null)
             {
                 <div class="bg-secondary bg-opacity-25 p-3 m-1 row">

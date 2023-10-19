@@ -17,10 +17,15 @@ namespace Forum.IRepository.Repository
         }
 
 
+        int pageSize = 10; // Adjust the page size as needed
+        int pageNumber = 1; // The page number you want to retrieve
 
         public ICollection<Post> GetAll()
         {
-            return _context.Posts.Include(a => a.User).Include(a => a.Likes).Include(a => a.Comments).OrderByDescending(a => a.PublishDate).ToList();
+            return _context.Posts.Include(a => a.User).Include(a => a.Likes)
+                .Include(a => a.Comments).OrderByDescending(a => a.PublishDate)
+                .Skip((pageNumber - 1) * pageSize).Take(pageSize).AsNoTracking().ToList();
+                   
 
         }
 
@@ -29,7 +34,9 @@ namespace Forum.IRepository.Repository
             return _context.Posts.Where
                 (a => a.User.UserName.Contains(searchName)
                 || a.Content.Contains(searchName)).
-                Include(a => a.User).Include(a => a.Likes).Include(a => a.Comments).OrderByDescending(a => a.PublishDate).ToList();
+                Include(a => a.User).Include(a => a.Likes)
+                .Include(a => a.Comments).
+                OrderByDescending(a => a.PublishDate).ToList();
 
         }
 

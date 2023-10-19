@@ -4,16 +4,27 @@ namespace Forum.Models
 {
     public enum ReportText
     {
-        FakeInformation, Bad, Violence, Stealing, Other, Porn 
+        [Display(Name = "Fake Data")]
+        FakeData,
+        [Display(Name = "Bad")]
+        Bad,
+        [Display(Name = "Violence")]
+        Violence,
+        [Display(Name = "Stealing")] 
+        Stealing,
+        [Display(Name = "Porn")] 
+        Porn,
+        [Display(Name = "Other")] 
+        Other
 
     }
 
     public class Report
     {
         [Required]
-        public ReportText Type { get; set; }
+        public string Type { get; set; }
 
-        [Required]
+      
         public string ReporterId { get; set; }
 
         

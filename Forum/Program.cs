@@ -40,7 +40,8 @@ namespace Forum
             builder.Services.AddScoped<ILikeRepository, LikeRepository>();
             builder.Services.AddScoped<IReplyToCommentRepository, ReplyToCommentRepository>();
             builder.Services.AddScoped<IFriendRepository, FriendRepository>();
-
+            builder.Services.AddScoped<IPostReportRepository, PostReportRepository>();
+            builder.Services.AddScoped<IUserReportRepository, UserReportRepository>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();

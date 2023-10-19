@@ -1,24 +1,24 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
+
 * {
     box-sizing: border-box;
 }
 
 body {
-  margin-bottom: 60px;
- 
+    margin-bottom: 60px;
 }
 
 .flex-grow-1 li a {
@@ -58,7 +58,106 @@ body {
 
 
 
-   
+
+.like-post {
+    background-color: #3498db; /* Blue background color */
+    color: #fff; /* White text color */
+    border: none;
+    padding: 8px 16px; /* Adjust padding as needed */
+    font-size: 14px; /* Adjust font size as needed */
+    cursor: pointer;
+}
+
+    /* Hover effect when mouse is over the button */
+    .like-post:hover {
+        background-color: #2980b9; /* Darker blue background color on hover */
+    }
+
+/* Style for the "Unlike" button (you can customize this as well) */
+.unlike-post {
+    background-color: #e74c3c; /* Red background color */
+    color: #fff; /* White text color */
+    border: none;
+    padding: 8px 16px; /* Adjust padding as needed */
+    font-size: 14px; /* Adjust font size as needed */
+    cursor: pointer;
+}
+
+    /* Hover effect for the "Unlike" button */
+    .unlike-post:hover {
+        background-color: #c0392b; /* Darker red background color on hover */
+    }
+
+
+
+
+.like-comment {
+    background-color: #3498db; /* Blue background color */
+    color: #fff; /* White text color */
+    border: none;
+    padding: 8px 16px; /* Adjust padding as needed */
+    font-size: 14px; /* Adjust font size as needed */
+    cursor: pointer;
+}
+
+    /* Hover effect when mouse is over the button */
+    .like-comment:hover {
+        background-color: #2980b9; /* Darker blue background color on hover */
+    }
+
+/* Style for the "Unlike" button (you can customize this as well) */
+.unlike-comment {
+    background-color: #e74c3c; /* Red background color */
+    color: #fff; /* White text color */
+    border: none;
+    padding: 8px 16px; /* Adjust padding as needed */
+    font-size: 14px; /* Adjust font size as needed */
+    cursor: pointer;
+}
+
+    /* Hover effect for the "Unlike" button */
+    .unlike-comment:hover {
+        background-color: #c0392b; /* Darker red background color on hover */
+    }
+
+
+.like-reply {
+    background-color: #3498db; /* Blue background color */
+    color: #fff; /* White text color */
+    border: none;
+    padding: 8px 16px; /* Adjust padding as needed */
+    font-size: 14px; /* Adjust font size as needed */
+    cursor: pointer;
+}
+
+    /* Hover effect when mouse is over the button */
+    .like-reply:hover {
+        background-color: #2980b9; /* Darker blue background color on hover */
+    }
+
+/* Style for the "Unlike" button (you can customize this as well) */
+.unlike-reply {
+    background-color: #e74c3c; /* Red background color */
+    color: #fff; /* White text color */
+    border: none;
+    padding: 8px 16px; /* Adjust padding as needed */
+    font-size: 14px; /* Adjust font size as needed */
+    cursor: pointer;
+}
+
+    /* Hover effect for the "Unlike" button */
+    .unlike-reply:hover {
+        background-color: #c0392b; /* Darker red background color on hover */
+    }
+
+
+
+
+
+
+
+
+
 
 /* Style for the links */
 .modal-body a {
@@ -67,13 +166,15 @@ body {
     display: block;
     transition: color 0.3s;
     padding: 5px;
-    font-size:20px;
-    font:500;
+    font-size: 20px;
+    font: 500;
 }
-.modal-body a:hover {
-    color: #fff;
-    background-color: #7d93bb;
-}
+
+    .modal-body a:hover {
+        color: #fff;
+        background-color: #7d93bb;
+    }
+
 .sidenav {
     width: 250px;
     position: fixed;
@@ -89,9 +190,10 @@ body {
 .main-content {
     margin-left: 250px;
     transition: margin-left 0.3s;
-    border-left:solid 3px black;
-    border-right:solid 3px black;
+    border-left: solid 3px black;
+    border-right: solid 3px black;
 }
+
 .sidenav ul {
     list-style: none;
     padding: 0;
@@ -100,7 +202,6 @@ body {
 
 /* Style for the list items */
 .sidenav li {
-    
     text-align: center;
 }
 
@@ -129,7 +230,7 @@ body {
 
 
 
-
+/**/
 .setting a {
     text-decoration: none;
     color: black;
@@ -141,10 +242,10 @@ body {
 }
 
 
-.setting a:hover {
-    color: #fff;
-    background-color: #7d93bb;
-}
+    .setting a:hover {
+        color: #fff;
+        background-color: #7d93bb;
+    }
 
 
 
@@ -189,11 +290,10 @@ body {
 
     .profile-actions button {
         padding: 10px 20px;
-        /*background-color: #1877f2;
-        color: #fff;
-        border: none;
-        cursor: pointer;*/
     }
+
+
+
 
 .profile-posts {
     margin-top: 30px;
@@ -246,18 +346,19 @@ body {
     background-color: #9154c2; /* Blue background color */
     color: black; /* White text color */
     border: none;
-    border-radius:5px;
+    border-radius: 5px;
     padding: 11px 18px; /* Adjust padding as needed */
     font-size: 15px; /* Adjust font size as needed */
     cursor: pointer;
-    text-decoration:none;
+    text-decoration: none;
 }
 
     /* Hover effect when mouse is over the button */
     .accept-button:hover {
         background-color: #8501ee; /* Darker blue background color on hover */
-        color : white;
+        color: white;
     }
+
 .profile-button {
     background-color: #3498db; /* Blue background color */
     color: #fff; /* White text color */
@@ -271,4 +372,28 @@ body {
     /* Hover effect when mouse is over the button */
     .profile-button:hover {
         background-color: #2980b9; /* Darker blue background color on hover */
+    }
+
+.profile-ancor {
+    padding: 10px 20px;
+    text-decoration: none;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px; /* Adjust font size as needed */
+}
+
+    .profile-ancor:hover {
+        color: #fff;
+        background-color: #2980b9;
+    }
+
+#SearchName {
+    width: 130px;
+    transition: width 0.4s ease-in-out;
+}
+
+    #SearchName:focus {
+        width: 100%;
     }

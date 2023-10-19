@@ -20,6 +20,7 @@
 
 
 
+    <!-- Picture and User name-->
         <div class="col-sm-2 text-center">
             <a href="~/Post/ProfileSomeOne?userId=@Model.UserId">
                 @if (Model.User.Picture != null)
@@ -47,7 +48,6 @@
 
 
         <!-- List of options for post-->
-        <!-- The Modal -->
         <div class="col-sm-2">
 
             <div class="container mt-1">
@@ -81,7 +81,7 @@
                                 else
                                 {
                                     <li><a asp-action="#" asp-route-id="@Model.Id">Save Post</a></li>
-                                    <li><a asp-action="#" asp-route-id="@Model.Id">Report</a></li>
+                                    <li><a asp-action="AddReport" asp-controller="PostReport" asp-route-postId="@Model.Id">Report</a></li>
                                     <li><a asp-action="#" asp-route-id="@Model.Id">Hide Post</a></li>
                                     <li><a asp-action="#" asp-route-id="@Model.Id">Copy url</a></li>
                                     //<li><a asp-action="#" asp-route-id="@item.Id">Turn on Notifications</a></li>
@@ -101,13 +101,8 @@
         </div>
 
 
-
-
-
-
-
-
-    </div>    <hr />
+    </div>   
+    <hr />
 
 
     <!-- This is the body of post-->
@@ -187,15 +182,15 @@
 
                 @if (User.Identity.IsAuthenticated)
                 {
-                    var userLiked = Model.Likes != null && Model.Likes.Any(l => l.UserId == userId);
+                    var userPostLiked = Model.Likes != null && Model.Likes.Any(l => l.UserId == userId);
                     //var userLiked = item.Likes.Any(a => a.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier));
-                    if (!userLiked)
+                    if (!userPostLiked)
                     {
-                        <button type="button" class="like-button col-sm-12" data-postid="@Model.Id">Like</button>
+                        <button type="button" class="like-post col-sm-12" data-postid="@Model.Id">Like</button>
                     }
                     else
                     {
-                        <button type="button" class="unlike-button col-sm-12" data-postid="@Model.Id">Unlike</button>
+                        <button type="button" class="unlike-post col-sm-12" data-postid="@Model.Id">Unlike</button>
                     }
                 }
             </div>
@@ -325,15 +320,15 @@
 
                             @if (User.Identity.IsAuthenticated)
                             {
-                                var userLiked = item.Likes != null && item.Likes.Any(l => l.UserId == userId);
+                                var userCommentLiked = item.Likes != null && item.Likes.Any(l => l.UserId == userId);
                                 //var userLiked = item.Likes.Any(a => a.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier));
-                                if (!userLiked)
+                                if (!userCommentLiked)
                                 {
-                                    <button type="button" class="like-button col-sm-12" data-commentid="@item.Id">Like</button>
+                                    <button type="button" class="like-comment col-sm-12" data-commentid="@item.Id">Like</button>
                                 }
                                 else
                                 {
-                                    <button type="button" class="unlike-button col-sm-12" data-commentid="@item.Id">Unlike</button>
+                                    <button type="button" class="unlike-comment col-sm-12" data-commentid="@item.Id">Unlike</button>
                                 }
                             }
                         </div>
@@ -346,7 +341,7 @@
                         </div>
 
 
-                        <div class="replies-button col-sm-2 p-0 m-0 " data-comment-id="@item.Id" style="border:none; background-color:white; cursor:pointer"><small class="text-primary">Show </small><small class="text-danger">@item.CommentCount</small> <small class="text-primary"> Reply</small>  </div>
+                        <div class="replies-button col-sm-2 p-0 m-0 " data-comment-id="@item.Id" style="border:none; background-color:white; cursor:pointer"><small class="text-primary">Show </small><small class="text-danger">@item.CommentCount</small> <small class="text-primary"> Reply</small> </div>
 
 
                     </div>
@@ -459,15 +454,15 @@
 
                                     @if (User.Identity.IsAuthenticated)
                                     {
-                                        var userLiked = reply.Likes != null && reply.Likes.Any(l => l.UserId == userId);
+                                        var userReplyLiked = reply.Likes != null && reply.Likes.Any(l => l.UserId == userId);
                                         //var userLiked = item.Likes.Any(a => a.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier));
-                                        if (!userLiked)
+                                        if (!userReplyLiked)
                                         {
-                                            <button type="button" class="like-button col-sm-12" data-replyid="@reply.Id">Like</button>
+                                            <button type="button" class="like-reply col-sm-12" data-replyid="@reply.Id">Like</button>
                                         }
                                         else
                                         {
-                                            <button type="button" class="unlike-button col-sm-12" data-replyid="@reply.Id">Unlike</button>
+                                            <button type="button" class="unlike-reply col-sm-12" data-replyid="@reply.Id">Unlike</button>
                                         }
                                     }
                                 </div>
@@ -538,10 +533,11 @@
 
         $(document).ready(function () {
 
+
             // Like post button
-            $(".like-button, .unlike-button").click(function () {
+            $(".like-post, .unlike-post").click(function () {
                 var postId = $(this).data("postid");
-                var actionUrl = $(this).hasClass("like-button") ? "/Like/LikePost" : "/Like/UnlikePost";
+                var actionUrl = $(this).hasClass("like-post") ? "/Like/LikePost" : "/Like/UnlikePost";
                 var button = $(this);
 
                 $.ajax({
@@ -551,9 +547,9 @@
                         if (data.success) {
                             console.log("Like Post");
                             // Toggle the button's class to indicate the like status
-                            button.toggleClass("like-button unlike-button");
+                            button.toggleClass("like-post unlike-post");
 
-                            if (button.hasClass("like-button")) {
+                            if (button.hasClass("like-post")) {
                                 button.text("Like");
                             } else {
                                 button.text("Unlike");
@@ -573,10 +569,12 @@
 
 
 
+
+
             // Like comment button
-            $(".like-button, .unlike-button").click(function () {
+            $(".like-comment, .unlike-comment").click(function () {
                 var commentId = $(this).data("commentid");
-                var actionUrl = $(this).hasClass("like-button") ? "/Like/LikeComment" : "/Like/UnLikeComment";
+                var actionUrl = $(this).hasClass("like-comment") ? "/Like/LikeComment" : "/Like/UnlikeComment";
                 var button = $(this);
 
                 $.ajax({
@@ -586,11 +584,10 @@
                         if (data.success) {
                             console.log("Like Comment");
                             // Toggle the button's class to indicate the like status
-                            button.toggleClass("like-button unlike-button");
+                            button.toggleClass("like-comment unlike-comment");
 
-                            if (button.hasClass("like-button")) {
+                            if (button.hasClass("like-comment")) {
                                 button.text("Like");
-
                             } else {
                                 button.text("Unlike");
                             }
@@ -603,15 +600,19 @@
                         console.error("Error:", errorThrown);
                     }
                 });
+
+
             });
 
 
 
 
+
+
             // Like reply to Comment button
-            $(".like-button, .unlike-button").click(function () {
+            $(".like-reply, .unlike-reply").click(function () {
                 var replyId = $(this).data("replyid");
-                var actionUrl = $(this).hasClass("like-button") ? "/Like/LikeReplyToComment" : "/Like/UnLikeReplyToComment";
+                var actionUrl = $(this).hasClass("like-reply") ? "/Like/LikeReplyToComment" : "/Like/UnLikeReplyToComment";
                 var button = $(this);
 
                 $.ajax({
@@ -621,9 +622,9 @@
                         console.log("Like Reply To Comment");
                         if (data.success) {
                             // Toggle the button's class to indicate the like status
-                            button.toggleClass("like-button unlike-button");
+                            button.toggleClass("like-reply unlike-reply");
 
-                            if (button.hasClass("like-button")) {
+                            if (button.hasClass("like-reply")) {
                                 button.text("Like");
 
                             } else {
@@ -639,6 +640,8 @@
                     }
                 });
             });
+
+
 
         });
 

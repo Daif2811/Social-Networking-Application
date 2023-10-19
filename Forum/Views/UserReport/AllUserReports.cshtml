@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Forum.Models.UserReport>
+@using System.Security.Claims
+@*@{
+    ViewData["Title"] = "MyFriend";
+    string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+}*@
+
+<h1 class="text-light text-center bg-dark p-2">All User Reports</h1>
+
+
+
+<table class="table table-hover table-bordered mt-3">
+    
+    @foreach (var item in Model)
+    {
+        <tr class="row">
+
+            <td class="col-sm-6">
+                <a href="~/Post/ProfileSomeOne?userId=@item.User.Id" style="text-decoration:none;">
+
+                    @if (item.User.Picture != null)
+                    {
+                        <img src="~/images/@item.User.Picture" class="rounded-circle img-thumbnail" width="55px;" />
+
+                    }
+                    else
+                    {
+                        <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" width="55px;" />
+                    }
+                    <span> @item.User.UserName</span>
+                </a>
+            </td>
+
+            <td class="col-sm-6">
+                <h4>Reporter : <a href="~/Post/ProfileSomeOne?userId=@item.ReporterId">@item.Reporter.UserName</a></h4>
+                <h5>Type Of Report : @item.Type</h5>
+            </td>
+
+        </tr>
+    }
+</table>
+
+
