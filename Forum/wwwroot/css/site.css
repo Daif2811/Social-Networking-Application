@@ -175,6 +175,21 @@ body {
         background-color: #7d93bb;
     }
 
+.modal-body button {
+    color: black;
+    transition: color 0.3s;
+    border: none;
+    margin: auto;
+    font-size: 19px;
+    width: 100%;
+    background-color:white;
+}
+
+    .modal-body button:hover {
+        color: #fff;
+        background-color: #7d93bb;
+    }
+
 .sidenav {
     width: 250px;
     position: fixed;

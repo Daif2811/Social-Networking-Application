@@ -42,6 +42,8 @@ namespace Forum
             builder.Services.AddScoped<IFriendRepository, FriendRepository>();
             builder.Services.AddScoped<IPostReportRepository, PostReportRepository>();
             builder.Services.AddScoped<IUserReportRepository, UserReportRepository>();
+            builder.Services.AddScoped<IBlockByAdminRepository, BlockByAdminRepository>();
+            builder.Services.AddScoped<IBlockByUserRepository, BlockByUserRepository>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();

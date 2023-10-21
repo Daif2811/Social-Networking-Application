@@ -14,7 +14,10 @@ namespace Forum.DAL
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<ReplyToComment> ReplyToComments { get; set; }
-        public DbSet<Block> Blocks { get; set; }
+
+
+        public DbSet<BlockByAdmin> BlocksByAdmins { get; set; }
+        public DbSet<BlockByUser> BlocksByUsers { get; set; }
         
         
         

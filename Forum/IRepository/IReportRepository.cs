@@ -13,4 +13,19 @@ namespace Forum.IRepository
         void Update(PostReport postReport);
         void Delete(int id);
     }
+
+
+
+
+    public interface IUserReportRepository
+    {
+        ICollection<UserReport> GetAllReports();
+        ICollection<UserReport> GetAllReportsByUserId(string userId);
+        UserReport GetById(int id);
+
+
+        void Add(UserReport userReport);
+        void Update(UserReport userReport);
+        void Delete(int id);
+    }
 }

@@ -18,13 +18,17 @@ namespace Forum.Controllers
         private readonly IWebHostEnvironment _environment;
         private UserManager<ApplicationUser> _userManager;
         private readonly IFriendRepository _friendRepository;
+        private readonly IBlockByAdminRepository _blockByAdminRepository;
+        private readonly IBlockByUserRepository _blockByUserRepository;
 
-        public PostController(IPostRepository postRepository, IWebHostEnvironment environment, UserManager<ApplicationUser> userManager, IFriendRepository friendRepository)
+        public PostController(IPostRepository postRepository, IWebHostEnvironment environment, UserManager<ApplicationUser> userManager, IFriendRepository friendRepository, IBlockByAdminRepository blockByAdminRepository, IBlockByUserRepository blockByUserRepository)
         {
             _postRepository = postRepository;
             _environment = environment;
             _userManager = userManager;
             _friendRepository = friendRepository;
+            _blockByAdminRepository = blockByAdminRepository;
+            _blockByUserRepository = blockByUserRepository;
         }
 
         // Get Current User
@@ -56,6 +60,18 @@ namespace Forum.Controllers
         public async Task<IActionResult> ProfileSomeOne(string userId)
         {
             ApplicationUser currentUser = CurrentUser();
+
+            // check if Admin did block
+            bool blockedByAdmin = _blockByAdminRepository.CheckBlock(userId);
+            ViewBag.BlockedByAdmin = blockedByAdmin;
+
+
+            // check if Admin did block
+            bool blockedByUser = _blockByUserRepository.CheckBlock(userId, currentUser.Id);
+            ViewBag.BlockedByUser = blockedByUser;
+
+
+
             if (userId == currentUser.Id)
             {
                 return RedirectToAction("MyProfile");
@@ -147,49 +163,57 @@ namespace Forum.Controllers
             return View();
         }
 
-       
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Post post, IFormFile image)
         {
-            if (ModelState.IsValid)
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
+            // Check if Blocked by Admin
+            bool blockedByAdmin = _blockByAdminRepository.CheckBlock(userId);
+            if (blockedByAdmin)
             {
-                try
+                ModelState.AddModelError(string.Empty, "Sorry, You can not publish because You blocked by Admin");
+
+            }
+            else
+            {
+
+
+                if (ModelState.IsValid)
                 {
-                    if (string.IsNullOrWhiteSpace(post.Content) && image == null)
+                    try
                     {
-                        ModelState.AddModelError(string.Empty, "Sorry, You can not publish an empty post");
-                    }
-                    else
-                    {
-                        if (image != null)
+                        if (string.IsNullOrWhiteSpace(post.Content) && image == null)
                         {
-                            // Save the image file to the wwwroot/images folder
-                            var fileName = Path.GetFileName(image.FileName);
-                            var filePath = Path.Combine(_environment.WebRootPath, "Post-Images", fileName);
-                            using (var fileStream = new FileStream(filePath, FileMode.Create))
-                            {
-                                await image.CopyToAsync(fileStream);
-                            }
-                            post.Image = fileName;
+                            ModelState.AddModelError(string.Empty, "Sorry, You can not publish an empty post");
                         }
+                        else
+                        {
+                            if (image != null)
+                            {
+                                // Save the image file to the wwwroot/images folder
+                                var fileName = Path.GetFileName(image.FileName);
+                                var filePath = Path.Combine(_environment.WebRootPath, "Post-Images", fileName);
+                                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                                {
+                                    await image.CopyToAsync(fileStream);
+                                }
+                                post.Image = fileName;
+                            }
 
-                        //Claim userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-                        //string userId = userIdClaim.Value;   // Get the value
+                            post.UserId = userId;
+                            post.PublishDate = DateTime.Now;
 
-                        string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-                        post.UserId = userId;
-                        post.PublishDate = DateTime.Now;
-                        //ApplicationUser user = _userManager.Users.Where(a => a.Id == userId).SingleOrDefault();
-
-                        _postRepository.Add(post, image);
-                        return RedirectToAction("Index");
+                            _postRepository.Add(post, image);
+                            return RedirectToAction("Index");
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", ex.Message);
+                    catch (Exception ex)
+                    {
+                        ModelState.AddModelError("", ex.Message);
+                    }
                 }
             }
             return View(post);
@@ -202,7 +226,7 @@ namespace Forum.Controllers
         // Edit Post
         public async Task<IActionResult> Edit(int id)
         {
-            var currentUser = CurrentUser(); 
+            var currentUser = CurrentUser();
             if (id == null)
             {
                 return BadRequest();
@@ -220,7 +244,7 @@ namespace Forum.Controllers
             return View(post);
         }
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Post post, IFormFile image)
@@ -264,7 +288,7 @@ namespace Forum.Controllers
 
                     //Claim userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
                     //string userId = userIdClaim.Value;   // Get the value
-                   string userId  = CurrentUser().Id;
+                    string userId = CurrentUser().Id;
 
                     post.UserId = userId;
                     post.PublishDate = DateTime.Now;

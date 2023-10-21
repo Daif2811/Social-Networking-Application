@@ -27,7 +27,9 @@ namespace Forum.Models
       
         public string ReporterId { get; set; }
 
-        
+
+        public DateTime ReportDate { get; set; }
+
         public virtual ApplicationUser Reporter { get; set; }
     }
 
