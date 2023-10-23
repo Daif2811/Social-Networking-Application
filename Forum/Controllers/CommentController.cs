@@ -11,12 +11,15 @@ namespace Forum.Controllers
         private readonly ICommentRepository _commentRepository;
         private readonly IPostRepository _postRepository;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IBlockByAdminRepository _blockByAdminRepository;
 
-        public CommentController(ICommentRepository commentRepository, IPostRepository postRepository, UserManager<ApplicationUser> userManager)
+        public CommentController(ICommentRepository commentRepository, IPostRepository postRepository, UserManager<ApplicationUser> userManager,
+            IBlockByAdminRepository blockByAdminRepository)
         {
             _commentRepository = commentRepository;
             _postRepository = postRepository;
             _userManager = userManager;
+            _blockByAdminRepository = blockByAdminRepository;
         }
 
         // Get CurrentUser
@@ -39,31 +42,40 @@ namespace Forum.Controllers
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(commentText))
+                string currentUserId = CurrentUser().Id;
+                // Check if blocked by Admin
+                bool blocked = _blockByAdminRepository.CheckBlock(currentUserId);
+                if (blocked)
                 {
-                    ModelState.AddModelError(string.Empty, "Sorry, You can not publish an empty comment");
+                    ModelState.AddModelError(string.Empty, "Sorry, You can not publish because You are blocked by Admin");
                 }
                 else
                 {
-                    var userId = CurrentUser().Id; 
-                    Comment comment = new Comment()
+                    if (string.IsNullOrWhiteSpace(commentText))
                     {
-                        UserId = userId,
-                        Content = commentText,
-                        PostId = postId,
-                        PublishDate = DateTime.Now
-                    };
+                        ModelState.AddModelError(string.Empty, "Sorry, You can not publish an empty comment");
+                    }
+                    else
+                    {
+                        Comment comment = new Comment()
+                        {
+                            UserId = currentUserId,
+                            Content = commentText,
+                            PostId = postId,
+                            PublishDate = DateTime.Now
+                        };
 
-                    Post post = await _postRepository.GetById(postId);
-                    post.CommentCount++;
+                        Post post = await _postRepository.GetById(postId);
+                        post.CommentCount++;
 
-                    await _commentRepository.Add(comment);
-                    return RedirectToAction("ShowComments", "Post", new { postId });
+                        await _commentRepository.Add(comment);
+                        return RedirectToAction("ShowComments", "Post", new { postId });
+                    }
                 }
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                return View(ex.Message);
             }
             return RedirectToAction("ShowComments", "Post", new { postId });
         }
@@ -100,7 +112,7 @@ namespace Forum.Controllers
                     comment.PublishDate = DateTime.Now;
 
                     await _commentRepository.Update(comment);
-                    return RedirectToAction("ShowComments", "Post", new {comment.PostId});
+                    return RedirectToAction("ShowComments", "Post", new { comment.PostId });
                 }
             }
             return View(comment);

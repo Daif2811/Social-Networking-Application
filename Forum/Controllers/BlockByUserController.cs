@@ -11,14 +11,17 @@ namespace Forum.Controllers
 
         private readonly IBlockByUserRepository _blockByUserRepository;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IFriendRepository _friendRepository;
 
-        public BlockByUserController(IBlockByUserRepository blockByUserRepository, UserManager<ApplicationUser> userManager)
+        public BlockByUserController(IBlockByUserRepository blockByUserRepository, UserManager<ApplicationUser> userManager
+            , IFriendRepository friendRepository)
         {
             _blockByUserRepository = blockByUserRepository;
             _userManager = userManager;
+            _friendRepository = friendRepository;
         }
 
-
+        // Get Current User
         public ApplicationUser CurrentUser()
         {
             //Claim userClaim = User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
@@ -33,22 +36,18 @@ namespace Forum.Controllers
 
 
 
-        // GET: BlockByAdminController
+        // Get All Blocked User for CurrentUser
         public ActionResult AllBlocks()
         {
-            var blocks = _blockByUserRepository.GetAll();
+            string currentUserId = CurrentUser().Id;
+            var blocks = _blockByUserRepository.GetAllByUser(currentUserId);
             return View(blocks);
         }
 
-        // GET: BlockByAdminController/Details/5
-        public ActionResult Details(int id)
-        {
-            BlockByUser block = _blockByUserRepository.GetById(id);
-            return View(block);
-        }
 
 
-        // POST: BlockByAdminController/Create
+
+        // POST: Create Block
         public ActionResult CreateBlock(string userId)
         {
             try
@@ -58,16 +57,39 @@ namespace Forum.Controllers
                     return BadRequest();
                 }
 
-                string blockerId = CurrentUser().Id;
+                string currentUserId = CurrentUser().Id;
 
                 BlockByUser Block = new BlockByUser()
                 {
-                    BlockerId = blockerId,
+                    BlockerId = currentUserId,
                     UserId = userId,
                     BlockDate = DateTime.Now,
                 };
 
                 _blockByUserRepository.Add(Block);
+                var friend = _friendRepository.CheckFriend(userId, currentUserId);
+                if (friend != null)
+                {
+                    _friendRepository.DeleteFriend(friend);
+                }
+                else
+                {
+                    var requsetFromMe = _friendRepository.CheckRequest(userId, currentUserId);
+                    if (requsetFromMe != null)
+                    {
+                        //_friendRepository.CancelRequest(requset.RecieverId, requset.RecieverId);
+                        _friendRepository.CancelRequest(userId, currentUserId);
+                    }
+                    else
+                    {
+                        var requsetToMe = _friendRepository.CheckRequest(currentUserId, userId);
+                        if (requsetToMe != null)
+                        {
+                            _friendRepository.CancelRequest(currentUserId, userId);
+                        }
+                    }
+                }
+
                 return Json(new { success = true });
 
             }
@@ -80,7 +102,7 @@ namespace Forum.Controllers
 
 
 
-        // POST: BlockByAdminController/Delete/5
+        // POST: Cancel Block
         public ActionResult CancelBlock(string userId)
         {
             try

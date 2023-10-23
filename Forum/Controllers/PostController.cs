@@ -1,4 +1,5 @@
-﻿using Forum.IRepository;
+﻿using Forum.Custom_Attributes;
+using Forum.IRepository;
 using Forum.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -21,7 +22,9 @@ namespace Forum.Controllers
         private readonly IBlockByAdminRepository _blockByAdminRepository;
         private readonly IBlockByUserRepository _blockByUserRepository;
 
-        public PostController(IPostRepository postRepository, IWebHostEnvironment environment, UserManager<ApplicationUser> userManager, IFriendRepository friendRepository, IBlockByAdminRepository blockByAdminRepository, IBlockByUserRepository blockByUserRepository)
+        public PostController(IPostRepository postRepository, IWebHostEnvironment environment,
+            UserManager<ApplicationUser> userManager, IFriendRepository friendRepository,
+            IBlockByAdminRepository blockByAdminRepository, IBlockByUserRepository blockByUserRepository)
         {
             _postRepository = postRepository;
             _environment = environment;
@@ -66,7 +69,7 @@ namespace Forum.Controllers
             ViewBag.BlockedByAdmin = blockedByAdmin;
 
 
-            // check if Admin did block
+            // check if User did block
             bool blockedByUser = _blockByUserRepository.CheckBlock(userId, currentUser.Id);
             ViewBag.BlockedByUser = blockedByUser;
 
@@ -126,15 +129,27 @@ namespace Forum.Controllers
 
 
 
+
+
         // GET All Posts
         public IActionResult Index()
         {
             ViewBag.CurrentUser = CurrentUser();
-            var posts = _postRepository.GetAll();
+            List<Post> posts = new List<Post>();
+
+            string currentUserId = CurrentUser().Id;
+            foreach (var item in _postRepository.GetAll())
+            {
+                bool blocked = _blockByUserRepository.CheckBlock(currentUserId,item.UserId );
+                if (!blocked)
+                {
+                    posts.Add(item);
+                }
+
+            }
+
             return View(posts);
         }
-
-
 
 
 
@@ -153,10 +168,6 @@ namespace Forum.Controllers
 
 
 
-
-
-
-
         // Create New Post
         public ActionResult Create()
         {
@@ -166,24 +177,23 @@ namespace Forum.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        //[CheckIfBlockedByAdmin]
         public async Task<IActionResult> Create(Post post, IFormFile image)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            
-            // Check if Blocked by Admin
-            bool blockedByAdmin = _blockByAdminRepository.CheckBlock(userId);
-            if (blockedByAdmin)
+            try
             {
-                ModelState.AddModelError(string.Empty, "Sorry, You can not publish because You blocked by Admin");
-
-            }
-            else
-            {
-
-
                 if (ModelState.IsValid)
                 {
-                    try
+                    // Get CurrentUserId
+                    string currentUserId = CurrentUser().Id;
+
+                    // Check if Blocked by Admin
+                    bool blockedByAdmin = _blockByAdminRepository.CheckBlock(currentUserId);
+                    if (blockedByAdmin)
+                    {
+                        ModelState.AddModelError(string.Empty, "Sorry, You can not publish because You are blocked by Admin");
+                    }
+                    else
                     {
                         if (string.IsNullOrWhiteSpace(post.Content) && image == null)
                         {
@@ -203,21 +213,20 @@ namespace Forum.Controllers
                                 post.Image = fileName;
                             }
 
-                            post.UserId = userId;
+                            post.UserId = currentUserId;
                             post.PublishDate = DateTime.Now;
 
                             _postRepository.Add(post, image);
                             return RedirectToAction("Index");
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        ModelState.AddModelError("", ex.Message);
-                    }
                 }
+                return View(post);
             }
-            return View(post);
-
+            catch (Exception ex)
+            {
+                return View("", ex.Message);
+            }
         }
 
 

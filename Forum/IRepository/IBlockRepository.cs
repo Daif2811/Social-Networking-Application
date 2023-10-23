@@ -18,10 +18,10 @@ namespace Forum.IRepository
     public interface IBlockByUserRepository
     {
         ICollection <BlockByUser> GetAll();
-        ICollection <BlockByUser> GetAllByUser(string userId);
+        ICollection <BlockByUser> GetAllByUser(string currentUserId);
         BlockByUser GetById (int id);
         BlockByUser GetByUserId(string userId);
-        bool CheckBlock(string userId, string currentUserId);
+        bool CheckBlock(string currentUserId , string userId);
         void Add (BlockByUser blockByUser);
         void Update (BlockByUser blockByUser);
         void Delete (int id);

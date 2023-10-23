@@ -1,5 +1,6 @@
 ﻿using Forum.DAL;
 using Forum.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Forum.IRepository.Repository
 {
@@ -16,8 +17,8 @@ namespace Forum.IRepository.Repository
 
         public ICollection<BlockByAdmin> GetAll()
         {
-            return _context.BlocksByAdmins.ToList();
-
+          var blocks =  _context.BlocksByAdmins.Include(a => a.User).ToList();
+            return blocks;
         }
 
         public ICollection<BlockByAdmin> GetAllByAdmin(string adminId)
@@ -73,13 +74,13 @@ namespace Forum.IRepository.Repository
 
         public ICollection<BlockByUser> GetAll()
         {
-            return _context.BlocksByUsers.ToList();
+            return _context.BlocksByUsers.Include(a => a.User).ToList();
 
         }
 
-        public ICollection<BlockByUser> GetAllByUser(string userId)
+        public ICollection<BlockByUser> GetAllByUser(string currentUserId)
         {
-            return _context.BlocksByUsers.Where(a => a.UserId == userId).ToList();
+            return _context.BlocksByUsers.Where(a => a.BlockerId == currentUserId).Include(a => a.User).ToList();
         }
         public BlockByUser GetById(int id)
         {
@@ -89,9 +90,9 @@ namespace Forum.IRepository.Repository
         {
             return _context.BlocksByUsers.FirstOrDefault(a => a.UserId == userId);
         }
-        public bool CheckBlock(string userId, string currentUserId)
+        public bool CheckBlock(string currentUserId, string userId)
         {
-            return _context.BlocksByUsers.Any (a => a.UserId == userId && a.BlockerId == currentUserId);
+            return _context.BlocksByUsers.Any (a => a.UserId == currentUserId && a.BlockerId == userId);
         }
 
         public void Add(BlockByUser blockByUser)

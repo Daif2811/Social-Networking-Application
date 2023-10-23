@@ -1,4 +1,5 @@
 ﻿using Forum.IRepository;
+using Forum.IRepository.Repository;
 using Forum.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -16,8 +17,11 @@ namespace Forum.Controllers
         private readonly IReplyToCommentRepository _replyToCommentRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IFriendRepository _friendRepository;
+        private readonly IBlockByUserRepository _blockByUserRepository;
 
-        public LikeController(ILikeRepository likeRepository, IPostRepository postRepository, ICommentRepository commentRepository, IReplyToCommentRepository replyToCommentRepository, UserManager<ApplicationUser> userManager, IFriendRepository friendRepository)
+        public LikeController(ILikeRepository likeRepository, IPostRepository postRepository,
+            ICommentRepository commentRepository, IReplyToCommentRepository replyToCommentRepository,
+            UserManager<ApplicationUser> userManager, IFriendRepository friendRepository, IBlockByUserRepository blockByUserRepository)
         {
             _likeRepository = likeRepository;
             _postRepository = postRepository;
@@ -25,7 +29,7 @@ namespace Forum.Controllers
             _replyToCommentRepository = replyToCommentRepository;
             _userManager = userManager;
             _friendRepository = friendRepository;
-
+            _blockByUserRepository = blockByUserRepository;
         }
 
 
@@ -49,11 +53,19 @@ namespace Forum.Controllers
         // All Liked Posts
         public async Task<IActionResult> LikedPost()
         {
-            var userId = CurrentUser().Id;
+            var currentUserId = CurrentUser().Id;
 
-            var posts = await _likeRepository.GetAllLikedPost(userId);
+            List<LikePost> posts = new List<LikePost>();
 
-            return View(posts);
+            foreach (var item in await _likeRepository.GetAllLikedPost(currentUserId))
+            {
+                bool blocked = _blockByUserRepository.CheckBlock(currentUserId, item.Post.UserId);
+                if (!blocked)
+                {
+                    posts.Add(item);
+                }
+            }
+                return View(posts);
         }
 
 
