@@ -1,13 +1,8 @@
-﻿using Forum.Custom_Attributes;
-using Forum.IRepository;
+﻿using Forum.IRepository;
 using Forum.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration.UserSecrets;
-using Microsoft.Win32;
-using NuGet.Versioning;
 using System.Security.Claims;
 
 namespace Forum.Controllers
@@ -17,14 +12,24 @@ namespace Forum.Controllers
     {
         private readonly IPostRepository _postRepository;
         private readonly IWebHostEnvironment _environment;
-        private UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IFriendRepository _friendRepository;
         private readonly IBlockByAdminRepository _blockByAdminRepository;
         private readonly IBlockByUserRepository _blockByUserRepository;
+        private readonly IFollowRepository _followRepository;
+        private readonly ISavePostRepository _savePostRepository;
+        private readonly ILogger<PostController> _logger;
 
-        public PostController(IPostRepository postRepository, IWebHostEnvironment environment,
-            UserManager<ApplicationUser> userManager, IFriendRepository friendRepository,
-            IBlockByAdminRepository blockByAdminRepository, IBlockByUserRepository blockByUserRepository)
+        public PostController(
+            IPostRepository postRepository,
+            IWebHostEnvironment environment,
+            UserManager<ApplicationUser> userManager,
+            IFriendRepository friendRepository,
+            IBlockByAdminRepository blockByAdminRepository,
+            IBlockByUserRepository blockByUserRepository,
+            IFollowRepository followRepository,
+            ISavePostRepository savePostRepository,
+            ILogger<PostController> logger)
         {
             _postRepository = postRepository;
             _environment = environment;
@@ -32,9 +37,13 @@ namespace Forum.Controllers
             _friendRepository = friendRepository;
             _blockByAdminRepository = blockByAdminRepository;
             _blockByUserRepository = blockByUserRepository;
+            _followRepository = followRepository;
+            _savePostRepository = savePostRepository;
+            _logger = logger;
         }
 
         // Get Current User
+        [HttpGet]
         public ApplicationUser CurrentUser()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -43,7 +52,9 @@ namespace Forum.Controllers
         }
 
 
+
         // My Profile
+        [HttpGet]
         public IActionResult MyProfile()
         {
             ApplicationUser user = CurrentUser();
@@ -59,8 +70,10 @@ namespace Forum.Controllers
         }
 
 
+
         // Profile Someone
-        public async Task<IActionResult> ProfileSomeOne(string userId)
+        [HttpGet]
+        public IActionResult ProfileSomeOne(string userId)
         {
             ApplicationUser currentUser = CurrentUser();
 
@@ -74,13 +87,16 @@ namespace Forum.Controllers
             ViewBag.BlockedByUser = blockedByUser;
 
 
+            bool ckeckfollow = _followRepository.CheckFollow(userId, currentUser.Id);
+            ViewBag.Followed = ckeckfollow;
+
 
             if (userId == currentUser.Id)
             {
                 return RedirectToAction("MyProfile");
             }
 
-            ApplicationUser user = await _userManager.FindByIdAsync(userId);
+            ApplicationUser user = _userManager.FindByIdAsync(userId).Result;
             if (user == null)
             {
                 return NotFound();
@@ -101,7 +117,6 @@ namespace Forum.Controllers
                 // I sent friend request
                 if (found != null)
                 {
-
                     ViewBag.Found = "MyRequest";
                 }
                 else
@@ -111,49 +126,96 @@ namespace Forum.Controllers
                     if (me != null)
                     {
                         ViewBag.Found = "HisRequest";
-
                     }
                     else
                     {
                         // No request
                         ViewBag.Found = "NoRequest";
-
                     }
                 }
             }
 
-            var posts = _postRepository.Profile(userId);
+            List<Post> FriendAndPublicPosts = new List<Post>();
+            foreach (var item in _postRepository.Profile(userId))
+            {
+                bool saved = _savePostRepository.CheckSave(item.Id, currentUser.Id);
+                if (saved)
+                {
+                    ViewBag.SavedPost = true;
+                }
+                else
+                {
+                    ViewBag.SavedPost = false;
+                }
 
-            return View(posts);
+                // Check If Friends
+                bool checkFriend = _friendRepository.CheckIfFriend(item.UserId, currentUser.Id);
+
+
+                if ((blockedByUser == false && checkFriend == true && item.Audience == "Friends") ||
+                    (blockedByUser == false && checkFriend == false && item.Audience == "Public") ||
+                     item.UserId == currentUser.Id)
+                {
+                    FriendAndPublicPosts.Add(item);
+                }
+            }
+
+            return View(FriendAndPublicPosts);
+
+
+
+
+
         }
 
 
-
-
-
         // GET All Posts
+        [HttpGet]
         public IActionResult Index()
         {
             ViewBag.CurrentUser = CurrentUser();
-            List<Post> posts = new List<Post>();
+
+
+
+            List<Post> FriendAndPublicPosts = new List<Post>();
 
             string currentUserId = CurrentUser().Id;
             foreach (var item in _postRepository.GetAll())
             {
-                bool blocked = _blockByUserRepository.CheckBlock(currentUserId,item.UserId );
-                if (!blocked)
+                // Check Post Saved 
+                bool saved = _savePostRepository.CheckSave(item.Id, currentUserId);
+                if (saved)
                 {
-                    posts.Add(item);
+                    ViewBag.SavedPost = true;
+                }
+                else
+                {
+                    ViewBag.SavedPost = false;
                 }
 
+
+                // Check Blocked by Post publisher
+                bool blocked = _blockByUserRepository.CheckBlock(currentUserId, item.UserId);
+
+                // Check If Friends
+                bool friend = _friendRepository.CheckIfFriend(item.UserId, currentUserId);
+
+
+                if ((blocked == false && friend == true && item.Audience == "Friends") ||
+                    (blocked == false && friend == false && item.Audience == "Public") ||
+                    item.UserId == currentUserId)
+                {
+                    FriendAndPublicPosts.Add(item);
+                }
             }
 
-            return View(posts);
+            return View(FriendAndPublicPosts);
         }
 
 
 
         // Details and Show All Comments
+        [HttpGet]
         public IActionResult ShowComments(int postId)
         {
             var post = _postRepository.GetAllComments(postId);
@@ -169,6 +231,7 @@ namespace Forum.Controllers
 
 
         // Create New Post
+        [HttpGet]
         public ActionResult Create()
         {
             return View();
@@ -216,7 +279,7 @@ namespace Forum.Controllers
                             post.UserId = currentUserId;
                             post.PublishDate = DateTime.Now;
 
-                            _postRepository.Add(post, image);
+                            await _postRepository.Add(post);
                             return RedirectToAction("Index");
                         }
                     }
@@ -231,27 +294,33 @@ namespace Forum.Controllers
 
 
 
-
         // Edit Post
-        public async Task<IActionResult> Edit(int id)
+        [HttpGet]
+        public IActionResult Edit(int id)
         {
-            var currentUser = CurrentUser();
-            if (id == null)
+            try
             {
-                return BadRequest();
+                var currentUser = CurrentUser();
+
+                var post = _postRepository.GetById(id);
+                if (post == null)
+                {
+                    return NotFound();
+                }
+                if (post.UserId != currentUser.Id)
+                {
+                    ModelState.AddModelError("", "Sorry You can't Edit this post , Because it is not yours");
+                }
+                TempData["oldImage"] = post.Image;
+                return View(post);
             }
-            var post = await _postRepository.GetById(id);
-            if (post == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                return View(ex.Message);
+
             }
-            if (post.UserId != currentUser.Id)
-            {
-                ModelState.AddModelError("", "Sorry You can't Edit this post , Because it is not yours");
-            }
-            TempData["oldImage"] = post.Image;
-            return View(post);
         }
+
 
 
         [HttpPost]
@@ -303,7 +372,7 @@ namespace Forum.Controllers
                     post.PublishDate = DateTime.Now;
 
 
-                    await _postRepository.Update(post, image);
+                    await _postRepository.Update(post);
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
@@ -316,34 +385,35 @@ namespace Forum.Controllers
 
 
 
-
-
-
-
         // Delete Post
-        public async Task<IActionResult> Delete(int id)
+        [HttpGet]
+        public IActionResult Delete(int id)
         {
-            string userId = CurrentUser().Id;
-
-            if (id == null)
+            try
             {
-                return BadRequest();
+                string userId = CurrentUser().Id;
+
+                var post = _postRepository.GetById(id);
+                if (post == null)
+                {
+                    return NotFound();
+                }
+
+                if (post.UserId != userId)
+                {
+                    ModelState.AddModelError("", "Sorry, This post is not yours");
+                }
+
+                return View(post);
             }
-            var post = await _postRepository.GetById(id);
-            if (post == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                return View(ex.Message);
             }
-
-
-            if (post.UserId != userId)
-            {
-                ModelState.AddModelError("", "Sorry, This post is not yours");
-            }
-
-            return View(post);
 
         }
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken, ActionName("Delete")]
@@ -351,9 +421,9 @@ namespace Forum.Controllers
         {
             try
             {
-                var userId = User.Claims.FirstOrDefault(a => a.Type == (ClaimTypes.NameIdentifier)).Value;
+                var userId = CurrentUser().Id;
 
-                var post = await _postRepository.GetById(id);
+                var post = _postRepository.GetById(id);
                 if (post == null)
                 {
                     return NotFound();
@@ -365,12 +435,12 @@ namespace Forum.Controllers
 
                 await _postRepository.Delete(id);
                 return RedirectToAction("Index");
-
+                // return Json(new {success = true});
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
-                return View();
+                //  ModelState.AddModelError("", ex.Message);
+                return View(ex.Message);
             }
 
 

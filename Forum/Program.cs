@@ -44,6 +44,8 @@ namespace Forum
             builder.Services.AddScoped<IUserReportRepository, UserReportRepository>();
             builder.Services.AddScoped<IBlockByAdminRepository, BlockByAdminRepository>();
             builder.Services.AddScoped<IBlockByUserRepository, BlockByUserRepository>();
+            builder.Services.AddScoped<IFollowRepository, FollowRepository>();
+            builder.Services.AddScoped<ISavePostRepository, SavePostRepository>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -64,7 +66,7 @@ namespace Forum
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Post}/{action=Index}/{id?}");
 
             app.Run();
         }

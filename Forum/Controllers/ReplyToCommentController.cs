@@ -26,6 +26,7 @@ namespace Forum.Controllers
 
 
         // Get Current User
+        [HttpGet]
         public ApplicationUser CurrentUser()
         {
             //// Way to get UserId
@@ -43,7 +44,8 @@ namespace Forum.Controllers
 
 
         // Add Reply To Comment
-        public async Task<ActionResult> AddReply(int commentId, string content, string userName)
+        [HttpPost]
+        public async Task<IActionResult> AddReply(int commentId, string content, string userName)
         {
             try
             {
@@ -63,8 +65,8 @@ namespace Forum.Controllers
                     }
                     else
                     {
-                        Comment comment = await _commentRepository.GetById(commentId);
-                        Post post = await _postRepository.GetById(comment.PostId);
+                        Comment comment = _commentRepository.GetById(commentId);
+                        Post post = _postRepository.GetById(comment.PostId);
 
 
                         ReplyToComment reply = new ReplyToComment()
@@ -95,12 +97,13 @@ namespace Forum.Controllers
 
 
         // Delete Reply To Comment
+        [HttpPost]
         public async Task<IActionResult> DeleteReply(int replyId, int commentId)
         {
             try
             {
-                Comment comment = await _commentRepository.GetById(commentId);
-                Post post = await _postRepository.GetById(comment.PostId);
+                Comment comment =  _commentRepository.GetById(commentId);
+                Post post =  _postRepository.GetById(comment.PostId);
                 comment.CommentCount--;
                 post.CommentCount--;
 

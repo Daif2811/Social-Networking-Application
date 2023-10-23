@@ -27,7 +27,6 @@ namespace Forum.IRepository.Repository
         public async Task UnLikePost(int postId, string userId)
         {
             var like = await _context.LikePosts.Where(a => a.PostId == postId && a.UserId == userId).FirstOrDefaultAsync();
-
             if (like != null)
             {
                 _context.LikePosts.Remove(like);
@@ -35,20 +34,20 @@ namespace Forum.IRepository.Repository
             }
         }
 
-        public async Task<ICollection<LikePost>> GetAllLikedPost(string userId)
+        public ICollection<LikePost> GetAllLikedPost(string userId)
         {
-            var posts = await _context.LikePosts.Where(a => a.UserId == userId).Include(a => a.User)
+            var posts = _context.LikePosts.Where(a => a.UserId == userId)
+                .Include(a => a.User)
                 .Include(a => a.Post).ThenInclude(a => a.User)
-                .OrderByDescending(a => a.Id).ToListAsync();
+                .OrderByDescending(a => a.Id).ToList();
 
             return posts;
         }
-         public async Task<ICollection<LikePost>> PostLikeUsers(int id)
+         public ICollection<LikePost> PostLikeUsers(int id)
         {
-            var posts = await _context.LikePosts.Where(a => a.PostId == id).Include(a => a.User)
+            var posts =  _context.LikePosts.Where(a => a.PostId == id).Include(a => a.User)
                 .Include(a => a.Post).ThenInclude(a => a.User)
-                .ToListAsync();
-
+                .ToList();
             return posts;
         }
 
@@ -65,14 +64,12 @@ namespace Forum.IRepository.Repository
         {
                 _context.LikeComments.Add(like);
                 await _context.SaveChangesAsync();
-            
         }
 
 
         public async Task UnLikeComment(int commentId, string userId)
         {
             var like = await _context.LikeComments.Where(a => a.CommentId == commentId && a.UserId == userId).FirstOrDefaultAsync();
-
             if (like != null)
             {
                 _context.LikeComments.Remove(like);
@@ -80,10 +77,9 @@ namespace Forum.IRepository.Repository
             }
         }
 
-        public async Task<ICollection<LikeComment>> CommentLikeUsers(int id)
+        public ICollection<LikeComment> CommentLikeUsers(int id)
         {
-            var comments = await _context.LikeComments.Where(a => a.CommentId == id).Include(a => a.User).ToListAsync();
-
+            var comments =  _context.LikeComments.Where(a => a.CommentId == id).Include(a => a.User).ToList();
             return comments;
         }
 
@@ -101,14 +97,12 @@ namespace Forum.IRepository.Repository
         {
             _context.LikeReplyToComments.Add(like);
             await _context.SaveChangesAsync();
-
         }
 
 
         public async Task UnLikeReplyToComment(int replyId, string userId)
         {
             var like = await _context.LikeReplyToComments.Where(a => a.ReplyId == replyId && a.UserId == userId).FirstOrDefaultAsync();
-
             if (like != null)
             {
                 _context.LikeReplyToComments.Remove(like);
@@ -116,24 +110,11 @@ namespace Forum.IRepository.Repository
             }
         }
 
-        public async Task<ICollection<LikeReplyToComment>> ReplyLikeUsers(int id)
+        public ICollection<LikeReplyToComment> ReplyLikeUsers(int id)
         {
-            var reply = await _context.LikeReplyToComments.Where(a => a.ReplyId == id).Include(a => a.User).ToListAsync();
-
+            var reply =  _context.LikeReplyToComments.Where(a => a.ReplyId == id).Include(a => a.User).ToList();
             return reply;
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
     }
 }

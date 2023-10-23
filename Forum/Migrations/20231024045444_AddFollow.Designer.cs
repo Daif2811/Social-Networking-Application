@@ -4,6 +4,7 @@ using Forum.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Forum.Migrations
 {
     [DbContext(typeof(ForumContext))]
-    partial class ForumContextModelSnapshot : ModelSnapshot
+    [Migration("20231024045444_AddFollow")]
+    partial class AddFollow
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -181,7 +183,11 @@ namespace Forum.Migrations
 
                     b.HasIndex("PostId");
 
+                    b.HasIndex("PublishDate");
+
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserId", "PublishDate");
 
                     b.ToTable("Comments");
                 });
@@ -335,9 +341,6 @@ namespace Forum.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Audience")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("CommentCount")
                         .HasColumnType("int");
 
@@ -350,6 +353,9 @@ namespace Forum.Migrations
                     b.Property<int>("LikeCount")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PostId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("PublishDate")
                         .HasColumnType("datetime2");
 
@@ -358,7 +364,13 @@ namespace Forum.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("PublishDate");
+
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserId", "PublishDate");
 
                     b.ToTable("Posts");
                 });
@@ -429,32 +441,13 @@ namespace Forum.Migrations
 
                     b.HasIndex("CommentId");
 
+                    b.HasIndex("PublishDate");
+
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserId", "PublishDate");
 
                     b.ToTable("ReplyToComments");
-                });
-
-            modelBuilder.Entity("Forum.Models.SavePost", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("PostId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PostId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("SavePosts");
                 });
 
             modelBuilder.Entity("Forum.Models.UserReport", b =>
@@ -766,6 +759,10 @@ namespace Forum.Migrations
 
             modelBuilder.Entity("Forum.Models.Post", b =>
                 {
+                    b.HasOne("Forum.Models.Post", null)
+                        .WithMany("Posts")
+                        .HasForeignKey("PostId");
+
                     b.HasOne("Forum.Models.ApplicationUser", "User")
                         .WithMany("Posts")
                         .HasForeignKey("UserId");
@@ -776,7 +773,7 @@ namespace Forum.Migrations
             modelBuilder.Entity("Forum.Models.PostReport", b =>
                 {
                     b.HasOne("Forum.Models.Post", "Post")
-                        .WithMany("PostReports")
+                        .WithMany()
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -803,23 +800,6 @@ namespace Forum.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("Comment");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Forum.Models.SavePost", b =>
-                {
-                    b.HasOne("Forum.Models.Post", "Post")
-                        .WithMany("SavePosts")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Forum.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Post");
 
                     b.Navigation("User");
                 });
@@ -910,9 +890,7 @@ namespace Forum.Migrations
 
                     b.Navigation("Likes");
 
-                    b.Navigation("PostReports");
-
-                    b.Navigation("SavePosts");
+                    b.Navigation("Posts");
                 });
 
             modelBuilder.Entity("Forum.Models.ReplyToComment", b =>

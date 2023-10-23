@@ -10,18 +10,30 @@
 
 <div>
     <div>
-        <form asp-action="Create" enctype="multipart/form-data" method="post">
+        <form asp-action="Create" enctype="multipart/form-data" method="post" class="container">
             <div asp-validation-summary="All" class="text-danger"></div>
 
             <div class="form-group row m-3">
-                
+
                 <textarea asp-for="Content" style="min-height:300px;" class="form-control col-12"></textarea>
                 @*<input asp-for="Content" type="text" class="form-control" style="width:100%" />*@
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
 
+            
+                <div class="form-group m-3 row">
+                <select asp-for="Audience" class="form-select">
+                    @foreach (Audience item in Enum.GetValues(typeof(Audience)))
+                    {
+                        <option value="@item.ToString()">@item.ToString()</option>
+                    }
+                </select>
+            </div>
+
+
+
             <div class="form-group m-3">
-                
+
                 <input asp-for="Image" type="file" class="form-control" />
                 <span asp-validation-for="Image" class="text-danger"></span>
             </div>

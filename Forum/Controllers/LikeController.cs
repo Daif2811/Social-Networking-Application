@@ -18,10 +18,17 @@ namespace Forum.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IFriendRepository _friendRepository;
         private readonly IBlockByUserRepository _blockByUserRepository;
+        private readonly ISavePostRepository _savePostRepository;
 
-        public LikeController(ILikeRepository likeRepository, IPostRepository postRepository,
-            ICommentRepository commentRepository, IReplyToCommentRepository replyToCommentRepository,
-            UserManager<ApplicationUser> userManager, IFriendRepository friendRepository, IBlockByUserRepository blockByUserRepository)
+        public LikeController(
+            ILikeRepository likeRepository,
+            IPostRepository postRepository,
+            ICommentRepository commentRepository,
+            IReplyToCommentRepository replyToCommentRepository,
+            UserManager<ApplicationUser> userManager,
+            IFriendRepository friendRepository, 
+            IBlockByUserRepository blockByUserRepository,
+            ISavePostRepository savePostRepository)
         {
             _likeRepository = likeRepository;
             _postRepository = postRepository;
@@ -30,10 +37,12 @@ namespace Forum.Controllers
             _userManager = userManager;
             _friendRepository = friendRepository;
             _blockByUserRepository = blockByUserRepository;
+            _savePostRepository = savePostRepository;
         }
 
 
         // Get Current User
+        [HttpGet]
         public ApplicationUser CurrentUser()
         {
             //// Way to get UserId
@@ -51,21 +60,42 @@ namespace Forum.Controllers
 
 
         // All Liked Posts
-        public async Task<IActionResult> LikedPost()
+        [HttpGet]
+        public IActionResult LikedPost()
         {
             var currentUserId = CurrentUser().Id;
 
-            List<LikePost> posts = new List<LikePost>();
+            List<LikePost> FriendAndPublicPosts = new List<LikePost>();
 
-            foreach (var item in await _likeRepository.GetAllLikedPost(currentUserId))
+            foreach (var item in  _likeRepository.GetAllLikedPost(currentUserId))
             {
-                bool blocked = _blockByUserRepository.CheckBlock(currentUserId, item.Post.UserId);
-                if (!blocked)
+                bool saved = _savePostRepository.CheckSave(item.Post.Id, currentUserId);
+                if (saved)
                 {
-                    posts.Add(item);
+                    ViewBag.SavedPost = true;
+                }
+                else
+                {
+                    ViewBag.SavedPost = false;
+                }
+
+
+                bool blocked = _blockByUserRepository.CheckBlock(currentUserId, item.Post.UserId);
+                // Check Blocked by Post publisher
+
+                // Check If Friends
+                bool friend = _friendRepository.CheckIfFriend(item.Post.UserId, currentUserId);
+
+
+                if ((blocked == false && friend == true && item.Post.Audience == "Friends") ||
+                    (blocked == false && friend == false && item.Post.Audience == "Public") ||
+                     item.Post.UserId == currentUserId)
+                {
+                    FriendAndPublicPosts.Add(item);
                 }
             }
-                return View(posts);
+
+            return View(FriendAndPublicPosts);
         }
 
 
@@ -73,6 +103,7 @@ namespace Forum.Controllers
 
 
         // Like Post
+        [HttpPost]
         public async Task<IActionResult> LikePost(int postId)
         {
             var userId = CurrentUser().Id;
@@ -83,7 +114,7 @@ namespace Forum.Controllers
                 PostId = postId,
             };
 
-            Post post = await _postRepository.GetById(postId);
+            Post post = _postRepository.GetById(postId);
             post.LikeCount++;
 
             await _likeRepository.LikePost(like);
@@ -96,12 +127,13 @@ namespace Forum.Controllers
 
 
         // UnLike Post
+        [HttpPost]
         public async Task<IActionResult> UnlikePost(int postId)
         {
 
             var userId = CurrentUser().Id;
 
-            Post post = await _postRepository.GetById(postId);
+            Post post = _postRepository.GetById(postId);
             post.LikeCount--;
 
             await _likeRepository.UnLikePost(postId, userId);
@@ -111,11 +143,12 @@ namespace Forum.Controllers
 
 
 
-
-        public async Task<IActionResult> PostLikeUsers(int id)
+        // Get All Post Likers
+        [HttpGet]
+        public IActionResult PostLikeUsers(int id)
         {
             var currentUserId = CurrentUser().Id;
-            var likes = await _likeRepository.PostLikeUsers(id);
+            var likes =  _likeRepository.PostLikeUsers(id);
             foreach (var user in likes)
             {
                 var friend = _friendRepository.CheckFriend(user.UserId, currentUserId);
@@ -136,6 +169,7 @@ namespace Forum.Controllers
 
 
         // Like Comment
+        [HttpPost]
         public async Task<IActionResult> LikeComment(int commentId)
         {
             var userId = CurrentUser().Id;
@@ -146,7 +180,7 @@ namespace Forum.Controllers
                 CommentId = commentId,
             };
 
-            Comment comment = await _commentRepository.GetById(commentId);
+            Comment comment = _commentRepository.GetById(commentId);
             comment.LikeCount++;
 
             await _likeRepository.LikeComment(like);
@@ -157,14 +191,13 @@ namespace Forum.Controllers
 
 
 
-
-
         // UnLike Comment
+        [HttpPost]
         public async Task<IActionResult> UnLikeComment(int commentId)
         {
             var userId = CurrentUser().Id;
 
-            Comment comment = await _commentRepository.GetById(commentId);
+            Comment comment =  _commentRepository.GetById(commentId);
             comment.LikeCount--;
 
             await _likeRepository.UnLikeComment(commentId, userId);
@@ -175,14 +208,18 @@ namespace Forum.Controllers
 
 
 
-        public async Task<IActionResult> CommentLikeUsers(int id)
+        // Get All Comment Likers
+        [HttpGet]
+        public IActionResult CommentLikeUsers(int id)
         {
-            var likes = await _likeRepository.CommentLikeUsers(id);
+            var likes =  _likeRepository.CommentLikeUsers(id);
             return View(likes);
         }
 
 
+
         // Like Reply To Comment
+        [HttpPost]
         public async Task<IActionResult> LikeReplyToComment(int replyId)
         {
             var userId = CurrentUser().Id;
@@ -193,7 +230,7 @@ namespace Forum.Controllers
                 ReplyId = replyId
             };
 
-            ReplyToComment reply = await _replyToCommentRepository.GetById(replyId);
+            ReplyToComment reply =  _replyToCommentRepository.GetById(replyId);
             reply.LikeCount++;
 
             await _likeRepository.LikeReplyToComment(like);
@@ -204,14 +241,13 @@ namespace Forum.Controllers
 
 
 
-
-
         // UnLike Reply To Comment
+        [HttpPost]
         public async Task<IActionResult> UnLikeReplyToComment(int replyId)
         {
             var userId = CurrentUser().Id;
 
-            ReplyToComment reply = await _replyToCommentRepository.GetById(replyId);
+            ReplyToComment reply = _replyToCommentRepository.GetById(replyId);
             reply.LikeCount--;
 
             await _likeRepository.UnLikeReplyToComment(replyId, userId);
@@ -220,10 +256,11 @@ namespace Forum.Controllers
         }
 
 
-
-        public async Task<IActionResult> ReplyLikeUsers(int id)
+        // Get All Reply Likers
+        [HttpGet]
+        public IActionResult ReplyLikeUsers(int id)
         {
-            var likes = await _likeRepository.ReplyLikeUsers(id);
+            var likes =  _likeRepository.ReplyLikeUsers(id);
             return View(likes);
         }
 

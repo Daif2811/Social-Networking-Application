@@ -4,82 +4,69 @@
     ViewData["Title"] = "Users";
 }
 
-<h1>Users</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<h1 class="bg-dark text-center text-light p-2">All Blocked Users</h1>
+
+
+
+<div id="photoModal" class="modal text-xl-center">
+    <img src="" alt="Photo" id="bigPhoto" />
+</div>
+
+
+<table class="table table-hover">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.UserName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Summary)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Picture)
-            </th>
-
-            <th></th>
+            <th>User</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Summary</th>
         </tr>
     </thead>
     <tbody>
+
         @foreach (var item in Model)
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.UserName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @if (item.PhoneNumber != null)
-                    {
-                        @Html.DisplayFor(modelItem => item.PhoneNumber)
-                    }
-                    else
-                    {
-                        @Html.ActionLink("Empty, Click to Add", "EditProfile")
+                    <a href="~/Post/ProfileSomeOne?userId=@item.Id" style="text-decoration:none;">
 
-                    }
+                        @if (item.Picture != null)
+                        {
+                            <img src="~/images/@item.Picture" class="rounded-circle img-thumbnail" width="55px;" id="photo" />
 
+                        }
+                        else
+                        {
+                            <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" width="55px;" />
+                        }
+                        <span> @item.UserName</span>
+                    </a>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Summary)
+                    @item.Email
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.UserType)
+                    @item.PhoneNumber
                 </td>
                 <td>
-                    <img src="~/images/@Html.DisplayFor(modelItem => item.Picture)" class=" img-thumbnail rounded-circle" style="width:50px; cursor:pointer" id="photo" />
-                    @*<img src="@Url.Content("~/images/" + item.Picture)" alt="@item.Picture">*@
-
-                    <div id="photoModal" class="modal text-xl-center">
-                        <img src="" alt="Photo" id="bigPhoto" />
-                    </div>
-                </td>
-
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    @item.Summary
                 </td>
             </tr>
         }
     </tbody>
+
 </table>
+
+
+
+
+
+
+
+
+
+
 
 
 @section Scripts {

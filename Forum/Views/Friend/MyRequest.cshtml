@@ -50,8 +50,8 @@
                         <sub>
                             <sub>
                                 <sub>
-                                    <a asp-action="AcceptRequest" asp-route-id="@item.Id" asp-route-accept="true" class="btn btn-outline-success">Accept</a>
-                                    <a asp-action="AcceptRequest" asp-route-id="@item.Id" asp-route-accept="false" class="btn btn-outline-danger">Remove</a>
+                                   <button data-userid="@item.SenderId" data-accept="true" class="btn btn-outline-success  accept-friend-button">Accept</button>
+                                    <button data-userid="@item.SenderId" data-accept="false" class="btn btn-outline-danger  reject-friend-button">Reject</button>
                                 </sub>
                             </sub>
                         </sub>
@@ -62,3 +62,37 @@
         }
     </tbody>
 </table>
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+
+            $(".accept-friend-button, .reject-friend-button").click(function () {
+                var UserId = $(this).data("userid");
+                var accept = $(this).data("accept");
+                var button = $(this);
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Friend/AcceptRequest?UserId=" + UserId + "&accept=" + accept,
+                    success: function (data) {
+                        if (data.success) {
+                            alert("Now You are friends")
+                            location.reload();
+
+                        } else {
+                            alert("Operation failed")
+                            console.error("Something went wrong.");
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.error("Error:", errorThrown);
+                    }
+                });
+            });
+
+        });
+
+    </script>
+                                    }

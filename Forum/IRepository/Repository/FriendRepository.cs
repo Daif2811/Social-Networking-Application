@@ -14,19 +14,21 @@ namespace Forum.IRepository.Repository
         }
 
         // Add Request
-        public void AddRequest(FriendRequest request)
+        public async Task AddRequest(FriendRequest request)
         {
             _context.FriendRequests.Add(request);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
+
         // Cancel Request
-        public void CancelRequest(string userId, string currentUserId)
+        public async Task CancelRequest(string userId, string currentUserId)
         {
            FriendRequest request =  _context.FriendRequests.Where(a => a.SenderId == currentUserId && a.RecieverId == userId).SingleOrDefault();
             _context.FriendRequests.Remove(request);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
+
 
         // Get Request By Id
         public FriendRequest GetRequestById(int id)
@@ -45,21 +47,19 @@ namespace Forum.IRepository.Repository
         }
 
 
-
-
         // Accept Request
-        public void AcceptRequest(Friend friend)
+        public async Task AcceptRequest(Friend friend)
         {
             _context.Friends.Add(friend);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
 
         // Reject Request
-        public void RejectRequest(FriendRequest request)
+        public async Task RejectRequest(FriendRequest request)
         {
             _context.FriendRequests.Remove(request);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
 
@@ -70,6 +70,8 @@ namespace Forum.IRepository.Repository
            var requsts =  _context.FriendRequests.Where(a => a.RecieverId == currentUserId).Include(a => a.Sender).ToList();
            return requsts;
         }
+
+
         public ICollection<FriendRequest> MyFriendRequests(string currentUserId)
         {
            var requsts =  _context.FriendRequests.Where(a => a.SenderId == currentUserId).Include(a => a.Reciever).ToList();
@@ -81,6 +83,11 @@ namespace Forum.IRepository.Repository
         public Friend CheckFriend(string userId, string currentUserId)
         {
             var friend = _context.Friends.SingleOrDefault(a => (a.UserOneId == userId && a.UserTwoId == currentUserId) || (a.UserTwoId == userId && a.UserOneId == currentUserId));
+            return friend;
+        }
+         public bool CheckIfFriend(string userId, string currentUserId)
+        {
+            var friend = _context.Friends.Any(a => (a.UserOneId == userId && a.UserTwoId == currentUserId) || (a.UserTwoId == userId && a.UserOneId == currentUserId));
             return friend;
         }
 
@@ -98,10 +105,10 @@ namespace Forum.IRepository.Repository
 
 
         // UnFriend or Delete Friend
-        public void DeleteFriend(Friend friend)
+        public async Task DeleteFriend(Friend friend)
         {
             _context.Friends.Remove(friend);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
 

@@ -13,7 +13,11 @@ namespace Forum.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IWebHostEnvironment _environment;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, IWebHostEnvironment environment)
+        public AccountController(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            RoleManager<IdentityRole> roleManager,
+            IWebHostEnvironment environment)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -24,6 +28,7 @@ namespace Forum.Controllers
 
 
         // Get Current User
+        [HttpGet]
         public ApplicationUser CurrentUser()
         {
             //// Way to get UserId
@@ -41,7 +46,7 @@ namespace Forum.Controllers
 
 
         // Dashboard For Users
-
+        [HttpGet]
         public IActionResult Setting()
         {
             return View();
@@ -50,6 +55,7 @@ namespace Forum.Controllers
 
 
         // All Users
+        [HttpGet]
         public IActionResult Users()
         {
             var users = _userManager.Users.ToList();
@@ -59,10 +65,14 @@ namespace Forum.Controllers
 
 
         // GET: Account/Register
+        [HttpGet]
         public IActionResult Register()
         {
             return View();
         }
+
+
+
 
         // POST: Account/Register
         [HttpPost]
@@ -128,9 +138,8 @@ namespace Forum.Controllers
 
 
 
-
-
         // GET: Account/login
+        [HttpGet]
         public IActionResult Login()
         {
             return View();
@@ -169,6 +178,7 @@ namespace Forum.Controllers
 
 
         // POST: Account/logOut
+        [HttpGet]
         public IActionResult LogOut()
         {
             _signInManager.SignOutAsync();
@@ -180,6 +190,7 @@ namespace Forum.Controllers
 
 
         // GET: Account/Editprofile
+        [HttpGet]
         public IActionResult EditProfile()
         {
             ApplicationUser user = CurrentUser();
@@ -197,6 +208,8 @@ namespace Forum.Controllers
 
             return View(profile);
         }
+
+
 
 
         // POST: Account/Editprofile
@@ -254,8 +267,8 @@ namespace Forum.Controllers
 
 
 
-
         // GET: Account/ChangePassword
+        [HttpGet]
         public IActionResult ChangePassword()
         {
             return View();
@@ -298,6 +311,7 @@ namespace Forum.Controllers
 
 
         // GET: Account/ChangePicture
+        [HttpGet]
         public IActionResult ChangePicture()
         {
             ApplicationUser currentUser = CurrentUser();
@@ -373,6 +387,7 @@ namespace Forum.Controllers
 
 
         // Roles
+        [HttpGet]
         public IActionResult Roles()
         {
             var roles = _roleManager.Roles.ToList();
@@ -381,7 +396,9 @@ namespace Forum.Controllers
 
 
 
+
         // GET: Account/DetailRole/id
+        [HttpGet]
         public async Task<IActionResult> DetailRole(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -398,8 +415,9 @@ namespace Forum.Controllers
         }
 
 
-        
+
         // GET: Account/AddRole
+        [HttpGet]
         public IActionResult AddRole()
         {
             return View();
@@ -433,6 +451,7 @@ namespace Forum.Controllers
 
 
         // GET: Account/EditRole/id
+        [HttpGet]
         public async Task<IActionResult> EditRole(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -474,6 +493,7 @@ namespace Forum.Controllers
 
 
         // GET: Account/DeleteRole/id
+        [HttpGet]
         public async Task<ActionResult> DeleteRole(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -508,7 +528,7 @@ namespace Forum.Controllers
             IdentityResult result = await _roleManager.DeleteAsync(role);
             if (result.Succeeded)
             {
-                return RedirectToAction("Users");
+                return RedirectToAction("Roles");
             }
             foreach (var error in result.Errors)
             {

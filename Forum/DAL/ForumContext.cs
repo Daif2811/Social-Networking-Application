@@ -23,7 +23,7 @@ namespace Forum.DAL
         
         public DbSet<PostReport> PostReports { get; set; }
         public DbSet<UserReport> UserReports { get; set; }
-
+        public DbSet<SavePost> SavePosts { get; set; }
 
 
 
@@ -32,6 +32,7 @@ namespace Forum.DAL
         public DbSet<LikeReplyToComment> LikeReplyToComments { get; set; }
        
 
+        public DbSet<Follow> Follows { get; set; }
         public DbSet<Friend> Friends { get; set; }
         public DbSet<FriendRequest> FriendRequests { get; set; }
 
@@ -41,17 +42,17 @@ namespace Forum.DAL
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Post>().HasIndex(p => p.UserId);
-            builder.Entity<Post>().HasIndex(p => p.PublishDate);
-            builder.Entity<Post>().HasIndex(p => new { p.UserId, p.PublishDate });
-            builder.Entity<Comment>().HasIndex(p => p.UserId);
-            builder.Entity<Comment>().HasIndex(p => p.PostId);
-            builder.Entity<Comment>().HasIndex(p => p.PublishDate);
-            builder.Entity<Comment>().HasIndex(p => new { p.UserId, p.PublishDate });
-            builder.Entity<ReplyToComment>().HasIndex(p => p.UserId);
-            builder.Entity<ReplyToComment>().HasIndex(p => p.CommentId);
-            builder.Entity<ReplyToComment>().HasIndex(p => p.PublishDate);
-            builder.Entity<ReplyToComment>().HasIndex(p => new { p.UserId, p.PublishDate });
+            //builder.Entity<Post>().HasIndex(p => p.UserId);
+            //builder.Entity<Post>().HasIndex(p => p.PublishDate);
+            //builder.Entity<Post>().HasIndex(p => new { p.UserId, p.PublishDate });
+            //builder.Entity<Comment>().HasIndex(p => p.UserId);
+            //builder.Entity<Comment>().HasIndex(p => p.PostId);
+            //builder.Entity<Comment>().HasIndex(p => p.PublishDate);
+            //builder.Entity<Comment>().HasIndex(p => new { p.UserId, p.PublishDate });
+            //builder.Entity<ReplyToComment>().HasIndex(p => p.UserId);
+            //builder.Entity<ReplyToComment>().HasIndex(p => p.CommentId);
+            //builder.Entity<ReplyToComment>().HasIndex(p => p.PublishDate);
+            //builder.Entity<ReplyToComment>().HasIndex(p => new { p.UserId, p.PublishDate });
           
 
 

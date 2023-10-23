@@ -13,15 +13,20 @@ namespace Forum.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IFriendRepository _friendRepository;
 
-        public BlockByUserController(IBlockByUserRepository blockByUserRepository, UserManager<ApplicationUser> userManager
-            , IFriendRepository friendRepository)
+        public BlockByUserController(
+            IBlockByUserRepository blockByUserRepository,
+            UserManager<ApplicationUser> userManager,
+            IFriendRepository friendRepository)
         {
             _blockByUserRepository = blockByUserRepository;
             _userManager = userManager;
             _friendRepository = friendRepository;
         }
 
+
+
         // Get Current User
+        [HttpGet]
         public ApplicationUser CurrentUser()
         {
             //Claim userClaim = User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
@@ -37,6 +42,7 @@ namespace Forum.Controllers
 
 
         // Get All Blocked User for CurrentUser
+        [HttpGet]
         public ActionResult AllBlocks()
         {
             string currentUserId = CurrentUser().Id;
@@ -48,7 +54,8 @@ namespace Forum.Controllers
 
 
         // POST: Create Block
-        public ActionResult CreateBlock(string userId)
+        [HttpPost]
+        public async Task<ActionResult> CreateBlock(string userId)
         {
             try
             {
@@ -66,11 +73,11 @@ namespace Forum.Controllers
                     BlockDate = DateTime.Now,
                 };
 
-                _blockByUserRepository.Add(Block);
+                await _blockByUserRepository.Add(Block);
                 var friend = _friendRepository.CheckFriend(userId, currentUserId);
                 if (friend != null)
                 {
-                    _friendRepository.DeleteFriend(friend);
+                    await _friendRepository.DeleteFriend(friend);
                 }
                 else
                 {
@@ -78,14 +85,14 @@ namespace Forum.Controllers
                     if (requsetFromMe != null)
                     {
                         //_friendRepository.CancelRequest(requset.RecieverId, requset.RecieverId);
-                        _friendRepository.CancelRequest(userId, currentUserId);
+                        await _friendRepository.CancelRequest(userId, currentUserId);
                     }
                     else
                     {
                         var requsetToMe = _friendRepository.CheckRequest(currentUserId, userId);
                         if (requsetToMe != null)
                         {
-                            _friendRepository.CancelRequest(currentUserId, userId);
+                            await _friendRepository.CancelRequest(currentUserId, userId);
                         }
                     }
                 }
@@ -96,22 +103,22 @@ namespace Forum.Controllers
 
             catch (Exception ex)
             {
-                return View(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 
 
 
         // POST: Cancel Block
-        public ActionResult CancelBlock(string userId)
+        [HttpPost]
+        public async Task<ActionResult> CancelBlock(string userId)
         {
             try
             {
-
                 BlockByUser block = _blockByUserRepository.GetByUserId(userId);
                 if (block != null)
                 {
-                    _blockByUserRepository.Delete(block.Id);
+                    await _blockByUserRepository.Delete(block.Id);
                     return Json(new { success = true });
                 }
                 else
@@ -122,15 +129,9 @@ namespace Forum.Controllers
             }
             catch (Exception ex)
             {
-                return View(ex.Message);
+                return BadRequest (ex.Message);
             }
         }
-
-
-
-
-
-
 
 
     }

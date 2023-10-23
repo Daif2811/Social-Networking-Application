@@ -32,25 +32,25 @@ namespace Forum.IRepository.Repository
 
 
 
-        public void Add (PostReport postReport)
+        public async Task Add (PostReport postReport)
         {
             _context.PostReports.Add(postReport);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(PostReport postReport)
+        public async Task Update(PostReport postReport)
         {
             _context.PostReports.Update(postReport);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Delete (int id)
+        public async Task Delete (int id)
         {
             PostReport report = GetById(id);
             if (report != null)
             {
                 _context.PostReports.Remove(report);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
 
         }

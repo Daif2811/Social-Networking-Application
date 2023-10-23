@@ -10,8 +10,8 @@ namespace Forum.IRepository
         ICollection<FriendRequest> MyFriendRequests(string currentUserId);
 
         // Add and Cancel Request
-        void AddRequest(FriendRequest request);
-        void CancelRequest(string userId, string currentUserId);
+        Task AddRequest(FriendRequest request);
+        Task CancelRequest(string userId, string currentUserId);
 
         FriendRequest GetRequestById(int id);
         FriendRequest CheckRequest(string userId, string currentUserId);
@@ -19,15 +19,16 @@ namespace Forum.IRepository
 
 
         // Accept and Reject Request
-        void AcceptRequest(Friend friend);
-        void RejectRequest(FriendRequest request);
+        Task AcceptRequest(Friend friend);
+        Task RejectRequest(FriendRequest request);
 
 
 
         // Friends  and  check fiend  and (Delete) Unfriend
         ICollection<Friend> MyFriends(string userId);
         Friend CheckFriend(string userId, string currentUserId);
-        void DeleteFriend(Friend friend);
+        bool CheckIfFriend(string userId, string currentUserId);
+        Task DeleteFriend(Friend friend);
         Friend GetFriendById(int id);
 
 

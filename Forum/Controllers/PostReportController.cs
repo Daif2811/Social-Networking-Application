@@ -13,7 +13,10 @@ namespace Forum.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IPostRepository _postRepository;
 
-        public PostReportController(IPostReportRepository postReportRepository, UserManager<ApplicationUser> userManager, IPostRepository postRepository)
+        public PostReportController(
+            IPostReportRepository postReportRepository,
+            UserManager<ApplicationUser> userManager,
+            IPostRepository postRepository)
         {
             _postReportRepository = postReportRepository;
             _userManager = userManager;
@@ -21,6 +24,9 @@ namespace Forum.Controllers
         }
 
 
+
+        // Get CurrentUser
+        [HttpGet]
         public ApplicationUser CurrentUser()
         {
             Claim UserClaim = User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
@@ -31,21 +37,22 @@ namespace Forum.Controllers
 
 
 
-
-
-        public ActionResult AllPostReports()
+        // Get All Post Reports
+        [HttpGet]
+        public IActionResult AllPostReports()
         {
             var reports = _postReportRepository.GetAllReports();
             return View(reports);
         }
 
-        
+
 
 
         // Create Report
-        public async Task<ActionResult> AddReport(int postId)
+        [HttpGet]
+        public IActionResult AddReport(int postId)
         {
-            Post post = await _postRepository.GetById(postId);
+            Post post = _postRepository.GetById(postId);
             if (post == null)
             {
                 return BadRequest();
@@ -57,10 +64,10 @@ namespace Forum.Controllers
         }
 
 
-        // Create Report
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddReport(string SelectedType)
+        public async Task<IActionResult> AddReport(string SelectedType)
         {
             try
             {
@@ -71,7 +78,7 @@ namespace Forum.Controllers
                 report.PostId = postId;
                 report.Type = SelectedType;
 
-                _postReportRepository.Add(report);
+               await _postReportRepository.Add(report);
             }
             catch (Exception ex)
             {

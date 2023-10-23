@@ -22,6 +22,15 @@
                 <textarea name="content" style="min-height:100px;" class="form-control col-12" placeholder="Publish new post here @ViewBag.CurrentUser.UserName"></textarea>
             </div>
 
+            <div class="form-group m-3 row">
+                <select name="Audience" class="form-select">
+                    @foreach (Audience item in Enum.GetValues(typeof(Audience)))
+                    {
+                        <option value="@item.ToString()">@item.ToString()</option>
+                    }
+                </select>
+            </div>
+            
             <div class="form-group m-3">
                 <input name="image" type="file" class="form-control" />
             </div>
@@ -74,17 +83,14 @@
             </div>
 
 
-                <!-- List of options for post-->
-                <!-- The Modal -->
+            <!-- Modal of options for post-->
             <div class="col-sm-2">
 
                 <div class="container mt-1">
                     <button type="button" class="btn btn-outline-primary border-0" data-bs-toggle="modal" data-bs-target="#modal_@item.Id">
-                       <strong>...</strong>
+                        <strong>...</strong>
                     </button>
                 </div>
-
-
 
                 <div class="modal fade" id="modal_@item.Id">
                     <div class="modal-dialog">
@@ -100,15 +106,32 @@
                             <div class="modal-body">
                                 <ul class="list-unstyled text-center ">
                                     @if (item.UserId == userId)
-                                    {     
-                                        <li><a asp-action="Edit" asp-controller="Post" asp-route-id="@item.Id">Edit</a></li>
-                                        <li><a asp-action="Delete" asp-controller="Post" asp-route-id="@item.Id">Delete</a></li>
-                                        <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
-                                        <li><a onclick="copyURLToClipboard()" href="#">Copy URL</a></li>
-                                    }     
-                                    else  
                                     {
-                                        <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
+                                        <li><a asp-action="Edit" asp-controller="Post" asp-route-id="@item.Id">Edit</a></li>
+                                        //<li><button data-bs-toggle="modal" data-bs-target="#delete_@item.Id">Delete</button></li>
+                                        <li><a asp-action="Delete" asp-controller="Post" asp-route-id="@item.Id">Delete</a></li>
+                                        if (ViewBag.SavedPost == true)
+                                        {
+                                            <li><button data-postid="@item.Id" class="unsave-post-button">Un Save Post</button></li>
+                                        }
+                                        else
+                                        {
+                                            <li><button data-postid="@item.Id" class="save-post-button">Save Post</button></li>
+
+                                        }
+                                        <li><a onclick="copyURLToClipboard()" href="#">Copy URL</a></li>
+                                    }
+                                    else
+                                    {
+                                        if (ViewBag.SavedPost == true)
+                                        {
+                                            <li><button data-postid="@item.Id" class="unsave-post-button">Un Save Post</button></li>
+                                        }
+                                        else
+                                        {
+                                            <li><button data-postid="@item.Id" class="save-post-button">Save Post</button></li>
+
+                                        }
                                         <li><a asp-action="AddReport" asp-controller="PostReport" asp-route-postId="@item.Id">Report</a></li>
                                         <li><a asp-action="#" asp-route-id="@item.Id">Hide Post</a></li>
                                         <li><a onclick="copyURLToClipboard()" href="#">Copy URL</a></li>
@@ -124,6 +147,9 @@
                         </div>
                     </div>
                 </div>
+
+
+
 
 
             </div>
@@ -200,15 +226,15 @@
         </div>
         <br />
 
-        
+
 
 
 
         <!-- Buttons under posts -->
         <div class="container">
-            
+
             <a asp-action="PostLikeUsers" asp-controller="Like" asp-route-id="@item.Id" style="text-decoration:none; color:indigo;">@item.LikeCount Likes </a> - <a asp-action="ShowComments" asp-route-postId="@item.Id" style="text-decoration:none;"> @item.CommentCount Comments</a>
-            
+
             <div class="row">
                 <div class="col-sm-2 row">
                     @if (User.Identity.IsAuthenticated)
@@ -260,7 +286,7 @@
                         if (data.success) {
                             // Toggle the button's class to indicate the like status
                             button.toggleClass("like-button unlike-button");
-
+                          
                             if (button.hasClass("like-button")) {
                                 button.text("Like");
 
@@ -278,12 +304,76 @@
                 });
             });
 
+
+            // Delete Post button
+            $(".delete-post-button").click(function () {
+                var id = $(this).data("id");
+                var button = $(this);
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Post/Delete/" + id,
+                    success: function (data) {
+                        if (data.success) {
+                            alert("Deleted successfully")
+                            location.reload();
+                        }
+                        else {
+                            console.error("Something went wrong.");
+                            alert("Something went wrong.")
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.error("Error:", errorThrown);
+                    }
+                });
+            });
+
+
+
+            // Save Post Button
+            $(".save-post-button, .unsave-post-button").click(function () {
+                var postId = $(this).data("postid");
+                var actionUrl = $(this).hasClass("save-post-button") ? "/SavePost/SavePost" : "/SavePost/CancelSave";
+                var button = $(this);
+
+                $.ajax({
+                    type: "POST",
+                    url: actionUrl + "?postId=" + postId,
+                    success: function (data) {
+                        if (data.success) {
+                            // Toggle the button's class to indicate the like status
+                            button.toggleClass("save-post-button unsave-post-button");
+                            alert("Operation was successful!");
+                           // location.reload();
+
+                            if (button.hasClass("save-post-button")) {
+                                button.text("Save Post");
+
+                            }
+                            else {
+                                button.text("Un Save Post");
+                            }
+
+                        } else {
+                            alert("Operation failed.");
+                            console.error("Something went wrong.");
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.error("Error:", errorThrown);
+                    }
+                });
+            });
+
+
+
         });
 
 
 
     </script>
 
-      
+
 
     }

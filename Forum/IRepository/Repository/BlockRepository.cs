@@ -17,7 +17,7 @@ namespace Forum.IRepository.Repository
 
         public ICollection<BlockByAdmin> GetAll()
         {
-          var blocks =  _context.BlocksByAdmins.Include(a => a.User).ToList();
+            var blocks = _context.BlocksByAdmins.Include(a => a.User).ToList();
             return blocks;
         }
 
@@ -29,32 +29,32 @@ namespace Forum.IRepository.Repository
         {
             return _context.BlocksByAdmins.FirstOrDefault(a => a.Id == id);
         }
-        
+
         public BlockByAdmin GetByUserId(string userId)
         {
             return _context.BlocksByAdmins.FirstOrDefault(a => a.UserId == userId);
         }
-        
+
         public bool CheckBlock(string userId)
         {
             return _context.BlocksByAdmins.Any(a => a.UserId == userId);
         }
-        public void Add(BlockByAdmin blockByAdmin)
+        public async Task Add(BlockByAdmin blockByAdmin)
         {
-           _context.BlocksByAdmins.Add(blockByAdmin);
-           _context.SaveChanges();
+            _context.BlocksByAdmins.Add(blockByAdmin);
+            await _context.SaveChangesAsync();
         }
-        public void Update(BlockByAdmin blockByAdmin)
+        public async Task Update(BlockByAdmin blockByAdmin)
         {
             _context.BlocksByAdmins.Update(blockByAdmin);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-           BlockByAdmin block = GetById(id);
+            BlockByAdmin block = GetById(id);
             _context.BlocksByAdmins.Remove(block);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
 
@@ -92,25 +92,25 @@ namespace Forum.IRepository.Repository
         }
         public bool CheckBlock(string currentUserId, string userId)
         {
-            return _context.BlocksByUsers.Any (a => a.UserId == currentUserId && a.BlockerId == userId);
+            return _context.BlocksByUsers.Any(a => a.UserId == currentUserId && a.BlockerId == userId);
         }
 
-        public void Add(BlockByUser blockByUser)
+        public async Task Add(BlockByUser blockByUser)
         {
             _context.BlocksByUsers.Add(blockByUser);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-        public void Update(BlockByUser blockByUser)
+        public async Task Update(BlockByUser blockByUser)
         {
             _context.BlocksByUsers.Update(blockByUser);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
             BlockByUser block = GetById(id);
             _context.BlocksByUsers.Remove(block);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

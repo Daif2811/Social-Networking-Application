@@ -9,9 +9,9 @@ namespace Forum.IRepository
         ICollection<PostReport> GetPostsByUserId(string userId);
         PostReport GetById(int id);
 
-        void Add(PostReport postReport);
-        void Update(PostReport postReport);
-        void Delete(int id);
+        Task Add(PostReport postReport);
+        Task Update(PostReport postReport);
+        Task Delete(int id);
     }
 
 
@@ -24,8 +24,8 @@ namespace Forum.IRepository
         UserReport GetById(int id);
 
 
-        void Add(UserReport userReport);
-        void Update(UserReport userReport);
-        void Delete(int id);
+        Task Add(UserReport userReport);
+        Task Update(UserReport userReport);
+        Task Delete(int id);
     }
 }

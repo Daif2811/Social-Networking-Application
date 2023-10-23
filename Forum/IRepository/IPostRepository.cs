@@ -8,9 +8,9 @@ namespace Forum.IRepository
         ICollection<Post> GetAll();
         ICollection<Post> Search(string searchName);
         ICollection<Post> Profile(string userId);
-        Task<Post> GetById(int id);
-        void Add(Post post, IFormFile image);
-        Task Update( Post post, IFormFile image);
+        Post GetById(int id);
+        Task Add(Post post);
+        Task Update( Post post);
         Task Delete(int id);
 
 

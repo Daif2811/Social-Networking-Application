@@ -9,9 +9,9 @@ namespace Forum.IRepository
         BlockByAdmin GetById(int id);
         BlockByAdmin GetByUserId(string userId);
         bool CheckBlock(string userId);
-        void Add (BlockByAdmin blockByAdmin);
-        void Update (BlockByAdmin blockByAdmin);
-        void Delete (int id);
+        Task Add (BlockByAdmin blockByAdmin);
+        Task Update (BlockByAdmin blockByAdmin);
+        Task Delete (int id);
     }
     
     
@@ -22,9 +22,9 @@ namespace Forum.IRepository
         BlockByUser GetById (int id);
         BlockByUser GetByUserId(string userId);
         bool CheckBlock(string currentUserId , string userId);
-        void Add (BlockByUser blockByUser);
-        void Update (BlockByUser blockByUser);
-        void Delete (int id);
+        Task Add (BlockByUser blockByUser);
+        Task Update (BlockByUser blockByUser);
+        Task Delete (int id);
 
     }
 }

@@ -14,7 +14,9 @@ namespace Forum.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IBlockByUserRepository _blockByUserRepository;
 
-        public FriendController(IFriendRepository friendRepository, UserManager<ApplicationUser> userManager,
+        public FriendController(
+            IFriendRepository friendRepository,
+            UserManager<ApplicationUser> userManager,
             IBlockByUserRepository blockByUserRepository)
         {
             _friendRepository = friendRepository;
@@ -28,6 +30,7 @@ namespace Forum.Controllers
 
 
         // Get Current User
+        [HttpGet]
         public ApplicationUser CurrentUser()
         {
             //// Way to get UserId
@@ -41,6 +44,9 @@ namespace Forum.Controllers
             return currentUser;
         }
 
+
+        // check block
+        [HttpGet]
         public bool BlockedByUser(string userId)
         {
             bool blocked = _blockByUserRepository.CheckBlock(CurrentUser().Id, userId);
@@ -56,7 +62,8 @@ namespace Forum.Controllers
 
 
         // Add Request
-        public IActionResult AddRequest(string userId)
+        [HttpPost]
+        public async Task<IActionResult> AddRequest(string userId)
         {
             bool blocked = BlockedByUser(userId);
             if (!blocked)
@@ -75,7 +82,7 @@ namespace Forum.Controllers
 
                 };
 
-                _friendRepository.AddRequest(request);
+                await _friendRepository.AddRequest(request);
                 return Json(new { success = true });
             }
             return Json(new { success = false });
@@ -83,8 +90,10 @@ namespace Forum.Controllers
         }
 
 
+
         // Cancel Request
-        public IActionResult CancelRequest(string userId)
+        [HttpPost]
+        public async Task<IActionResult> CancelRequest(string userId)
         {
             if (string.IsNullOrEmpty(userId))
             {
@@ -93,40 +102,17 @@ namespace Forum.Controllers
 
             ApplicationUser currentUser = CurrentUser();
 
-            _friendRepository.CancelRequest(userId, currentUser.Id);
+            await _friendRepository.CancelRequest(userId, currentUser.Id);
             return Json(new { success = true });
         }
-
 
 
         // Accept and Reject Request
-        public IActionResult AcceptRequest(int id, bool accept)
-        {
-            FriendRequest request = _friendRepository.GetRequestById(id);
-            // If Accept
-            if (accept == true)
-            {
-                Friend friend = new Friend()
-                {
-                    UserOneId = request.SenderId,
-                    UserTwoId = request.RecieverId,
-                };
-                // Add friend and delete request
-                _friendRepository.AcceptRequest(friend);
-                _friendRepository.RejectRequest(request);
+      
 
-            }
-            else
-            {
-                // if Reject 
-                // Delete request
-                _friendRepository.RejectRequest(request);
-            }
-            return Json(new { success = true });
-        }
-
-
-        public IActionResult AcceptRequestOnProfile(string userId, bool accept)
+        // Accept and Reject Request on profile
+        [HttpPost]
+        public async Task<IActionResult> AcceptRequest(string userId, bool accept)
         {
             string currentUserId = CurrentUser().Id;
             FriendRequest request = _friendRepository.CheckRequest(currentUserId, userId);
@@ -139,24 +125,22 @@ namespace Forum.Controllers
                     UserTwoId = request.RecieverId,
                 };
                 // Add friend and delete request
-                _friendRepository.AcceptRequest(friend);
-                _friendRepository.RejectRequest(request);
+               await _friendRepository.AcceptRequest(friend);
+               await _friendRepository.RejectRequest(request);
 
             }
             else
             {
                 // if Reject 
                 // Delete request
-                _friendRepository.RejectRequest(request);
+                await _friendRepository.RejectRequest(request);
             }
             return Json(new { success = true });
         }
 
 
-
-
-
         // All Request to me
+        [HttpGet]
         public IActionResult MyRequest()
         {
             ApplicationUser currentUser = CurrentUser();
@@ -165,9 +149,8 @@ namespace Forum.Controllers
         }
 
 
-
-
         // All Request to other
+        [HttpGet]
         public IActionResult RequestFromMe()
         {
             ApplicationUser currentUser = CurrentUser();
@@ -177,17 +160,12 @@ namespace Forum.Controllers
 
 
 
-        // All My friends
-        public IActionResult MyFriend()
-        {
-            ApplicationUser currentUser = CurrentUser();
-            var friends = _friendRepository.MyFriends(currentUser.Id);
-            return View(friends);
-        }
+
 
 
         // UnFriend someone
-        public IActionResult DeleteFriend(int id)
+        [HttpGet]
+        public async Task<IActionResult> DeleteFriend(int id)
         {
             var friend = _friendRepository.GetFriendById(id);
             if (friend == null)
@@ -195,10 +173,14 @@ namespace Forum.Controllers
                 return BadRequest();
             }
 
-            _friendRepository.DeleteFriend(friend);
+            await _friendRepository.DeleteFriend(friend);
             return RedirectToAction("MyFriend");
         }
-        public IActionResult RemoveFriend(string userId)
+
+
+        // UnFriend from someone profile 
+        [HttpGet]
+        public async Task<IActionResult> RemoveFriend(string userId)
         {
             string currentUserId = CurrentUser().Id;
             var friend = _friendRepository.CheckFriend(userId, currentUserId);
@@ -207,11 +189,21 @@ namespace Forum.Controllers
                 return BadRequest();
             }
 
-            _friendRepository.DeleteFriend(friend);
+            await _friendRepository.DeleteFriend(friend);
             return RedirectToAction("ProfileSomeOne", "Post", new { userId });
         }
 
 
 
+        // All My friends
+        [HttpGet]
+        public IActionResult MyFriend()
+        {
+            ApplicationUser currentUser = CurrentUser();
+            var friends = _friendRepository.MyFriends(currentUser.Id);
+            return View(friends);
+        }
+
     }
 }
+

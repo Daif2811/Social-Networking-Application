@@ -11,12 +11,16 @@ namespace Forum.Controllers
         private readonly IUserReportRepository _userReportRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public UserReportController(IUserReportRepository userReportRepository, UserManager<ApplicationUser> userManager)
+        public UserReportController(
+            IUserReportRepository userReportRepository,
+            UserManager<ApplicationUser> userManager)
         {
             _userReportRepository = userReportRepository;
             _userManager = userManager;
         }
-        
+
+        // Get CurrentUser
+        [HttpGet]
         public ApplicationUser CurrentUser()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -25,6 +29,9 @@ namespace Forum.Controllers
         }
 
 
+
+        // Get All User reports
+        [HttpGet]
         public IActionResult AllUserReports()
         {
             var reports = _userReportRepository.GetAllReports();
@@ -34,6 +41,8 @@ namespace Forum.Controllers
 
 
 
+
+        // Add Report
         [HttpGet]
         public IActionResult AddReport(string userId)
         {
@@ -45,7 +54,7 @@ namespace Forum.Controllers
 
         [HttpPost, ActionName("AddReport")]
         [ValidateAntiForgeryToken]
-        public IActionResult ConfirmAddReport(string selectedType)
+        public async Task<IActionResult> ConfirmAddReport(string selectedType)
         {
             ApplicationUser currentUser = CurrentUser();
             UserReport report = new UserReport();
@@ -54,7 +63,7 @@ namespace Forum.Controllers
             report.ReporterId = currentUser.Id;
             report.UserId = userId;
 
-            _userReportRepository.Add(report);
+           await _userReportRepository.Add(report);
             return Json(new { success = true });
         }
 

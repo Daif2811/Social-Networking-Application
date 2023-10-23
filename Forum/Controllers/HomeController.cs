@@ -13,24 +13,34 @@ namespace Forum.Controllers
         private readonly IPostRepository _postRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public HomeController(ILogger<HomeController> logger, IPostRepository postRepository, UserManager<ApplicationUser> userManager)
+        public HomeController(
+            ILogger<HomeController> logger,
+            IPostRepository postRepository,
+            UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
             _postRepository = postRepository;
             _userManager = userManager;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             ViewBag.url = TempData["url"];
             return View();
         }
 
+
+        [HttpGet]
         public IActionResult Privacy()
         {
             return View();
         }
 
+
+
+        // Get Current URL
+        [HttpGet]
         public IActionResult CaptureCurrentURL()
         {
             // Get the current URL
@@ -40,12 +50,16 @@ namespace Forum.Controllers
 
             // You can use currentUrl as needed
             // ...
-            TempData["url"] =  ViewBag.CurrentURL = currentUrl;
+            TempData["url"] = ViewBag.CurrentURL = currentUrl;
 
             return RedirectToAction("Index");
         }
 
 
+
+
+        //// Search
+        //[HttpGet]
         //public IActionResult Search(string searchName)
         //{
         //    if (!string.IsNullOrEmpty(searchName))
@@ -69,11 +83,7 @@ namespace Forum.Controllers
 
 
 
-        public IActionResult BlockedPage()
-        {
-            return View();
-        }
-
+      
 
     }
 }

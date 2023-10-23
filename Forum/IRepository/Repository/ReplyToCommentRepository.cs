@@ -12,17 +12,17 @@ namespace Forum.IRepository.Repository
         {
             _context = context;
         }
-        public async Task<ICollection<ReplyToComment>> GetAll(int commentId)
+        public ICollection<ReplyToComment> GetAll(int commentId)
         {
-           var replies = await _context.ReplyToComments
+           var replies =_context.ReplyToComments
                 .Include(a => a.Comment).ThenInclude(a => a.User)
-                .ToListAsync();
+                .ToList();
             return replies;
         }
 
-        public async Task<ReplyToComment> GetById(int id)
+        public ReplyToComment GetById(int id)
         {
-            var reply = await _context.ReplyToComments.Where(a => a.Id == id).Include(a => a.Comment).ThenInclude(a => a.User).SingleOrDefaultAsync();
+            var reply =  _context.ReplyToComments.Where(a => a.Id == id).Include(a => a.Comment).ThenInclude(a => a.User).SingleOrDefault();
             return reply;
         }
 
@@ -42,7 +42,7 @@ namespace Forum.IRepository.Repository
 
         public async Task Delete(int id)
         {
-            ReplyToComment reply = await GetById(id);
+            ReplyToComment reply = GetById(id);
             _context.ReplyToComments.Remove(reply);
             await _context.SaveChangesAsync();
         }

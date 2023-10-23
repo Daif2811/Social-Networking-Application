@@ -13,7 +13,10 @@ namespace Forum.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IBlockByAdminRepository _blockByAdminRepository;
 
-        public CommentController(ICommentRepository commentRepository, IPostRepository postRepository, UserManager<ApplicationUser> userManager,
+        public CommentController(
+            ICommentRepository commentRepository,
+            IPostRepository postRepository,
+            UserManager<ApplicationUser> userManager,
             IBlockByAdminRepository blockByAdminRepository)
         {
             _commentRepository = commentRepository;
@@ -22,7 +25,9 @@ namespace Forum.Controllers
             _blockByAdminRepository = blockByAdminRepository;
         }
 
+
         // Get CurrentUser
+        [HttpGet]
         public ApplicationUser CurrentUser()
         {
             //Claim userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
@@ -35,9 +40,8 @@ namespace Forum.Controllers
 
 
 
-
-
         // Add Comment
+        [HttpPost]
         public async Task<IActionResult> AddComment(int postId, string commentText)
         {
             try
@@ -65,7 +69,7 @@ namespace Forum.Controllers
                             PublishDate = DateTime.Now
                         };
 
-                        Post post = await _postRepository.GetById(postId);
+                        Post post = _postRepository.GetById(postId);
                         post.CommentCount++;
 
                         await _commentRepository.Add(comment);
@@ -75,25 +79,26 @@ namespace Forum.Controllers
             }
             catch (Exception ex)
             {
-                return View(ex.Message);
+                return BadRequest(ex.Message);
             }
             return RedirectToAction("ShowComments", "Post", new { postId });
         }
 
 
 
-
-
         // Edit Comment
-        public async Task<IActionResult> Edit(int id)
+        [HttpGet]
+        public IActionResult Edit(int id)
         {
-            Comment comment = await _commentRepository.GetById(id);
+            Comment comment = _commentRepository.GetById(id);
             if (comment == null)
             {
                 return NotFound();
             }
             return View(comment);
         }
+
+
 
         [HttpPost]
         public async Task<IActionResult> Edit(Comment comment)
@@ -120,13 +125,11 @@ namespace Forum.Controllers
 
 
 
-
-
-
         // Delete Comment
-        public async Task<IActionResult> Delete(int id)
+        [HttpGet]
+        public IActionResult Delete(int id)
         {
-            Comment comment = await _commentRepository.GetById(id);
+            Comment comment = _commentRepository.GetById(id);
             if (comment == null)
             {
                 return NotFound();
@@ -134,17 +137,20 @@ namespace Forum.Controllers
             return View(comment);
         }
 
+
+
+
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> ConfirmDelete(int id)
         {
-            Comment comment = await _commentRepository.GetById(id);
+            Comment comment = _commentRepository.GetById(id);
             if (comment == null)
             {
                 return NotFound();
             }
 
             // Get post id to delete count of comment and reply from post comment count
-            Post post = await _postRepository.GetById(comment.PostId);
+            Post post = _postRepository.GetById(comment.PostId);
 
             post.CommentCount -= (comment.ReplyToComments.Count + 1);
 

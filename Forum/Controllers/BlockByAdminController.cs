@@ -12,13 +12,17 @@ namespace Forum.Controllers
         private readonly IBlockByAdminRepository _blockByAdminRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public BlockByAdminController(IBlockByAdminRepository blockByAdminRepository, UserManager<ApplicationUser> userManager)
+        public BlockByAdminController(
+            IBlockByAdminRepository blockByAdminRepository,
+            UserManager<ApplicationUser> userManager)
         {
             _blockByAdminRepository = blockByAdminRepository;
             _userManager = userManager;
         }
 
 
+        // Get CurrentUser
+        [HttpGet]
         public ApplicationUser CurrentUser()
         {
             //Claim userClaim = User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
@@ -33,16 +37,18 @@ namespace Forum.Controllers
 
 
 
-
-
         // GET: BlockByAdminController
+        [HttpGet]
         public ActionResult AllBlocks()
         {
             var blocks = _blockByAdminRepository.GetAll();
             return View(blocks);
         }
 
+
+
         // GET: BlockByAdminController/Details/5
+        [HttpGet]
         public ActionResult Details(int id)
         {
             BlockByAdmin block = _blockByAdminRepository.GetById(id);
@@ -50,10 +56,11 @@ namespace Forum.Controllers
         }
 
 
+
         // POST: BlockByAdminController/Create
-        //[HttpPost]
        // [ValidateAntiForgeryToken]
-        public ActionResult CreateBlock(string userId)
+        [HttpPost]
+        public async Task<ActionResult> CreateBlock(string userId)
         {
             try
             {
@@ -73,9 +80,8 @@ namespace Forum.Controllers
                     BlockDate = DateTime.Now,
                 };
 
-                _blockByAdminRepository.Add(Block);
+                await _blockByAdminRepository.Add(Block);
                 return Json(new { success = true });
-
             }
 
             catch (Exception ex)
@@ -87,15 +93,15 @@ namespace Forum.Controllers
 
 
         // POST: BlockByAdminController/Delete/5
-
-        public ActionResult CancelBlock(string userId)
+        [HttpPost]
+        public async Task<ActionResult> CancelBlock(string userId)
         {
             try
             {
                 BlockByAdmin block = _blockByAdminRepository.GetByUserId(userId);
                 if (block != null)
                 {
-                    _blockByAdminRepository.Delete(block.Id);
+                    await _blockByAdminRepository.Delete(block.Id);
                     return Json(new {success = true});
                 }
                 else
@@ -108,5 +114,7 @@ namespace Forum.Controllers
                 return View(ex.Message);
             }
         }
+
+
     }
 }
