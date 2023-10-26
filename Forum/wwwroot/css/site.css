@@ -196,9 +196,9 @@ body {
     top: 55px;
     left: 0px;
     height: 100%;
-    overflow-y: scroll;
+    overflow-x: scroll;
     transition: 0.3s;
-    background-color: #A9A9A9;
+    background-color: #731af3;
 }
 
 /* Style for the main content area */
@@ -223,7 +223,7 @@ body {
 /* Style for the links */
 .sidenav a {
     text-decoration: none;
-    color: #333;
+    color: #fff;
     display: block;
     transition: color 0.3s;
     padding: 10px;
@@ -231,7 +231,7 @@ body {
 
     /* Hover effect for links */
     .sidenav a:hover {
-        color: #2F4F4F;
+        color:#000;
         background-color: #FFFAF0;
     }
 

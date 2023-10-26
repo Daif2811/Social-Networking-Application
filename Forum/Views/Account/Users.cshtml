@@ -5,8 +5,12 @@
 }
 
 
-<h1 class="bg-dark text-center text-light p-2">All Blocked Users</h1>
+<h3 class="bg-dark text-center text-light p-2 mb-3">All Users</h3>
+<hr />
 
+
+<a asp-action="AddUser" asp-controller="Account" class="btn btn-primary">Add New User</a>
+<hr />
 
 
 <div id="photoModal" class="modal text-xl-center">
@@ -70,7 +74,9 @@
 
 
 @section Scripts {
-
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script>
 
         var photo = document.getElementById("photo");

@@ -4,11 +4,10 @@
     ViewData["Title"] = "EditProfile";
 }
 
-<h2>Edit Profile</h2>
-
-
+<h3 class="bg-dark text-center text-light p-2 mb-3">Edit Profile</h3>
 <hr />
-<div>
+
+
     <div>
         <form asp-action="EditProfile" enctype="multipart/form-data" method="post" class="row">
             <div asp-validation-summary="All" class="text-danger"></div>
@@ -59,11 +58,13 @@
             
         </form>
     </div>
-</div>
+
 
 
 @section Scripts {
-
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script>
 
         var photo = document.getElementById("photo");

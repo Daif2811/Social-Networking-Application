@@ -12,15 +12,18 @@ namespace Forum.Controllers
         private readonly IBlockByUserRepository _blockByUserRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IFriendRepository _friendRepository;
+        private readonly IFollowRepository _followRepository;
 
         public BlockByUserController(
             IBlockByUserRepository blockByUserRepository,
             UserManager<ApplicationUser> userManager,
-            IFriendRepository friendRepository)
+            IFriendRepository friendRepository,
+            IFollowRepository followRepository)
         {
             _blockByUserRepository = blockByUserRepository;
             _userManager = userManager;
             _friendRepository = friendRepository;
+            _followRepository = followRepository;
         }
 
 
@@ -74,28 +77,35 @@ namespace Forum.Controllers
                 };
 
                 await _blockByUserRepository.Add(Block);
+
+                var followedByMe = _followRepository.GetByUserId(userId, currentUserId);
+                var followedToMe = _followRepository.GetByUserId(currentUserId, userId);
                 var friend = _friendRepository.CheckFriend(userId, currentUserId);
+                var requsetFromMe = _friendRepository.CheckRequest(userId, currentUserId);
+                var requsetToMe = _friendRepository.CheckRequest(currentUserId, userId);
+
+                if (followedByMe != null)
+                {
+                    await _followRepository.Delete(followedByMe.Id);
+                }
+                if (followedToMe != null)
+                {
+                    await _followRepository.Delete(followedToMe.Id);
+                }
                 if (friend != null)
                 {
                     await _friendRepository.DeleteFriend(friend);
                 }
-                else
+                if (requsetFromMe != null)
                 {
-                    var requsetFromMe = _friendRepository.CheckRequest(userId, currentUserId);
-                    if (requsetFromMe != null)
-                    {
-                        //_friendRepository.CancelRequest(requset.RecieverId, requset.RecieverId);
-                        await _friendRepository.CancelRequest(userId, currentUserId);
-                    }
-                    else
-                    {
-                        var requsetToMe = _friendRepository.CheckRequest(currentUserId, userId);
-                        if (requsetToMe != null)
-                        {
-                            await _friendRepository.CancelRequest(currentUserId, userId);
-                        }
-                    }
+                    await _friendRepository.CancelRequest(userId, currentUserId);
                 }
+                if (requsetToMe != null)
+                {
+                    await _friendRepository.CancelRequest(currentUserId, userId);
+                }
+
+
 
                 return Json(new { success = true });
 
@@ -103,7 +113,7 @@ namespace Forum.Controllers
 
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { error = ex.Message });
             }
         }
 
@@ -129,7 +139,7 @@ namespace Forum.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest (ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 

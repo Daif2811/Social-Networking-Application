@@ -3,12 +3,11 @@
     ViewData["Title"] = "DeleteRole";
 }
 
-<h1>DeleteRole</h1>
+<h3 class="bg-dark text-center text-light p-2 mb-3">Delete Role</h3>
 
-<h3>Are you sure you want to delete this?</h3>
+<h5>Are you sure you want to delete this?</h5>
+<hr />
 <div>
-    <h4>RoleViewModel</h4>
-    <hr />
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
@@ -35,3 +34,9 @@
         <a asp-action="Roles" class="btn btn-outline-primary">Roles</a>
     </form>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

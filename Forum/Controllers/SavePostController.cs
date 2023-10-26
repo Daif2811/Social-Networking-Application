@@ -51,11 +51,23 @@ namespace Forum.Controllers
             string currentUserId = CurrentUser().Id;
             foreach (var item in _savePostRepository.GetAllByUserId(currentUserId))
             {
-                bool blocked = _blockByUserRepository.CheckBlock(currentUserId, item.Post.UserId);
                 // Check Blocked by Post publisher
+                bool blocked = _blockByUserRepository.CheckBlock(currentUserId, item.Post.UserId);
+
 
                 // Check If Friends
                 bool friend = _friendRepository.CheckIfFriend(item.Post.UserId, currentUserId);
+
+
+                bool saved = _savePostRepository.CheckSave(item.PostId, currentUserId);
+                if (saved)
+                {
+                    ViewBag.SavedPost = true;
+                }
+                else
+                {
+                    ViewBag.SavedPost = false;
+                }
 
 
                 if ((blocked == false && friend == true && item.Post.Audience == "Friends") ||
@@ -80,13 +92,18 @@ namespace Forum.Controllers
             try
             {
                 string currentUserId = CurrentUser().Id;
-                SavePost post = new SavePost()
+                bool CheckSave = _savePostRepository.CheckSave(postId, currentUserId);
+                if (!CheckSave)
                 {
-                    PostId = postId,
-                    UserId = currentUserId
-                };
+                    SavePost post = new SavePost()
+                    {
+                        PostId = postId,
+                        UserId = currentUserId
+                    };
 
-                await _savePostRepository.Add(post);
+                    await _savePostRepository.Add(post);
+
+                }
                 return Json(new { success = true });
             }
             catch (Exception ex)
@@ -98,7 +115,7 @@ namespace Forum.Controllers
 
 
         // Cancel Save
-        [HttpGet]
+
         public async Task<IActionResult> CancelSave(int postId)
         {
             try

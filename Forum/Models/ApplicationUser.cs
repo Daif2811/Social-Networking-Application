@@ -11,4 +11,7 @@ namespace Forum.Models
 
         public virtual ICollection<Post> Posts { get; set; }
     }
+
+
+  
 }

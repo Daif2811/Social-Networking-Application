@@ -1,6 +1,6 @@
 ﻿@model ApplicationUser
 
-<h1>Change Picture</h1>
+<h3 class="bg-dark text-center text-light p-2 mb-3">Change Picture</h3>
 
 
 
@@ -42,7 +42,9 @@
 
 
 @section Scripts {
-
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script>
 
         var photo = document.getElementById("photo");
@@ -61,4 +63,5 @@
         });
     </script>
 }
+
 

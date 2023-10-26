@@ -4,11 +4,9 @@
     ViewData["Title"] = "Create";
 }
 
-<h1 class="text-center bg-black text-light">New Post</h1>
-
+<h3 class="text-center bg-black text-light p-2 m-3">New Post</h3>
 <hr />
 
-<div>
     <div>
         <form asp-action="Create" enctype="multipart/form-data" method="post" class="container">
             <div asp-validation-summary="All" class="text-danger"></div>
@@ -46,7 +44,7 @@
             </div>
         </form>
     </div>
-</div>
+
 
 @section Scripts {
     @{

@@ -122,42 +122,11 @@
 
                                         if (ViewBag.BlockedByAdmin == true)
                                         {
-                                            if (ViewBag.Found == "Friend")
-                                            {
-                                                <li><button data-userid="@ViewBag.User.Id" class="user-unfollow-button">Cancel Follow</button></li>
-                                                <li><button data-userid="@ViewBag.User.Id" class="admin-unblock-button">Cancel Block</button></li>
-                                            }
-                                            if (ViewBag.Found == "MyRequest" || ViewBag.Found == "NoRequest")
-                                            {
-                                                <li><button data-userid="@ViewBag.User.Id" class="user-follow-button">Follow</button></li>
-                                                <li><button data-userid="@ViewBag.User.Id" class="admin-unblock-button">Cancel Block</button></li>
-                                            }
-                                            if (ViewBag.Found == "HisRequest")
-                                            {
-                                                <li><button data-userid="@ViewBag.User.Id" class="user-follow-button">Follow</button></li>
-                                                <li><button data-userid="@ViewBag.User.Id" class="admin-unblock-button">Cancel Block</button></li>
-                                            }
-                                            <li><a asp-action="AddReport" asp-controller="UserReport" asp-route-userId="@ViewBag.User.Id">Report</a></li>
+                                            <li><button data-userid="@ViewBag.User.Id" class="admin-unblock-button">Cancel Block</button></li>
                                         }
                                         else
                                         {
-                                            if (ViewBag.Found == "Friend")
-                                            {
-                                                <li><button data-userid="@ViewBag.User.Id" class="user-unfollow-button">Cancel Follow</button></li>
-                                                <li><button data-userid="@ViewBag.User.Id" class="admin-block-button">Block</button></li>
-                                            }
-                                            if (ViewBag.Found == "MyRequest" || ViewBag.Found == "NoRequest")
-                                            {
-                                                <li><button data-userid="@ViewBag.User.Id" class="user-follow-button">Follow</button></li>
-                                                <li><button data-userid="@ViewBag.User.Id" class="admin-block-button">Block</button></li>
-                                            }
-                                            if (ViewBag.Found == "HisRequest")
-                                            {
-                                                <li><button data-userid="@ViewBag.User.Id" class="user-follow-button">Follow</button></li>
-                                                <li><button data-userid="@ViewBag.User.Id" class="admin-block-button">Block</button></li>
-                                            }
-                                            <li><a asp-action="AddReport" asp-controller="UserReport" asp-route-userId="@ViewBag.User.Id">Report</a></li>
-
+                                            <li><button data-userid="@ViewBag.User.Id" class="admin-block-button">Block</button></li>
                                         }
 
                                     }
@@ -165,46 +134,26 @@
                                     {
                                         if (ViewBag.BlockedByUser == true)
                                         {
-                                            if (ViewBag.Found == "Friend")
-                                            {
-                                                <li><button data-userid="@ViewBag.User.Id" class="user-unfollow-button">Cancel Follow</button></li>
-                                                <li><button data-userid="@ViewBag.User.Id" class="user-unblock-button">Cancel Block</button></li>
-                                            }
-                                            if (ViewBag.Found == "MyRequest" || ViewBag.Found == "NoRequest")
-                                            {
-                                                <li><button data-userid="@ViewBag.User.Id" class="user-follow-button">Follow</button></li>
-                                                <li><button data-userid="@ViewBag.User.Id" class="user-unblock-button">Cancel Block</button></li>
-                                            }
-                                            if (ViewBag.Found == "HisRequest")
-                                            {
-                                                <li><button data-userid="@ViewBag.User.Id" class="user-follow-button">Follow</button></li>
-                                                <li><button data-userid="@ViewBag.User.Id" class="user-unblock-button">Cancel Block</button></li>
-                                            }
-                                            <li><a asp-action="AddReport" asp-controller="UserReport" asp-route-userId="@ViewBag.User.Id">Report</a></li>
-
+                                            <li><button data-userid="@ViewBag.User.Id" class="user-unblock-button">Cancel Block</button></li>
                                         }
                                         else
                                         {
-                                            if (ViewBag.Found == "Friend")
-                                            {
-                                                <li><button data-userid="@ViewBag.User.Id" class="user-unfollow-button">Cancel Follow</button></li>
-                                                <li><button data-userid="@ViewBag.User.Id" class="user-block-button">Block</button></li>
-                                            }
-                                            if (ViewBag.Found == "MyRequest" || ViewBag.Found == "NoRequest")
-                                            {
-                                                <li><button data-userid="@ViewBag.User.Id" class="user-follow-button">Follow</button></li>
-                                                <li><button data-userid="@ViewBag.User.Id" class="user-block-button">Block</button></li>
-                                            }
-                                            if (ViewBag.Found == "HisRequest")
-                                            {
-                                                <li><button data-userid="@ViewBag.User.Id" class="user-follow-button">Follow</button></li>
-                                                <li><button data-userid="@ViewBag.User.Id" class="user-block-button">Block</button></li>
-                                            }
-                                            <li><a asp-action="AddReport" asp-controller="UserReport" asp-route-userId="@ViewBag.User.Id">Report</a></li>
-
+                                            <li><button data-userid="@ViewBag.User.Id" class="user-block-button">Block</button></li>
                                         }
+                                    }
+
+
+                                    if (ViewBag.Followed == true)
+                                    {
+                                        <li><button data-userid="@ViewBag.User.Id" class="user-unfollow-button">Cancel Follow</button></li>
+                                    }
+                                    else
+                                    {
+                                        <li><button data-userid="@ViewBag.User.Id" class="user-follow-button">Follow</button></li>
 
                                     }
+                                    <li><a asp-action="AddReport" asp-controller="UserReport" asp-route-userId="@ViewBag.User.Id">Report</a></li>
+
                                 }
                             </ul>
                         </div>
@@ -321,7 +270,7 @@
                                                 <li><button data-postid="@item.Id" class="save-post-button">Save Post</button></li>
 
                                             }
-                                            <li><a asp-action="#" asp-route-id="@item.Id">Copy URL</a></li>
+                                            <li><a onclick="copyURLToClipboard()" href="#">Copy URL</a></li>
                                         }
                                         else
                                         {
@@ -334,10 +283,8 @@
                                                 <li><button data-postid="@item.Id" class="save-post-button">Save Post</button></li>
 
                                             }
+                                            <li><a onclick="copyURLToClipboard()" href="#">Copy url</a></li>
                                             <li><a asp-action="AddReport" asp-controller="PostReport" asp-route-postId="@item.Id">Report</a></li>
-                                            <li><a asp-action="#" asp-route-id="@item.Id">Hide Post</a></li>
-                                            <li><a asp-action="#" asp-route-id="@item.Id">Copy url</a></li>
-                                            //<li><a asp-action="#" asp-route-id="@item.Id">Turn on Notifications</a></li>
                                         }
                                     </ul>
                                 </div>
@@ -505,7 +452,7 @@
                         if (data.success) {
                             // Toggle the button's class to indicate the like status
                             button.toggleClass("friend-button unfriend-button");
-                           // location.reload();
+                            // location.reload();
                             if (button.hasClass("friend-button")) {
                                 button.text("Add Friend");
 
@@ -519,7 +466,7 @@
 
                         } else {
                             console.error("Something went wrong.");
-                            alert("This User blocked you , You can not send Friend request")
+                            alert("Sorry , There is a block between you and this User, So You can't send Friend request")
                         }
                     },
                     error: function (xhr, textStatus, errorThrown) {
@@ -527,7 +474,6 @@
                     }
                 });
             });
-
 
 
 

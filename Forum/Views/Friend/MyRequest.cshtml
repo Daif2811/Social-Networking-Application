@@ -4,19 +4,18 @@
     ViewData["Title"] = "MyRequest";
 }
 
-<h1 class="p-3 bg-dark text-light text-center">My Friend Requests</h1>
+<h3 class="p-2 bg-dark text-light text-center m-3">My Friend Requests</h3>
+<hr />
 
 <p>
     <a asp-action="Create" class="btn btn-info">Add New Friends</a>
 </p>
+<hr />
+
 <table class="table table-hover">
     <thead>
         <tr>
-
-            <th>
-
-            </th>
-
+            <th></th>
             <th></th>
         </tr>
     </thead>
@@ -40,11 +39,8 @@
                         }
                         <span> @item.Sender.UserName</span>
                     </a>
-
-
-
-
                 </td>
+
                 <td>
                     <sub>
                         <sub>
@@ -56,8 +52,9 @@
                             </sub>
                         </sub>
                     </sub>
-
                 </td>
+
+
             </tr>
         }
     </tbody>
@@ -65,6 +62,9 @@
 
 
 @section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script>
         $(document).ready(function () {
 

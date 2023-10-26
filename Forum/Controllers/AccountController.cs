@@ -1,5 +1,6 @@
 ﻿using Forum.Models;
 using Forum.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -82,13 +83,15 @@ namespace Forum.Controllers
             if (ModelState.IsValid)
             {
                 // Create a new user account with the image file name
-                var user = new ApplicationUser
+                ApplicationUser user = new ApplicationUser
                 {
                     UserName = model.UserName,
                     Email = model.Email,
                     PhoneNumber = model.PhoneNumber,
                     Summary = model.Summary,
-                    UserType = "User"
+                    UserType = "User",
+                    PasswordHash = model.Password,
+
                 };
 
                 if (model.Picture != null)
@@ -105,18 +108,18 @@ namespace Forum.Controllers
                 }
 
                 // Add the user to the database using the user manager
-                var result = await _userManager.CreateAsync(user, model.Password);
+                IdentityResult result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
                 {
-                    // Sign in the user and redirect to the home page
+                    //Sign in the user and redirect to the home page
                     await _signInManager.SignInAsync(user, isPersistent: false);
 
 
                     IdentityResult AddToRole = await _userManager.AddToRoleAsync(user, "User");
                     if (AddToRole.Succeeded)
                     {
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Post");
                     }
                     foreach (var error in AddToRole.Errors)
                     {
@@ -134,6 +137,61 @@ namespace Forum.Controllers
 
             // Return the view with the model
             return View(model);
+        }
+
+
+
+        // Get: Account/AddUser
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public IActionResult AddUser()
+        {
+            return View();
+        }
+
+
+
+        // Post: Account/AddUser
+        [HttpPost]
+        public async Task<IActionResult> AddUser(RegisterViewModel model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                ApplicationUser user = new ApplicationUser()
+                {
+                    UserName = model.UserName,
+                    Email = model.Email,
+                    PhoneNumber = model.PhoneNumber,
+                };
+
+                IdentityResult result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+
+                    IdentityResult AddToRole = await _userManager.AddToRoleAsync(user, "User");
+                    if (AddToRole.Succeeded)
+                    {
+                        return RedirectToAction("Users");
+                    }
+                    else
+                    {
+                        foreach (var error in AddToRole.Errors)
+                        {
+                            ModelState.AddModelError("", error.Description);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
+            }
+            return View(model);
+
         }
 
 
@@ -159,7 +217,7 @@ namespace Forum.Controllers
                     if (found)
                     {
                         await _signInManager.SignInAsync(user, model.RememberMe);
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Post");
                     }
                     ModelState.AddModelError("", "Your password is wrong");
                 }
@@ -194,6 +252,7 @@ namespace Forum.Controllers
         public IActionResult EditProfile()
         {
             ApplicationUser user = CurrentUser();
+
 
 
             EditProfileViewModel profile = new EditProfileViewModel()
@@ -435,7 +494,7 @@ namespace Forum.Controllers
                 {
                     Name = model.Name,
                 };
-                var result = await _roleManager.CreateAsync(role);
+                IdentityResult result = await _roleManager.CreateAsync(role);
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Roles");
@@ -492,6 +551,7 @@ namespace Forum.Controllers
 
 
 
+
         // GET: Account/DeleteRole/id
         [HttpGet]
         public async Task<ActionResult> DeleteRole(string id)
@@ -508,6 +568,7 @@ namespace Forum.Controllers
 
             return View(role);
         }
+
 
 
 

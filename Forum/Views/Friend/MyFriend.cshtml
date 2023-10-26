@@ -5,20 +5,22 @@
     string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 }
 
-<h1 class="text-center bg-dark text-light p-3">My Friends</h1>
+<h3 class="text-center bg-dark text-light p-2 m-3">My Friends</h3>
+<hr />
 
 <p>
-    <a asp-action="Create" class="btn btn-info">Add New Friends</a>
+    <a asp-action="Create" class="btn btn-primary">Add New Friends</a>
 </p>
+<hr />
+
+
 <table class="table table-hover table-bordered">
     <tr>
+        <th><hr /></th>
     </tr>
     @foreach (var item in Model)
     {
         <tr class="row">
-
-
-
             @if (item.UserOneId == userId)
             {
                 <td class="col-sm-6">
@@ -27,7 +29,6 @@
                             @if (item.UserTwo.Picture != null)
                             {
                                 <img src="~/images/@item.UserTwo.Picture" class="rounded-circle img-thumbnail" width="55px;" />
-
                             }
                             else
                             {
@@ -36,7 +37,6 @@
                         <span> @item.UserTwo.UserName</span>
                     </a>
                 </td>
-
 
                 <td class="col-sm-6">
 
@@ -51,9 +51,6 @@
                         </sub>
                     </sub>
                 </td>
-
-
-
             }
             else
             {
@@ -72,7 +69,6 @@
                 </td>
 
                 <td class="col-sm-6">
-
                     <sub>
                         <sub>
                             <sub>
@@ -83,9 +79,7 @@
                             </sub>
                         </sub>
                     </sub>
-
                 </td>
-
             }
         </tr>
     }

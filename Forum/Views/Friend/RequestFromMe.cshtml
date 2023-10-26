@@ -4,19 +4,20 @@
     ViewData["Title"] = "RequestFromMe";
 }
 
-<h1 class="bg-dark text-center text-light p-2">Request From Me</h1>
+<h3 class="bg-dark text-center text-light p-2 m-3">Request From Me</h3>
+<hr />
 
 <p>
     <a asp-action="Create" class="btn btn-info">Add New Friends</a>
 </p>
+<hr />
+
+
 <table class="table table-hover">
     <thead>
         <tr>
 
-            <th>
-
-            </th>
-
+            <th></th>
             <th></th>
         </tr>
     </thead>
@@ -25,14 +26,12 @@
         {
             <tr>
 
-
                 <td>
                     <a href="~/Post/ProfileSomeOne?userId=@item.Reciever.Id" style="text-decoration:none;">
 
                         @if (item.Reciever.Picture != null)
                         {
                             <img src="~/images/@item.Reciever.Picture" class="rounded-circle img-thumbnail" width="55px;" />
-
                         }
                         else
                         {
@@ -40,11 +39,9 @@
                         }
                         <span> @item.Reciever.UserName</span>
                     </a>
-
-
-
-
                 </td>
+
+
                 <td>
                     <sub>
                         <sub>
@@ -55,8 +52,8 @@
                             </sub>
                         </sub>
                     </sub>
-
                 </td>
+
             </tr>
         }
     </tbody>

@@ -13,15 +13,18 @@ namespace Forum.Controllers
         private readonly IFriendRepository _friendRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IBlockByUserRepository _blockByUserRepository;
+        private readonly IFollowRepository _followRepository;
 
         public FriendController(
             IFriendRepository friendRepository,
             UserManager<ApplicationUser> userManager,
-            IBlockByUserRepository blockByUserRepository)
+            IBlockByUserRepository blockByUserRepository,
+            IFollowRepository followRepository)
         {
             _friendRepository = friendRepository;
             _userManager = userManager;
             _blockByUserRepository = blockByUserRepository;
+            _followRepository = followRepository;
         }
 
 
@@ -49,8 +52,10 @@ namespace Forum.Controllers
         [HttpGet]
         public bool BlockedByUser(string userId)
         {
-            bool blocked = _blockByUserRepository.CheckBlock(CurrentUser().Id, userId);
-            if (blocked)
+            string currentUserId = CurrentUser().Id;
+            bool blockedToMe = _blockByUserRepository.CheckBlock(currentUserId, userId);
+            bool blockedFromMe = _blockByUserRepository.CheckBlock(userId, currentUserId);
+            if (blockedFromMe || blockedToMe)
             {
                 return true;
             }
@@ -68,7 +73,6 @@ namespace Forum.Controllers
             bool blocked = BlockedByUser(userId);
             if (!blocked)
             {
-
                 if (string.IsNullOrEmpty(userId))
                 {
                     return BadRequest();
@@ -81,6 +85,20 @@ namespace Forum.Controllers
                     RecieverId = userId,
 
                 };
+
+                bool followed = _followRepository.CheckFollow(userId, currentUser.Id);
+                if (!followed)
+                {
+                    Follow follow = new Follow()
+                    {
+                        FollowedId = userId,
+                        FollowerId = currentUser.Id,
+                        FollowDate = DateTime.Now
+                    };
+
+                    await _followRepository.Add(follow);
+                }
+
 
                 await _friendRepository.AddRequest(request);
                 return Json(new { success = true });
@@ -108,7 +126,7 @@ namespace Forum.Controllers
 
 
         // Accept and Reject Request
-      
+
 
         // Accept and Reject Request on profile
         [HttpPost]
@@ -125,8 +143,8 @@ namespace Forum.Controllers
                     UserTwoId = request.RecieverId,
                 };
                 // Add friend and delete request
-               await _friendRepository.AcceptRequest(friend);
-               await _friendRepository.RejectRequest(request);
+                await _friendRepository.AcceptRequest(friend);
+                await _friendRepository.RejectRequest(request);
 
             }
             else

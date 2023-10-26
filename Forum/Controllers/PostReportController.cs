@@ -64,9 +64,9 @@ namespace Forum.Controllers
         }
 
 
-       
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
+
         public async Task<IActionResult> AddReport(string SelectedType)
         {
             try
@@ -77,20 +77,22 @@ namespace Forum.Controllers
                 report.ReporterId = currentUser.Id;
                 report.PostId = postId;
                 report.Type = SelectedType;
+                report.ReportDate = DateTime.Now;
 
-               await _postReportRepository.Add(report);
+                await _postReportRepository.Add(report);
+                return Json(new { success = true });
+
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                return Json(new { error = ex.Message });
             }
 
-            return Json (new { success = true });
         }
 
 
-      
 
-      
+
+
     }
 }

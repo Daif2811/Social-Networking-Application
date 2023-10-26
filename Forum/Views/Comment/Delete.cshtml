@@ -4,9 +4,10 @@
     ViewData["Title"] = "Delete";
 }
 
-<h1 class="text-center bg-black text-light">Delete Comment</h1>
+<h3 class="text-center bg-black text-light p-2 m-3">Delete Comment</h3>
 <hr />
-<h3>Are you sure you want to delete this?</h3>
+
+<h5>Are you sure you want to delete this?</h5>
 <hr />
 
 
@@ -16,9 +17,6 @@
         <textarea asp-for="Content" style="min-height:100px;" class="form-control col-12" disabled></textarea>
         <span asp-validation-for="Content" class="text-danger"></span>
     </div>
-
-
-
 
     <div class="row m-3">
         <form asp-action="Delete">

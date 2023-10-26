@@ -3,7 +3,7 @@
     ViewData["Title"] = "DetailRole";
 }
 
-<h1 class="text-white bg-dark text-center p-2">Detail Role</h1>
+<h3 class="text-white bg-dark text-center p-2 m-3">Detail Role</h3>
 
 <div>
    
@@ -39,3 +39,9 @@
     @Html.ActionLink("Edit", "EditRole", new {  id = Model.Id }, new{ @class="btn btn-outline-success"}) |
     <a asp-action="Roles" class="btn btn-outline-primary">Roles</a>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

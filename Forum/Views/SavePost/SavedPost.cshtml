@@ -12,9 +12,10 @@
 }
 
 
-<h1 class="text-center bg-black text-light">All Saved Posts</h1>
+<h3 class="text-center bg-black text-light p-2 m-3">All Saved Posts</h3>
+<hr />
+@*<hr class="border border-5 border-dark mb-4 mt-4" />*@
 
-<hr class="border border-5 border-dark mb-4 mt-4" />
 
 
 @foreach (var item in Model)
@@ -73,16 +74,14 @@
                                         <li><a asp-action="Edit" asp-controller="Post" asp-route-id="@item.Post.Id">Edit</a></li>
                                         <li><a asp-action="Delete" asp-controller="Post" asp-route-id="@item.Post.Id">Delete</a></li>
                                         <li><button data-postid="@item.Post.Id" class="unsave-post-button">Un Save Post</button></li>
-                                        <li><a asp-action="#" asp-route-id="@item.Post.Id">Copy URL</a></li>
+                                        <li><a onclick="copyURLToClipboard()" href="#">Copy URL</a></li>
                                     }
                                     else
                                     {
 
                                         <li><button data-postid="@item.Post.Id" class="unsave-post-button">Un Save Post</button></li>
+                                        <li><a onclick="copyURLToClipboard()" href="#">Copy url</a></li>
                                         <li><a asp-action="AddReport" asp-controller="PostReport" asp-route-postId="@item.Post.Id">Report</a></li>
-                                        <li><a asp-action="#" asp-route-id="@item.Post.Id">Hide Post</a></li>
-                                        <li><a asp-action="#" asp-route-id="@item.Post.Id">Copy url</a></li>
-                                        //<li><a asp-action="#" asp-route-id="@item.Id">Turn on Notifications</a></li>
                                     }
                                 </ul>
                             </div>
@@ -271,7 +270,7 @@
                             // Toggle the button's class to indicate the like status
                             //button.toggleClass("save-post-button unsave-post-button");
                             alert("Operation was successful!");
-
+                            location.reload();
                         } else {
                             alert("Operation failed.");
                             console.error("Something went wrong.");

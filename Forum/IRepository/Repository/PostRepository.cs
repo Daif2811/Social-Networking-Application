@@ -1,5 +1,6 @@
 ﻿using Forum.DAL;
 using Forum.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Forum.IRepository.Repository
@@ -8,7 +9,7 @@ namespace Forum.IRepository.Repository
     {
         private readonly ForumContext _context;
 
-        public PostRepository(ForumContext context)
+        public PostRepository(ForumContext context )
         {
             _context = context;
         }

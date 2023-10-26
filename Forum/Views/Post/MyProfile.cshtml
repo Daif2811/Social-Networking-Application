@@ -7,25 +7,24 @@
 
 <div class="PostContainer">
     <div class="profile-header">
-        <div class="bg-dark p-3 mb-3" ><img src="~/images/@ViewBag.User.Picture" class="profile-picture rounded-circle" id="photo"/></div>
+        <div class="bg-dark p-3 mb-3"><img src="~/images/@ViewBag.User.Picture" class="profile-picture rounded-circle" id="photo" /></div>
         <div id="photoModal" class="modal text-xl-center">
             <img src="" alt="Photo" id="bigPhoto" />
         </div>
-        
+
         <div class="profile-name">@ViewBag.User.UserName</div>
         <div class="profile-info">@ViewBag.User.Summary</div>
         <hr />
         <div class="profile-actions" id="accordion">
-           
+
             <a asp-action="MyFriend" asp-controller="Friend" class="profile-ancor">Friends</a>
-            <a asp-controller="Account" asp-action="Setting" class="profile-ancor">Edit Profile</a>
-            
+
             <!-- About button-->
             <button class="profile-button" data-bs-toggle="collapse" href="#collapseAbout">About</button>
 
             <!-- More button-->
             <button class="profile-button" data-bs-toggle="modal" data-bs-target="#modalMore"> More</button>
-            
+
             <!-- More PopUp-->
             <div class="modal fade" id="modalMore">
                 <div class="modal-dialog">
@@ -39,10 +38,11 @@
                         <div class="modal-body">
                             <ul class="list-unstyled text-center">
                                 @{
-                                        <li><a asp-action="RemoveFriend" asp-controller="Friend" asp-route-userId="@ViewBag.User.Id">Cancel Friend</a></li>
-                                        <li><a asp-action="#" asp-route-id="#">Cancel Follw</a></li>
-                                        <li><a asp-action="#" asp-controller="#" asp-route-id="#">Block</a></li>
-                                        <li><a asp-action="#" asp-controller="#" asp-route-id="#">Report</a></li>
+                                    <li><a asp-controller="Account" asp-action="Setting">Edit Profile</a></li>
+                                    <li><a  onclick="copyURLToClipboard()">Copy URL</a></li>
+                                    <li><a asp-action="#" asp-controller="#" asp-route-id="#">Some Thing</a></li>
+                                    <li><a asp-action="#" asp-controller="#" asp-route-id="#">Some Thing</a></li>
+                                    <li><a asp-action="#" asp-controller="#" asp-route-id="#">Some Thing</a></li>
                                 }
                             </ul>
                         </div>
@@ -55,10 +55,8 @@
             </div>
 
 
-            <!-- CopyUrl button-->
-            <button class="profile-button" onclick="copyURLToClipboard()">Copy URL</button>
-            
-            
+
+
             <!-- About Collapse -->
             <div id="collapseAbout" class="collapse " data-bs-parent="#accordion">
                 <div class="card-body">
@@ -82,20 +80,20 @@
         <div class="container">
 
 
-                <!-- Header of Post  -->
+            <!-- Header of Post  -->
             <div class="container d-sm-inline-flex row">
 
                 <!--Picture and User name-->
                 <div class="col-sm-2 text-center">
-                     <a href="~/Post/ProfileSomeOne?userId=@item.UserId">
-                    @if (item.User.Picture != null)
-                    {
-                        <img src="~/images/@item.User.Picture" class="rounded-circle img-thumbnail" width="55px;" />
-                    }
-                    else
-                    {
-                        <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" width="55px;" />
-                    }
+                    <a href="~/Post/ProfileSomeOne?userId=@item.UserId">
+                        @if (item.User.Picture != null)
+                        {
+                            <img src="~/images/@item.User.Picture" class="rounded-circle img-thumbnail" width="55px;" />
+                        }
+                        else
+                        {
+                            <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" width="55px;" />
+                        }
                     </a>
                 </div>
 
@@ -133,17 +131,19 @@
                                         {
                                             <li><a asp-action="Edit" asp-controller="Post" asp-route-id="@item.Id">Edit</a></li>
                                             <li><a asp-action="Delete" asp-controller="Post" asp-route-id="@item.Id">Delete</a></li>
-                                            <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
-                                            <li><a asp-action="#" asp-route-id="@item.Id">Copy URL</a></li>
+                                            if (ViewBag.SavedPost == true)
+                                            {
+                                                <li><button data-postid="@item.Id" class="unsave-post-button">Un Save Post</button></li>
+                                            }
+                                            else
+                                            {
+                                                <li><button data-postid="@item.Id" class="save-post-button">Save Post</button></li>
+
+                                            }
+                                            <li><a onclick="copyURLToClipboard()" href="#">Copy URL</a></li>
+                                            <li><a asp-action="AddReport" asp-controller="PostReport" asp-route-postId="@item.Id">Report</a></li>
                                         }
-                                        else
-                                        {
-                                            <li><a asp-action="#" asp-route-id="@item.Id">Save Post</a></li>
-                                            <li><a asp-action="#" asp-route-id="@item.Id">Report</a></li>
-                                            <li><a asp-action="#" asp-route-id="@item.Id">Hide Post</a></li>
-                                            <li><a asp-action="#" asp-route-id="@item.Id">Copy url</a></li>
-                                            //<li><a asp-action="#" asp-route-id="@item.Id">Turn on Notifications</a></li>
-                                        }
+                                      
                                     </ul>
                                 </div>
 
@@ -157,7 +157,7 @@
 
 
                 </div>
-               
+
             </div>
 
 
@@ -266,48 +266,85 @@
     }
 
 
-    </div>
-    @section Scripts {
-        @{
-            await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        }
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
-        <script>
-            $(document).ready(function () {
+    <script>
+        $(document).ready(function () {
 
-                // Like button
-                $(".like-button, .unlike-button").click(function () {
-                    var postId = $(this).data("postid");
-                    var actionUrl = $(this).hasClass("like-button") ? "/Like/LikePost" : "/Like/UnlikePost";
-                    var button = $(this);
+            // Like button
+            $(".like-button, .unlike-button").click(function () {
+                var postId = $(this).data("postid");
+                var actionUrl = $(this).hasClass("like-button") ? "/Like/LikePost" : "/Like/UnlikePost";
+                var button = $(this);
 
-                    $.ajax({
-                        type: "POST",
-                        url: actionUrl + "?postId=" + postId,
-                        success: function (data) {
-                            if (data.success) {
-                                // Toggle the button's class to indicate the like status
-                                button.toggleClass("like-button unlike-button");
+                $.ajax({
+                    type: "POST",
+                    url: actionUrl + "?postId=" + postId,
+                    success: function (data) {
+                        if (data.success) {
+                            // Toggle the button's class to indicate the like status
+                            button.toggleClass("like-button unlike-button");
 
-                                if (button.hasClass("like-button")) {
-                                    button.text("Like");
-
-                                } else {
-                                    button.text("Unlike");
-                                }
+                            if (button.hasClass("like-button")) {
+                                button.text("Like");
 
                             } else {
-                                console.error("Something went wrong.");
+                                button.text("Unlike");
                             }
-                        },
-                        error: function (xhr, textStatus, errorThrown) {
-                            console.error("Error:", errorThrown);
-                        }
-                    });
-                });
 
+                        } else {
+                            console.error("Something went wrong.");
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.error("Error:", errorThrown);
+                    }
+                });
             });
-        </script>
+
+
+
+            // Save post button
+            $(".save-post-button, .unsave-post-button").click(function () {
+                var postId = $(this).data("postid");
+                var actionUrl = $(this).hasClass("save-post-button") ? "/SavePost/SavePost" : "/SavePost/CancelSave";
+                var button = $(this);
+
+                $.ajax({
+                    type: "POST",
+                    url: actionUrl + "?postId=" + postId,
+                    success: function (data) {
+                        if (data.success) {
+                            // Toggle the button's class to indicate the like status
+                            button.toggleClass("save-post-button unsave-post-button");
+                            alert("Operation was successful!");
+                            location.reload();
+                            if (button.hasClass("save-post-button")) {
+                                button.text("Save Post");
+
+                            }
+                            else {
+                                button.text("Un Save Post");
+                            }
+
+                        } else {
+                            alert("Operation failed.");
+                            console.error("Something went wrong.");
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.error("Error:", errorThrown);
+                    }
+                });
+            });
+
+
+        });
+    </script>
 
     <script>
 

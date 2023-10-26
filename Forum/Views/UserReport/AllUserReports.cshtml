@@ -5,11 +5,11 @@
     string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 }*@
 
-<h1 class="text-light text-center bg-dark p-2">All User Reports</h1>
+<h3 class="text-light text-center bg-dark p-2 m-3">All User Reports</h3>
+<hr />
 
 
-
-<table class="table table-hover table-bordered mt-3">
+<table class="table table-hover table-bordered">
     
     @foreach (var item in Model)
     {

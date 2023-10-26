@@ -10,9 +10,7 @@
     ViewData["Title"] = "Delete";
 }
 
-
-
-<h1 class="text-center bg-black text-light">Delete</h1>
+<h3 class="text-center bg-black text-light p-2 m-3">Delete</h3>
 <hr />
 
 
@@ -23,7 +21,6 @@
             <div class="col-sm-8 row">
                 @if (Model.User.Picture != null)
                 {
-
                     <div class="col">
                         <img src="~/images/@Model.User.Picture" class="rounded-circle img-thumbnail" style="width:50px;" />
                         @Model.User.UserName

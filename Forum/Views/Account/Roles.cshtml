@@ -4,7 +4,7 @@
     ViewData["Title"] = "Roles";
 }
 
-<h1 class="text-white bg-dark text-center p-2">Roles</h1>
+<h3 class="text-light bg-dark text-center p-2">Roles</h3>
 
 <p>
     <a asp-action="AddRole" class="btn btn-outline-success">Create New</a>
@@ -19,17 +19,18 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "EditRole", new {  id=item.Id }) |
-                @Html.ActionLink("Details", "DetailRole", new { id=item.Id }) |
-                @Html.ActionLink("Delete", "DeleteRole", new {id=item.Id })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditRole", new {  id=item.Id }, new{@class="btn btn-primary"}) |
+                    @Html.ActionLink("Details", "DetailRole", new { id=item.Id }, new{@class="btn btn-info"}) |
+                    @Html.ActionLink("Delete", "DeleteRole", new {id=item.Id }, new{@class="btn btn-danger"})
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

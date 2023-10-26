@@ -2,11 +2,18 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Forum Website</h1>
-    <hr />
-</div>
+<div class="m-5" style="height:450px; border:dashed 5px blue; border-radius:10px;">
 
+    <div class="text-center m-3" style="height:400px; background-color:dodgerblue;">
+        <h3 class="m-3 p-3" style="color:lightblue;  font-size:40px; margin-top:100px;">Welcome To Our </h3>
+        <h1 class="m-3 p-3" style="color:black; font-size:60px;">Social Network Application</h1>
+        <div class="row justify-content-between p-5">
+            <a asp-action="Register" asp-controller="Account" class="btn btn-outline-success col-3 bg-success text-light">Register</a>
+            <a asp-action="Login" asp-controller="Account" class="btn btn-outline-success col-3 bg-success text-light">Login</a>
+        </div>
+       
+    </div>
+</div>
 <hr />
 <nav class="navbar navbar-expand-lg bg-dark sticky-top bg-body-tertiary text-light">
     <div class="container-fluid">
@@ -979,30 +986,30 @@
 
 <ul class="list-group">
 
-<li class="list-group-item">
-    <label>
-        <input type="radio" name="SelectedColor" value="Hamdan">
-        Check
-    </label>
-</li>
-<li class="list-group-item">
-    <label>
-        <input type="radio" name="SelectedColor" value="Hamdan">
-        Check
-    </label>
-</li>
-<li class="list-group-item">
-    <label>
-        <input type="radio" name="SelectedColor" value="Hamdan">
-        Check
-    </label>
-</li>
-<li class="list-group-item">
-    <label>
-        <input type="radio" name="SelectedColor" value="Hamdan">
-        Check
-    </label>
-</li>
+    <li class="list-group-item">
+        <label>
+            <input type="radio" name="SelectedColor" value="Hamdan">
+            Check
+        </label>
+    </li>
+    <li class="list-group-item">
+        <label>
+            <input type="radio" name="SelectedColor" value="Hamdan">
+            Check
+        </label>
+    </li>
+    <li class="list-group-item">
+        <label>
+            <input type="radio" name="SelectedColor" value="Hamdan">
+            Check
+        </label>
+    </li>
+    <li class="list-group-item">
+        <label>
+            <input type="radio" name="SelectedColor" value="Hamdan">
+            Check
+        </label>
+    </li>
 
 </ul>
 
@@ -1031,8 +1038,8 @@
         // Display the current URL when the page loads
        // document.getElementById("currentURL").textContent = window.location.href;
     </script>*@
-    
-    
+
+
     <script>
         function copyURLToClipboard() {
             var currentURL = window.location.href;

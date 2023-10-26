@@ -71,7 +71,7 @@ namespace Forum.Controllers
                 Follow follow = new Follow()
                 {
                     FollowedId = userId,
-                    FollowerId = userId,
+                    FollowerId = currentUserId,
                     FollowDate = DateTime.Now
                 };
 
@@ -82,7 +82,7 @@ namespace Forum.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { error = ex.Message });
             }
         }
 
@@ -90,7 +90,7 @@ namespace Forum.Controllers
 
 
         // Cancel Follow
-        [HttpPost]
+      
         public async Task<IActionResult> CancelFollow(string userId)
         {
             try

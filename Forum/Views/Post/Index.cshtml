@@ -108,7 +108,6 @@
                                     @if (item.UserId == userId)
                                     {
                                         <li><a asp-action="Edit" asp-controller="Post" asp-route-id="@item.Id">Edit</a></li>
-                                        //<li><button data-bs-toggle="modal" data-bs-target="#delete_@item.Id">Delete</button></li>
                                         <li><a asp-action="Delete" asp-controller="Post" asp-route-id="@item.Id">Delete</a></li>
                                         if (ViewBag.SavedPost == true)
                                         {
@@ -132,10 +131,8 @@
                                             <li><button data-postid="@item.Id" class="save-post-button">Save Post</button></li>
 
                                         }
-                                        <li><a asp-action="AddReport" asp-controller="PostReport" asp-route-postId="@item.Id">Report</a></li>
-                                        <li><a asp-action="#" asp-route-id="@item.Id">Hide Post</a></li>
                                         <li><a onclick="copyURLToClipboard()" href="#">Copy URL</a></li>
-                                        //<li><a asp-action="#" asp-route-id="@item.Id">Turn on Notifications</a></li>
+                                        <li><a asp-action="AddReport" asp-controller="PostReport" asp-route-postId="@item.Id">Report</a></li>
                                     }
                                 </ul>
                             </div>
@@ -366,6 +363,9 @@
                 });
             });
 
+
+
+          
 
 
         });

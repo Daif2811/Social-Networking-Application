@@ -1,8 +1,8 @@
 ﻿
-<h1 class="text-white text-center bg-dark p-2">Settings</h1>
 
+
+<h3 class="text-light text-center bg-dark p-2 m-3">Settings</h3>
 <hr />
-
 
 
 <div class="container">
@@ -20,17 +20,15 @@
                     <ul class="list-unstyled text-center setting">
 
                         <li><a asp-action="EditProfile" class="text-decoration-none">Edit Your profile</a></li>
-                   
+
                         <li><a asp-action="ChangePassword" class="text-decoration-none">Change Password</a></li>
-                       
+
                         <li> <a asp-action="ChangePicture" class="text-decoration-none">Change Picture</a></li>
                     </ul>
 
                 </div>
             </div>
         </div>
-
-
 
 
         <!-- Card Numbr Two-->
@@ -44,18 +42,19 @@
                 <div class="card-body">
                     <ul class="list-unstyled text-center setting">
 
-                      
+
                         <li><a asp-action="#" class="text-decoration-none">Number 1</a></li>
                         <li><a asp-action="#" class="text-decoration-none">Number 2</a></li>
-                     
+
                         <li> <a asp-action="#" class="text-decoration-none">Number 3</a></li>
-                      
+
 
                     </ul>
 
                 </div>
             </div>
         </div>
+
 
         <!-- Card Numbr Three-->
         <div class="card">
@@ -69,9 +68,9 @@
                     <ul class="list-unstyled text-center setting">
 
                         <li><a href="~/Friend/MyRequest">Friend Requests</a></li>
-                      
+
                         <li><a href="~/Friend/RequestFromMe">My Requests To Others</a></li>
-                       
+
                         <li><a href="~/Friend/MyFriend">My Friends</a></li>
 
                         <li><a asp-action="AllBlocks" asp-controller="BlockByUser" class="text-decoration-none">Blocks 1</a></li>
@@ -86,3 +85,8 @@
     </div>
 </div>
 
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

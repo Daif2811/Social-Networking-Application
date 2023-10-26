@@ -47,26 +47,35 @@ namespace Forum.Controllers
         public IActionResult AddReport(string userId)
         {
             ViewBag.UserId = userId;
-            TempData["userId"] = ViewBag.UserId; 
+            TempData["userId"] = ViewBag.UserId;
             return View();
         }
 
 
         [HttpPost, ActionName("AddReport")]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> ConfirmAddReport(string selectedType)
         {
-            ApplicationUser currentUser = CurrentUser();
-            UserReport report = new UserReport();
-            string userId = TempData["userId"].ToString();
-            report.Type = selectedType;
-            report.ReporterId = currentUser.Id;
-            report.UserId = userId;
+            try
+            {
+                ApplicationUser currentUser = CurrentUser();
+                UserReport report = new UserReport();
+                string userId = TempData["userId"].ToString();
+                report.Type = selectedType;
+                report.ReporterId = currentUser.Id;
+                report.UserId = userId;
+                report.ReportDate = DateTime.Now;
+                await _userReportRepository.Add(report);
+                return Json(new { success = true });
 
-           await _userReportRepository.Add(report);
-            return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
+
         }
 
     }
-    
+
 }

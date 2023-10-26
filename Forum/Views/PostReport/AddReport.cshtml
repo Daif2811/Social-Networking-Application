@@ -4,16 +4,18 @@
     ViewData["Title"] = "AddReport";
 }
 
-<h1 class="text-light text-center bg-dark p-2">Report</h1>
-
-
+<h3 class="text-light text-center bg-dark p-2 m-3">Report</h3>
 <hr />
+
+
 <div class="row">
     <div class="col-md-10" style="margin:auto;">
-        <form asp-action="AddReport">
+        <form asp-action="AddReport" id="myForm">
 
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="text-center m-3">Type Of Report</div>
+
+
             <ul class="list-group">
 
                 @foreach (ReportText item in Enum.GetValues(typeof(ReportText)))
@@ -28,7 +30,7 @@
             </ul>
 
             <div class="form-group mt-3">
-                <button type="submit" value="Report" class="btn btn-primary">Report</button>
+                <button type="submit" value="Report" class="btn btn-primary report-button">Report</button>
             </div>
         </form>
     </div>
@@ -43,5 +45,39 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        $(document).ready(function () {
+            // Intercept the form submission event
+            $('#myForm').submit(function (event) {
+                // Prevent the default form submission
+                event.preventDefault();
+
+                // Serialize the form data
+                var formData = $(this).serialize();
+
+                // Make an AJAX POST request to your server
+                $.ajax({
+                    type: 'POST',
+                    url: '/PostReport/AddReport',  // Replace with the actual URL to handle the form data
+                    data: formData,
+                    success: function (response) {
+                        alert("Report was sent successfully");
+                        console.log('Form submitted successfully');
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle AJAX error (e.g., display an error message)
+                        alert("Report was failed : " , error);
+                        console.error('AJAX error:', error);
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+  
 
 }

@@ -57,14 +57,19 @@ namespace Forum.Controllers
         [HttpGet]
         public IActionResult MyProfile()
         {
-            ApplicationUser user = CurrentUser();
-            if (user == null)
+            ApplicationUser currentUser = CurrentUser();
+            if (currentUser == null)
             {
                 return NotFound();
             }
 
-            ViewBag.User = user;
-            var posts = _postRepository.Profile(user.Id);
+            ViewBag.User = currentUser;
+            var posts = _postRepository.Profile(currentUser.Id);
+            foreach (var item in posts)
+            {
+                bool saved = _savePostRepository.CheckSave(item.Id, currentUser.Id);
+                ViewBag.SavedPost = saved;
+            }
 
             return View(posts);
         }
@@ -77,24 +82,58 @@ namespace Forum.Controllers
         {
             ApplicationUser currentUser = CurrentUser();
 
+            if (userId == currentUser.Id)
+            {
+                return RedirectToAction("MyProfile");
+            }
+
+
             // check if Admin did block
             bool blockedByAdmin = _blockByAdminRepository.CheckBlock(userId);
             ViewBag.BlockedByAdmin = blockedByAdmin;
 
 
             // check if User did block
-            bool blockedByUser = _blockByUserRepository.CheckBlock(userId, currentUser.Id);
-            ViewBag.BlockedByUser = blockedByUser;
+            bool blockedByUser = _blockByUserRepository.CheckBlock(currentUser.Id, userId);
+
+            // check if did block
+            bool blockedByMe = _blockByUserRepository.CheckBlock(userId, currentUser.Id);
+            ViewBag.BlockedByUser = blockedByMe;
 
 
+            // check follow
             bool ckeckfollow = _followRepository.CheckFollow(userId, currentUser.Id);
             ViewBag.Followed = ckeckfollow;
 
 
-            if (userId == currentUser.Id)
+
+
+            Friend checkFriend = _friendRepository.CheckFriend(userId, currentUser.Id);
+            FriendRequest requesFromMe = _friendRepository.CheckRequest(userId, currentUser.Id);
+            FriendRequest requesToMe = _friendRepository.CheckRequest(currentUser.Id, userId);
+            if (checkFriend != null)
             {
-                return RedirectToAction("MyProfile");
+                ViewBag.Found = "Friend";
             }
+            else
+            {
+                if (requesFromMe != null)
+                {
+                    ViewBag.Found = "MyRequest";
+                }
+                else
+                {
+                    if (requesToMe != null)
+                    {
+                        ViewBag.Found = "HisRequest";
+                    }
+                    else
+                    {
+                        ViewBag.Found = "NoRequest";
+                    }
+                }
+            }
+
 
             ApplicationUser user = _userManager.FindByIdAsync(userId).Result;
             if (user == null)
@@ -105,55 +144,19 @@ namespace Forum.Controllers
             ViewBag.User = user;
 
 
-            var friend = _friendRepository.CheckFriend(userId, currentUser.Id);
-            if (friend != null)
-            {
-                // He is friend
-                ViewBag.Found = "Friend";
-            }
-            else
-            {
-                var found = _friendRepository.CheckRequest(userId, currentUser.Id);
-                // I sent friend request
-                if (found != null)
-                {
-                    ViewBag.Found = "MyRequest";
-                }
-                else
-                {
-                    var me = _friendRepository.CheckRequest(currentUser.Id, userId);
-                    // He sent to me friend request
-                    if (me != null)
-                    {
-                        ViewBag.Found = "HisRequest";
-                    }
-                    else
-                    {
-                        // No request
-                        ViewBag.Found = "NoRequest";
-                    }
-                }
-            }
-
             List<Post> FriendAndPublicPosts = new List<Post>();
             foreach (var item in _postRepository.Profile(userId))
             {
                 bool saved = _savePostRepository.CheckSave(item.Id, currentUser.Id);
-                if (saved)
-                {
-                    ViewBag.SavedPost = true;
-                }
-                else
-                {
-                    ViewBag.SavedPost = false;
-                }
+                ViewBag.SavedPost = saved;
+
 
                 // Check If Friends
-                bool checkFriend = _friendRepository.CheckIfFriend(item.UserId, currentUser.Id);
+                bool checkIfFriend = _friendRepository.CheckIfFriend(item.UserId, currentUser.Id);
 
 
-                if ((blockedByUser == false && checkFriend == true && item.Audience == "Friends") ||
-                    (blockedByUser == false && checkFriend == false && item.Audience == "Public") ||
+                if ((blockedByUser == false && checkIfFriend == true && item.Audience == "Friends") ||
+                    (blockedByUser == false && checkIfFriend == false && item.Audience == "Public") ||
                      item.UserId == currentUser.Id)
                 {
                     FriendAndPublicPosts.Add(item);
@@ -195,14 +198,14 @@ namespace Forum.Controllers
 
 
                 // Check Blocked by Post publisher
-                bool blocked = _blockByUserRepository.CheckBlock(currentUserId, item.UserId);
+                bool blockedByUser = _blockByUserRepository.CheckBlock(currentUserId, item.UserId);
 
                 // Check If Friends
                 bool friend = _friendRepository.CheckIfFriend(item.UserId, currentUserId);
 
 
-                if ((blocked == false && friend == true && item.Audience == "Friends") ||
-                    (blocked == false && friend == false && item.Audience == "Public") ||
+                if ((blockedByUser == false && friend == true && item.Audience == "Friends") ||
+                    (blockedByUser == false && friend == false && item.Audience == "Public") ||
                     item.UserId == currentUserId)
                 {
                     FriendAndPublicPosts.Add(item);
@@ -218,7 +221,19 @@ namespace Forum.Controllers
         [HttpGet]
         public IActionResult ShowComments(int postId)
         {
+            string currentUserId = CurrentUser().Id;
             var post = _postRepository.GetAllComments(postId);
+
+            bool saved = _savePostRepository.CheckSave(postId, currentUserId);
+            if (saved)
+            {
+                ViewBag.SavedPost = true;
+            }
+            else
+            {
+                ViewBag.SavedPost = false;
+            }
+
 
             if (post == null)
             {
