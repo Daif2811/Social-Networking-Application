@@ -14,9 +14,7 @@ namespace Forum.IRepository.Repository
         }
         public ICollection<ReplyToComment> GetAll(int commentId)
         {
-           var replies =_context.ReplyToComments
-                .Include(a => a.Comment).ThenInclude(a => a.User)
-                .ToList();
+           var replies =_context.ReplyToComments.Include(a => a.Comment).ThenInclude(a => a.User).ToList();
             return replies;
         }
 

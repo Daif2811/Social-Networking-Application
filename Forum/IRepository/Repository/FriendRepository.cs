@@ -22,9 +22,9 @@ namespace Forum.IRepository.Repository
 
 
         // Cancel Request
-        public async Task CancelRequest(string userId, string currentUserId)
+        public async Task CancelRequest(string recieverId, string senderId)
         {
-           FriendRequest request =  _context.FriendRequests.Where(a => a.SenderId == currentUserId && a.RecieverId == userId).SingleOrDefault();
+            FriendRequest request = _context.FriendRequests.Where(a => a.SenderId == senderId && a.RecieverId == recieverId).SingleOrDefault();
             _context.FriendRequests.Remove(request);
             await _context.SaveChangesAsync();
         }
@@ -40,9 +40,14 @@ namespace Forum.IRepository.Repository
 
         // Get Request By User Id and Current User Id
 
-        public FriendRequest CheckRequest(string userId, string currentUserId)
+        public FriendRequest GetRequestByUsersId(string senderId, string recieverId)
         {
-            FriendRequest request = _context.FriendRequests.Where(a => a.RecieverId == userId && a.SenderId == currentUserId).FirstOrDefault();
+            FriendRequest request = _context.FriendRequests.Where(a => a.RecieverId == recieverId && a.SenderId == senderId).FirstOrDefault();
+            return request;
+        }
+        public bool CheckRequest(string senderId, string recieverId)
+        {
+            bool request = _context.FriendRequests.Any(a => a.RecieverId == recieverId && a.SenderId == senderId);
             return request;
         }
 
@@ -65,29 +70,30 @@ namespace Forum.IRepository.Repository
 
 
         // All Requests
-        public ICollection<FriendRequest> FriendRequests(string currentUserId)
+        public ICollection<FriendRequest> FriendRequests(string recieverId)
         {
-           var requsts =  _context.FriendRequests.Where(a => a.RecieverId == currentUserId).Include(a => a.Sender).ToList();
-           return requsts;
+            var requsts = _context.FriendRequests.Where(a => a.RecieverId == recieverId).Include(a => a.Sender).ToList();
+            return requsts;
         }
 
 
-        public ICollection<FriendRequest> MyFriendRequests(string currentUserId)
+        public ICollection<FriendRequest> MyFriendRequests(string senderId)
         {
-           var requsts =  _context.FriendRequests.Where(a => a.SenderId == currentUserId).Include(a => a.Reciever).ToList();
-           return requsts;
+            var requsts = _context.FriendRequests.Where(a => a.SenderId == senderId).Include(a => a.Reciever).ToList();
+            return requsts;
         }
 
 
 
-        public Friend CheckFriend(string userId, string currentUserId)
+        public bool CheckFriend(string userOneId, string userTwoId)
         {
-            var friend = _context.Friends.SingleOrDefault(a => (a.UserOneId == userId && a.UserTwoId == currentUserId) || (a.UserTwoId == userId && a.UserOneId == currentUserId));
+            var friend = _context.Friends.Any(a => (a.UserOneId == userOneId && a.UserTwoId == userTwoId) || (a.UserTwoId == userOneId && a.UserOneId == userTwoId));
             return friend;
         }
-         public bool CheckIfFriend(string userId, string currentUserId)
+
+        public Friend GetFriendByUsersId(string userOneId, string userTwoId)
         {
-            var friend = _context.Friends.Any(a => (a.UserOneId == userId && a.UserTwoId == currentUserId) || (a.UserTwoId == userId && a.UserOneId == currentUserId));
+            var friend = _context.Friends.Where(a => (a.UserOneId == userOneId && a.UserTwoId == userTwoId) || (a.UserTwoId == userOneId && a.UserOneId == userTwoId)).SingleOrDefault();
             return friend;
         }
 
@@ -95,9 +101,9 @@ namespace Forum.IRepository.Repository
 
 
         // My Friends
-        public ICollection<Friend> MyFriends(string currentUserId)
+        public ICollection<Friend> MyFriends(string userId)
         {
-            var friends = _context.Friends.Where(a => a.UserOneId == currentUserId || a .UserTwoId == currentUserId).Include(a => a.UserOne).Include( a => a.UserTwo).ToList();
+            var friends = _context.Friends.Where(a => a.UserOneId == userId || a.UserTwoId == userId).Include(a => a.UserOne).Include(a => a.UserTwo).ToList();
             return friends;
         }
 

@@ -108,22 +108,22 @@ namespace Forum.Controllers
 
 
 
-            Friend checkFriend = _friendRepository.CheckFriend(userId, currentUser.Id);
-            FriendRequest requesFromMe = _friendRepository.CheckRequest(userId, currentUser.Id);
-            FriendRequest requesToMe = _friendRepository.CheckRequest(currentUser.Id, userId);
-            if (checkFriend != null)
+            bool checkFriend = _friendRepository.CheckFriend(userId, currentUser.Id);
+            bool requesToMe = _friendRepository.CheckRequest(userId,currentUser.Id);
+            bool requesFromMe = _friendRepository.CheckRequest(currentUser.Id, userId);
+            if (checkFriend)
             {
                 ViewBag.Found = "Friend";
             }
             else
             {
-                if (requesFromMe != null)
+                if (requesFromMe)
                 {
                     ViewBag.Found = "MyRequest";
                 }
                 else
                 {
-                    if (requesToMe != null)
+                    if (requesToMe)
                     {
                         ViewBag.Found = "HisRequest";
                     }
@@ -151,12 +151,9 @@ namespace Forum.Controllers
                 ViewBag.SavedPost = saved;
 
 
-                // Check If Friends
-                bool checkIfFriend = _friendRepository.CheckIfFriend(item.UserId, currentUser.Id);
 
-
-                if ((blockedByUser == false && checkIfFriend == true && item.Audience == "Friends") ||
-                    (blockedByUser == false && checkIfFriend == false && item.Audience == "Public") ||
+                if ((blockedByUser == false && checkFriend == true && item.Audience == "Friends") ||
+                    (blockedByUser == false && checkFriend == false && item.Audience == "Public") ||
                      item.UserId == currentUser.Id)
                 {
                     FriendAndPublicPosts.Add(item);
@@ -201,11 +198,11 @@ namespace Forum.Controllers
                 bool blockedByUser = _blockByUserRepository.CheckBlock(currentUserId, item.UserId);
 
                 // Check If Friends
-                bool friend = _friendRepository.CheckIfFriend(item.UserId, currentUserId);
+                bool checkFriend = _friendRepository.CheckFriend(item.UserId, currentUserId);
 
 
-                if ((blockedByUser == false && friend == true && item.Audience == "Friends") ||
-                    (blockedByUser == false && friend == false && item.Audience == "Public") ||
+                if ((blockedByUser == false && checkFriend == true && item.Audience == "Friends") ||
+                    (blockedByUser == false && checkFriend == false && item.Audience == "Public") ||
                     item.UserId == currentUserId)
                 {
                     FriendAndPublicPosts.Add(item);

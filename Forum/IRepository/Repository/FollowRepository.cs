@@ -24,24 +24,24 @@ namespace Forum.IRepository.Repository
            return _context.Follows.Where(a => a.Id == id).Include(a => a.Followed).Include(a => a.Follower).SingleOrDefault(); 
             
         }
-        public Follow GetByUserId(string userId , string currentUserId)
+        public Follow GetByUserId(string followedId , string followerId)
         {
-           return _context.Follows.Where(a => a.FollowerId == currentUserId && a.FollowedId == userId).Include(a => a.Followed).Include(a => a.Follower).SingleOrDefault(); 
+           return _context.Follows.Where(a => a.FollowerId == followerId && a.FollowedId == followedId).Include(a => a.Followed).Include(a => a.Follower).SingleOrDefault(); 
             
         }
-        public bool CheckFollow(string userId , string currentUserId)
+        public bool CheckFollow(string followedId , string followerId)
         {
-            return _context.Follows.Any(a => a.FollowerId == currentUserId && a.FollowedId == userId);
+            return _context.Follows.Any(a => a.FollowerId == followerId && a.FollowedId == followedId);
             
         }
 
-        public ICollection<Follow> GetFollowerByUserId(string userId)
+        public ICollection<Follow> GetFollowerByUserId(string followedId)
         {
-           return _context.Follows.Where(a => a.FollowedId == userId).Include(a => a.Followed).Include(a => a.Follower).ToList(); 
+           return _context.Follows.Where(a => a.FollowedId == followedId).Include(a => a.Followed).Include(a => a.Follower).ToList(); 
         }
-        public ICollection<Follow> GetFollowedByUserId(string userId)
+        public ICollection<Follow> GetFollowedByUserId(string followerId)
         {
-           return _context.Follows.Where(a => a.FollowerId == userId).Include(a => a.Followed).Include(a => a.Follower).ToList(); 
+           return _context.Follows.Where(a => a.FollowerId == followerId).Include(a => a.Followed).Include(a => a.Follower).ToList(); 
         }
 
         public async Task Add(Follow follow)

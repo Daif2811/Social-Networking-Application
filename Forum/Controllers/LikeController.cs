@@ -26,7 +26,7 @@ namespace Forum.Controllers
             ICommentRepository commentRepository,
             IReplyToCommentRepository replyToCommentRepository,
             UserManager<ApplicationUser> userManager,
-            IFriendRepository friendRepository, 
+            IFriendRepository friendRepository,
             IBlockByUserRepository blockByUserRepository,
             ISavePostRepository savePostRepository)
         {
@@ -67,7 +67,7 @@ namespace Forum.Controllers
 
             List<LikePost> FriendAndPublicPosts = new List<LikePost>();
 
-            foreach (var item in  _likeRepository.GetAllLikedPost(currentUserId))
+            foreach (var item in _likeRepository.GetAllLikedPost(currentUserId))
             {
                 bool saved = _savePostRepository.CheckSave(item.Post.Id, currentUserId);
                 if (saved)
@@ -84,7 +84,7 @@ namespace Forum.Controllers
                 // Check Blocked by Post publisher
 
                 // Check If Friends
-                bool friend = _friendRepository.CheckIfFriend(item.Post.UserId, currentUserId);
+                bool friend = _friendRepository.CheckFriend(item.Post.UserId, currentUserId);
 
 
                 if ((blocked == false && friend == true && item.Post.Audience == "Friends") ||
@@ -148,19 +148,12 @@ namespace Forum.Controllers
         public IActionResult PostLikeUsers(int id)
         {
             var currentUserId = CurrentUser().Id;
-            var likes =  _likeRepository.PostLikeUsers(id);
+            var likes = _likeRepository.PostLikeUsers(id);
             foreach (var user in likes)
             {
-                var friend = _friendRepository.CheckFriend(user.UserId, currentUserId);
-                if (friend != null)
-                {
-                    ViewBag.IsFriend = true;
-                }
-                else
-                {
-                    ViewBag.IsFriend = false;
+                bool friend = _friendRepository.CheckFriend(user.UserId, currentUserId);
+                ViewBag.IsFriend = friend;
 
-                }
             }
 
             return View(likes);
@@ -197,7 +190,7 @@ namespace Forum.Controllers
         {
             var userId = CurrentUser().Id;
 
-            Comment comment =  _commentRepository.GetById(commentId);
+            Comment comment = _commentRepository.GetById(commentId);
             comment.LikeCount--;
 
             await _likeRepository.UnLikeComment(commentId, userId);
@@ -212,7 +205,7 @@ namespace Forum.Controllers
         [HttpGet]
         public IActionResult CommentLikeUsers(int id)
         {
-            var likes =  _likeRepository.CommentLikeUsers(id);
+            var likes = _likeRepository.CommentLikeUsers(id);
             return View(likes);
         }
 
@@ -230,7 +223,7 @@ namespace Forum.Controllers
                 ReplyId = replyId
             };
 
-            ReplyToComment reply =  _replyToCommentRepository.GetById(replyId);
+            ReplyToComment reply = _replyToCommentRepository.GetById(replyId);
             reply.LikeCount++;
 
             await _likeRepository.LikeReplyToComment(like);
@@ -260,7 +253,7 @@ namespace Forum.Controllers
         [HttpGet]
         public IActionResult ReplyLikeUsers(int id)
         {
-            var likes =  _likeRepository.ReplyLikeUsers(id);
+            var likes = _likeRepository.ReplyLikeUsers(id);
             return View(likes);
         }
 

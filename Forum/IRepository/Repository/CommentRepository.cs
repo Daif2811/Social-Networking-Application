@@ -16,7 +16,7 @@ namespace Forum.IRepository.Repository
 
         public ICollection<Comment> GetAll()
         {
-            List<Comment> comments = _context.Comments.Include(a => a.User).ToList();
+            ICollection<Comment> comments = _context.Comments.Include(a => a.User).ToList();
             return comments;
         }
 

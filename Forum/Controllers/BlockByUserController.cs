@@ -81,9 +81,9 @@ namespace Forum.Controllers
                 var followedByMe = _followRepository.GetByUserId(userId, currentUserId);
                 var followedToMe = _followRepository.GetByUserId(currentUserId, userId);
                 var friend = _friendRepository.CheckFriend(userId, currentUserId);
-                var requsetFromMe = _friendRepository.CheckRequest(userId, currentUserId);
-                var requsetToMe = _friendRepository.CheckRequest(currentUserId, userId);
-
+                var requsetFromMe = _friendRepository.CheckRequest(currentUserId,userId);
+                var requsetToMe = _friendRepository.CheckRequest(userId, currentUserId);
+                 
                 if (followedByMe != null)
                 {
                     await _followRepository.Delete(followedByMe.Id);
@@ -92,15 +92,16 @@ namespace Forum.Controllers
                 {
                     await _followRepository.Delete(followedToMe.Id);
                 }
-                if (friend != null)
+                if (friend)
                 {
-                    await _friendRepository.DeleteFriend(friend);
+                    Friend friend1 = _friendRepository.GetFriendByUsersId(userId, currentUserId);
+                    await _friendRepository.DeleteFriend(friend1);
                 }
-                if (requsetFromMe != null)
+                if (requsetFromMe)
                 {
                     await _friendRepository.CancelRequest(userId, currentUserId);
                 }
-                if (requsetToMe != null)
+                if (requsetToMe)
                 {
                     await _friendRepository.CancelRequest(currentUserId, userId);
                 }

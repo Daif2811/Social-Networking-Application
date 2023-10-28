@@ -30,14 +30,14 @@ namespace Forum.IRepository.Repository
             return _context.BlocksByAdmins.FirstOrDefault(a => a.Id == id);
         }
 
-        public BlockByAdmin GetByUserId(string userId)
+        public BlockByAdmin GetByUserId(string blockedUserId)
         {
-            return _context.BlocksByAdmins.FirstOrDefault(a => a.UserId == userId);
+            return _context.BlocksByAdmins.FirstOrDefault(a => a.UserId == blockedUserId);
         }
 
-        public bool CheckBlock(string userId)
+        public bool CheckBlock(string blockedUserId)
         {
-            return _context.BlocksByAdmins.Any(a => a.UserId == userId);
+            return _context.BlocksByAdmins.Any(a => a.UserId == blockedUserId);
         }
         public async Task Add(BlockByAdmin blockByAdmin)
         {
@@ -78,21 +78,21 @@ namespace Forum.IRepository.Repository
 
         }
 
-        public ICollection<BlockByUser> GetAllByUser(string currentUserId)
+        public ICollection<BlockByUser> GetAllByUser(string blockerId)
         {
-            return _context.BlocksByUsers.Where(a => a.BlockerId == currentUserId).Include(a => a.User).ToList();
+            return _context.BlocksByUsers.Where(a => a.BlockerId == blockerId).Include(a => a.User).ToList();
         }
         public BlockByUser GetById(int id)
         {
             return _context.BlocksByUsers.FirstOrDefault(a => a.Id == id);
         }
-        public BlockByUser GetByUserId(string userId)
+        public BlockByUser GetByUserId(string blockedId)
         {
-            return _context.BlocksByUsers.FirstOrDefault(a => a.UserId == userId);
+            return _context.BlocksByUsers.FirstOrDefault(a => a.UserId == blockedId);
         }
-        public bool CheckBlock(string currentUserId, string userId)
+        public bool CheckBlock(string blockedId, string blockerId)
         {
-            return _context.BlocksByUsers.Any(a => a.UserId == currentUserId && a.BlockerId == userId);
+            return _context.BlocksByUsers.Any(a => a.UserId == blockedId && a.BlockerId == blockerId);
         }
 
         public async Task Add(BlockByUser blockByUser)

@@ -37,8 +37,8 @@ namespace Forum
 
             builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<ICommentRepository, CommentRepository>();
-            builder.Services.AddScoped<ILikeRepository, LikeRepository>();
             builder.Services.AddScoped<IReplyToCommentRepository, ReplyToCommentRepository>();
+            builder.Services.AddScoped<ILikeRepository, LikeRepository>();
             builder.Services.AddScoped<IFriendRepository, FriendRepository>();
             builder.Services.AddScoped<IPostReportRepository, PostReportRepository>();
             builder.Services.AddScoped<IUserReportRepository, UserReportRepository>();

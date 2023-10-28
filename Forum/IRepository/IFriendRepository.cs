@@ -6,15 +6,16 @@ namespace Forum.IRepository
     {
 
         // All Requests
-        ICollection<FriendRequest> FriendRequests(string currentUserId);
-        ICollection<FriendRequest> MyFriendRequests(string currentUserId);
+        ICollection<FriendRequest> FriendRequests(string recieverId);
+        ICollection<FriendRequest> MyFriendRequests(string senderId);
 
         // Add and Cancel Request
         Task AddRequest(FriendRequest request);
-        Task CancelRequest(string userId, string currentUserId);
+        Task CancelRequest(string recieverId, string senderId);
 
         FriendRequest GetRequestById(int id);
-        FriendRequest CheckRequest(string userId, string currentUserId);
+        bool CheckRequest(string senderId, string recieverId);
+        FriendRequest GetRequestByUsersId(string senderId, string recieverId);
 
 
 
@@ -26,14 +27,15 @@ namespace Forum.IRepository
 
         // Friends  and  check fiend  and (Delete) Unfriend
         ICollection<Friend> MyFriends(string userId);
-        Friend CheckFriend(string userId, string currentUserId);
-        bool CheckIfFriend(string userId, string currentUserId);
+        bool CheckFriend(string UserOneId, string UserTwoId);
+        Friend GetFriendByUsersId(string UserOneId, string UserTwoId);
+
         Task DeleteFriend(Friend friend);
         Friend GetFriendById(int id);
 
 
 
-        
+
 
 
     }

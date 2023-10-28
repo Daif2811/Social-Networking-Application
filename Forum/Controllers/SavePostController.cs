@@ -56,7 +56,7 @@ namespace Forum.Controllers
 
 
                 // Check If Friends
-                bool friend = _friendRepository.CheckIfFriend(item.Post.UserId, currentUserId);
+                bool friend = _friendRepository.CheckFriend(item.Post.UserId, currentUserId);
 
 
                 bool saved = _savePostRepository.CheckSave(item.PostId, currentUserId);

@@ -125,6 +125,8 @@ namespace Forum.Controllers
         }
 
 
+
+
         // Accept and Reject Request
 
 
@@ -133,7 +135,7 @@ namespace Forum.Controllers
         public async Task<IActionResult> AcceptRequest(string userId, bool accept)
         {
             string currentUserId = CurrentUser().Id;
-            FriendRequest request = _friendRepository.CheckRequest(currentUserId, userId);
+            FriendRequest request = _friendRepository.GetRequestByUsersId(currentUserId, userId);
             // If Accept
             if (accept == true)
             {
@@ -167,6 +169,8 @@ namespace Forum.Controllers
         }
 
 
+
+
         // All Request to other
         [HttpGet]
         public IActionResult RequestFromMe()
@@ -175,8 +179,6 @@ namespace Forum.Controllers
             var requests = _friendRepository.MyFriendRequests(currentUser.Id);
             return View(requests);
         }
-
-
 
 
 
@@ -201,7 +203,7 @@ namespace Forum.Controllers
         public async Task<IActionResult> RemoveFriend(string userId)
         {
             string currentUserId = CurrentUser().Id;
-            var friend = _friendRepository.CheckFriend(userId, currentUserId);
+            var friend = _friendRepository.GetFriendByUsersId(userId, currentUserId);
             if (friend == null)
             {
                 return BadRequest();
