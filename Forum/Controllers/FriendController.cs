@@ -121,41 +121,67 @@ namespace Forum.Controllers
             ApplicationUser currentUser = CurrentUser();
 
             await _friendRepository.CancelRequest(userId, currentUser.Id);
+
+            // Cancel follow
+            Follow followed = _followRepository.GetByUserId(userId,currentUser.Id);
+
+            await _followRepository.Delete(followed.Id);
+
+
             return Json(new { success = true });
         }
 
 
 
 
-        // Accept and Reject Request
-
 
         // Accept and Reject Request on profile
         [HttpPost]
         public async Task<IActionResult> AcceptRequest(string userId, bool accept)
         {
-            string currentUserId = CurrentUser().Id;
-            FriendRequest request = _friendRepository.GetRequestByUsersId(currentUserId, userId);
-            // If Accept
-            if (accept == true)
+            try
             {
-                Friend friend = new Friend()
-                {
-                    UserOneId = request.SenderId,
-                    UserTwoId = request.RecieverId,
-                };
-                // Add friend and delete request
-                await _friendRepository.AcceptRequest(friend);
-                await _friendRepository.RejectRequest(request);
 
+                string currentUserId = CurrentUser().Id;
+                FriendRequest request = _friendRepository.GetRequestByUsersId( userId, currentUserId);
+                // If Accept
+                if (accept == true)
+                {
+                    Friend friend = new Friend()
+                    {
+                        UserOneId = request.SenderId,
+                        UserTwoId = request.RecieverId,
+                    };
+                    // Add friend and delete request
+                    await _friendRepository.AcceptRequest(friend);
+                    await _friendRepository.RejectRequest(request);
+
+                    Follow follow = new Follow()
+                    {
+                        FollowedId = userId,
+                        FollowerId = currentUserId,
+                        FollowDate = DateTime.Now
+                    };
+
+                    await _followRepository.Add(follow);
+
+                }
+                else
+                {
+                    // if Reject 
+                    // Delete request
+                    await _friendRepository.RejectRequest(request);
+                    // Cancel follow
+                    Follow followed = _followRepository.GetByUserId(currentUserId,userId);
+
+                    await _followRepository.Delete(followed.Id);
+                }
+                return Json(new { success = true });
             }
-            else
+            catch (Exception ex)
             {
-                // if Reject 
-                // Delete request
-                await _friendRepository.RejectRequest(request);
+                return BadRequest(ex.Message);
             }
-            return Json(new { success = true });
         }
 
 
@@ -210,6 +236,17 @@ namespace Forum.Controllers
             }
 
             await _friendRepository.DeleteFriend(friend);
+
+            // Cancel follow
+            Follow follower = _followRepository.GetByUserId(userId, currentUserId);
+
+            await _followRepository.Delete(follower.Id);
+
+            // Cancel follow
+            Follow followed = _followRepository.GetByUserId(currentUserId, userId);
+
+            await _followRepository.Delete(followed.Id);
+
             return RedirectToAction("ProfileSomeOne", "Post", new { userId });
         }
 

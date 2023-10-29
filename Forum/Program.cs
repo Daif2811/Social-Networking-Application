@@ -1,4 +1,5 @@
 using Forum.DAL;
+using Forum.Hubs;
 using Forum.IRepository;
 using Forum.IRepository.Repository;
 using Forum.Models;
@@ -29,6 +30,20 @@ namespace Forum
             }).AddEntityFrameworkStores<ForumContext>();
 
 
+            // Add SignalR
+            builder.Services.AddSignalR();
+
+            builder.Services.AddCors(corsOptions =>
+            {
+                corsOptions.AddPolicy("SignalR", corsPolicyBuilder =>
+                {
+                    corsPolicyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
+                   .WithOrigins("http://localhost:56806/Chat/");  // Add your client-side URL;
+                });
+            });
+
+
+
             builder.Services.Configure<FormOptions>(options =>
             {
                 options.MultipartBodyLengthLimit = 50000000;
@@ -46,6 +61,8 @@ namespace Forum
             builder.Services.AddScoped<IBlockByUserRepository, BlockByUserRepository>();
             builder.Services.AddScoped<IFollowRepository, FollowRepository>();
             builder.Services.AddScoped<ISavePostRepository, SavePostRepository>();
+            builder.Services.AddScoped<IChatRepository, ChatRepository>();
+            builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -59,15 +76,26 @@ namespace Forum
             }
             app.UseStaticFiles();
 
+
+            // Use Cors for allow another domains to use my service
+            app.UseCors("SignalR");
+
+
+
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
+
+
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
+
+            // Add signalR
+            app.MapHub<chatHub>("/chatHub");
             app.Run();
         }
     }

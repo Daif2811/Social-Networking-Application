@@ -17,7 +17,7 @@ namespace Forum.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.22")
+                .HasAnnotation("ProductVersion", "6.0.23")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -146,6 +146,29 @@ namespace Forum.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("BlocksByUsers");
+                });
+
+            modelBuilder.Entity("Forum.Models.Chat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CurrentUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurrentUserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Chats");
                 });
 
             modelBuilder.Entity("Forum.Models.Comment", b =>
@@ -325,6 +348,41 @@ namespace Forum.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("LikeReplyToComments");
+                });
+
+            modelBuilder.Entity("Forum.Models.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ChatId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Read")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("SendDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SenderId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Show")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Forum.Models.Post", b =>
@@ -651,6 +709,21 @@ namespace Forum.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Forum.Models.Chat", b =>
+                {
+                    b.HasOne("Forum.Models.ApplicationUser", "CurrentUser")
+                        .WithMany()
+                        .HasForeignKey("CurrentUserId");
+
+                    b.HasOne("Forum.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("CurrentUser");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Forum.Models.Comment", b =>
                 {
                     b.HasOne("Forum.Models.Post", "Post")
@@ -762,6 +835,23 @@ namespace Forum.Migrations
                     b.Navigation("Reply");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Forum.Models.Message", b =>
+                {
+                    b.HasOne("Forum.Models.Chat", "Chat")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Forum.Models.ApplicationUser", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId");
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("Forum.Models.Post", b =>
@@ -895,6 +985,11 @@ namespace Forum.Migrations
             modelBuilder.Entity("Forum.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Posts");
+                });
+
+            modelBuilder.Entity("Forum.Models.Chat", b =>
+                {
+                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("Forum.Models.Comment", b =>

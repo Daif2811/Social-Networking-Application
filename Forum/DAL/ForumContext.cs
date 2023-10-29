@@ -35,7 +35,8 @@ namespace Forum.DAL
         public DbSet<Follow> Follows { get; set; }
         public DbSet<Friend> Friends { get; set; }
         public DbSet<FriendRequest> FriendRequests { get; set; }
-
+        public DbSet<Chat> Chats { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
 
 

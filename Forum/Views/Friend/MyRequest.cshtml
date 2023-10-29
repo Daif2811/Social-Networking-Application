@@ -35,7 +35,7 @@
                         }
                         else
                         {
-                            <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" width="55px;" />
+                            <img src="~/images/No User Image/User_Image.png" class="rounded-circle img-thumbnail" width="55px;" />
                         }
                         <span> @item.Sender.UserName</span>
                     </a>
@@ -46,7 +46,7 @@
                         <sub>
                             <sub>
                                 <sub>
-                                   <button data-userid="@item.SenderId" data-accept="true" class="btn btn-outline-success  accept-friend-button">Accept</button>
+                                    <button data-userid="@item.SenderId" data-accept="true" class="btn btn-outline-success  accept-friend-button">Accept</button>
                                     <button data-userid="@item.SenderId" data-accept="false" class="btn btn-outline-danger  reject-friend-button">Reject</button>
                                 </sub>
                             </sub>
@@ -65,17 +65,18 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
     <script>
         $(document).ready(function () {
 
             $(".accept-friend-button, .reject-friend-button").click(function () {
-                var UserId = $(this).data("userid");
+                var userId = $(this).data("userid");
                 var accept = $(this).data("accept");
                 var button = $(this);
 
                 $.ajax({
                     type: "POST",
-                    url: "/Friend/AcceptRequest?UserId=" + UserId + "&accept=" + accept,
+                    url: "/Friend/AcceptRequest?userId=" + userId + "&accept=" + accept,
                     success: function (data) {
                         if (data.success) {
                             alert("Now You are friends")

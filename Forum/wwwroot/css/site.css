@@ -48,6 +48,7 @@ body {
     padding: 8px 16px; /* Adjust padding as needed */
     font-size: 14px; /* Adjust font size as needed */
     cursor: pointer;
+   
 }
 
     /* Hover effect for the "Unlike" button */
@@ -412,3 +413,59 @@ body {
     #SearchName:focus {
         width: 100%;
     }
+
+
+
+
+/* Style for the container holding the messages */
+#messagesContainer {
+    max-height: 100vw; /* Set a maximum height for the container to enable scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+/*#messagesFromCurrent {
+    max-height: 300px;*/ /* Set a maximum height for the container to enable scrolling */
+    /*overflow-y: auto;*/ /* Enable vertical scrolling */
+/*}
+#messagesFromOther {
+    max-height: 300px;*/ /* Set a maximum height for the container to enable scrolling */
+    /*overflow-y: auto;*/ /* Enable vertical scrolling */
+/*}*/
+
+/* Style for each message item */
+#messagesList li {
+    list-style-type: none; /* Remove default list styling */
+    padding: 8px; /* Add some padding for better readability */
+    margin-bottom : 20px;
+}
+/*#messagesListFromCurrent li {
+    list-style-type: none;*/ /* Remove default list styling */
+    /*padding: 10px;*/ /* Add some padding for better readability */
+    /*margin-bottom: 20px;
+}
+#messagesListFromOther li {
+    list-style-type: none;*/ /* Remove default list styling */
+    /*padding: 10px;*/ /* Add some padding for better readability */
+    /*margin-bottom: 20px;
+}*/
+
+/* Style for messages from the current user */
+.currentUserMessage {
+    /* background-color: #4CAF50;  Green background for the current user's messages */
+    background-color: #ad35e5; /* Green background for the current user's messages */
+    color: white; /* White text for better contrast */
+    border-radius: 10px; /* Add some border radius for a rounded appearance */
+    margin-right: 10px; /* Add margin to separate the message from the right edge */
+    width: 55%;
+    margin-right: 25%;
+}
+
+/* Style for messages from other users */
+.otherUserMessage {
+    /* background-color: #008CBA;  Blue background for other users' messages */
+    background-color: #3554ce; /* Blue background for other users' messages */
+    color: white; /* White text for better contrast */
+    border-radius: 10px; /* Add some border radius for a rounded appearance */
+    margin-left: 10px; /* Add margin to separate the message from the left edge */
+    width: 55%;
+    margin-left: 39%;
+}

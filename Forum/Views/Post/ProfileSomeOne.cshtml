@@ -93,7 +93,7 @@
 
 
             <!-- Message button-->
-            <button class="profile-button">Message</button>
+            <a class="profile-ancor" asp-action="OpenChat" asp-controller="Chat" asp-route-userId="@ViewBag.User.Id">Message</a>
 
 
             <!-- About button-->
@@ -222,7 +222,7 @@
                         }
                         else
                         {
-                            <img src="~/images/No User Image/User_Image.jpg" class="rounded-circle img-thumbnail" width="55px;" />
+                            <img src="~/images/No User Image/User_Image.png" class="rounded-circle img-thumbnail" width="55px;" />
                         }
                     </a>
                 </div>
@@ -631,7 +631,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "/Friend/AcceptRequest?UserId=" + UserId + "&accept=" + accept,
+                    url: "/Friend/AcceptRequest?userId=" + UserId + "&accept=" + accept,
                     success: function (data) {
                         if (data.success) {
                             alert("Now You are friends")

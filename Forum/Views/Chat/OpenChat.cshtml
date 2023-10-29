@@ -1,0 +1,184 @@
+﻿@model Forum.Models.Chat
+@{
+    string currentUserId = ViewBag.CurrentUserId;
+    // string currentUserId = Context.UserIdentitfier;
+}
+
+
+@{
+    ViewData["Title"] = "OpenChat";
+}
+
+
+<!--
+     if (item.SenderId == currentUserId)
+        {
+            <div class="row" id="messagesFromCurrent">
+                <ul id="messagesListFromCurrent">
+                    <li class="currentUserMessage">item.Content</li>
+                </ul>
+            </div>
+        }
+        else
+        {
+            <div class="row" id="messagesFromOther">
+                <ul id="messagesListFromOther">
+                    <li class="otherUserMessage">item.Content</li>
+                </ul>
+            </div>
+        }
+-->
+
+
+
+
+
+
+
+
+
+
+<div>
+    @if (Model.CurrentUserId == currentUserId)
+    {
+        <a href="~/Post/ProfileSomeOne?userId=@Model.UserId" style="text-decoration:none;">
+            @if (Model.User.Picture != null)
+            {
+                <img src="~/images/@Model.User.Picture" class="rounded-circle img-thumbnail" width="55px;" />
+            }
+            else
+            {
+                <img src="~/images/No User Image/User_Image.png" class="rounded-circle img-thumbnail" width="55px;" />
+            }
+            <span> @Model.User.UserName</span>
+        </a>
+    }
+    else
+    {
+        <a href="~/Post/ProfileSomeOne?userId=@Model.CurrentUserId" style="text-decoration:none;">
+            @if (Model.CurrentUser.Picture != null)
+            {
+                <img src="~/images/@Model.CurrentUser.Picture" class="rounded-circle img-thumbnail" width="55px;" />
+            }
+            else
+            {
+                <img src="~/images/No User Image/User_Image.png" class="rounded-circle img-thumbnail" width="55px;" />
+            }
+            <span> @Model.CurrentUser.UserName</span>
+        </a>
+    }
+</div>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container text-light">
+
+    @foreach (var item in Model.Messages)
+    {
+
+        if (item.SenderId == currentUserId)
+        {
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-6 p-2" style="background-color:#ad35e5; border-radius:10px;">
+                    @item.Content
+                </div>
+                <div class="col-5">
+                </div>
+            </div>
+            <br />
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-5">
+                </div>
+                <div class="col-6 p-2" style="background-color:#3554ce; border-radius:10px;">
+                    @item.Content
+
+
+                </div>
+                <div class="col-1">
+                    <a href="~/Post/ProfileSomeOne?userId=@item.SenderId" style="text-decoration:none;">
+                        @if (item.Sender.Picture != null)
+                        {
+                            <img src="~/images/@item.Sender.Picture" class="rounded-circle img-thumbnail" width="55px;" />
+                        }
+                        else
+                        {
+                            <img src="~/images/No User Image/User_Image.png" class="rounded-circle img-thumbnail" width="55px;" />
+                        }
+                    </a>
+                </div>
+            </div>
+            <br />
+        }
+    }
+
+    <div class="row p-1">
+        <div id="messagesContainer">
+            <ul id="messagesList">
+
+
+            </ul>
+        </div>
+    </div>
+   
+
+
+
+
+
+
+    <hr />
+
+
+    <div style="bottom:0px;">
+
+        <input type="text" name="Content" class="form-control" placeholder="Send a Message" id="messageInput" />
+        <input asp-for="Id" name="ChatId" id="chatId" hidden />
+        <input type="button" id="sendButton" value="Send Message" />
+
+    </div>
+
+</div>
+
+
+
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/chat.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+

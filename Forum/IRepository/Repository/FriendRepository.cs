@@ -26,6 +26,9 @@ namespace Forum.IRepository.Repository
         {
             FriendRequest request = _context.FriendRequests.Where(a => a.SenderId == senderId && a.RecieverId == recieverId).SingleOrDefault();
             _context.FriendRequests.Remove(request);
+
+            
+
             await _context.SaveChangesAsync();
         }
 

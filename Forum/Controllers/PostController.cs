@@ -266,7 +266,9 @@ namespace Forum.Controllers
                     bool blockedByAdmin = _blockByAdminRepository.CheckBlock(currentUserId);
                     if (blockedByAdmin)
                     {
-                        ModelState.AddModelError(string.Empty, "Sorry, You can not publish because You are blocked by Admin");
+                        // ModelState.AddModelError(string.Empty, "Sorry, You can not publish because You are blocked by Admin [here](/Chat/OpenChat?userId=af54a231-cf13-4170-893d-4977d392c918)");
+                        //ModelState.AddModelError(string.Empty, ViewBag.e);
+                        return View("Error");
                     }
                     else
                     {

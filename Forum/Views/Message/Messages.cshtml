@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Forum.Models.Message>
+
+@{
+    ViewData["Title"] = "Messages";
+}
+
+<h1>Messages</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Content)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SenderId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ChatId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Read)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Show)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Content)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SenderId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ChatId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Read)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Show)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
