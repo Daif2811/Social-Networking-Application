@@ -1,12 +1,14 @@
 ﻿using Forum.IRepository;
 using Forum.IRepository.Repository;
 using Forum.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace Forum.Controllers
 {
+    [Authorize]
     public class SavePostController : Controller
     {
         private readonly ISavePostRepository _savePostRepository;

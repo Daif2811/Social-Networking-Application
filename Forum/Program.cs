@@ -2,6 +2,7 @@ using Forum.DAL;
 using Forum.Hubs;
 using Forum.IRepository;
 using Forum.IRepository.Repository;
+using Forum.IService;
 using Forum.Models;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
@@ -63,6 +64,7 @@ namespace Forum
             builder.Services.AddScoped<ISavePostRepository, SavePostRepository>();
             builder.Services.AddScoped<IChatRepository, ChatRepository>();
             builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+            builder.Services.AddScoped<IAdminService, AdminService>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();

@@ -1,6 +1,7 @@
 ﻿using Forum.IRepository;
 using Forum.IRepository.Repository;
 using Forum.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Security.Claims;
 
 namespace Forum.Controllers
 {
+    [Authorize]
     public class FriendController : Controller
     {
         private readonly IFriendRepository _friendRepository;

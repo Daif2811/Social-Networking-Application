@@ -1,5 +1,6 @@
 ﻿using Forum.IRepository;
 using Forum.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using System.Security.Claims;
 
 namespace Forum.Controllers
 {
+    [Authorize]
     public class PostReportController : Controller
     {
         private readonly IPostReportRepository _postReportRepository;
@@ -38,7 +40,7 @@ namespace Forum.Controllers
 
 
         // Get All Post Reports
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Admin")]
         public IActionResult AllPostReports()
         {
             var reports = _postReportRepository.GetAllReports();

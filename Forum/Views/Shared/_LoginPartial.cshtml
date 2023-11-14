@@ -3,9 +3,19 @@
 
     @if (User.Identity.IsAuthenticated)
     {
-        <li class="nav-item">
-            <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="Setting">Hello @User.Identity.Name</a>
-        </li>
+        if (User.IsInRole("Admin"))
+        {
+            <li class="nav-item">
+                <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="AdminDash">Hello @User.Identity.Name</a>
+            </li>
+        }
+        else
+        {
+
+            <li class="nav-item">
+                <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="Setting">Hello @User.Identity.Name</a>
+            </li>
+        }
         <li class="nav-item">
             <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="LogOut">LogOut</a>
         </li>

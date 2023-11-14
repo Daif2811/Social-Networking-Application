@@ -1,0 +1,165 @@
+﻿@model Forum.ViewModels.AdminViewModel
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="~/css/admindashstyle.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DashBoard</title>
+</head>
+<body>
+    <div class="menu">
+        <ul>
+            <li class="profile">
+                <div class="img-box">
+                    <img src="~/images/@ViewBag.CurrentAdmin.Picture" alt="profile-image">
+                </div>
+                <h2>@ViewBag.CurrentAdmin.UserName</h2>
+            </li>
+            <li>
+                <a class="active" href="#">
+                    <i class="fas fa-home"></i>
+                    <p> DashBoard</p>
+                </a>
+            </li>
+            <li>
+                <a asp-action="Users" asp-controller="Account">
+                    <i class="fas fa-user-group"></i>
+                    <p>Users</p>
+                </a>
+            </li>
+            <li>
+                <a asp-action="AllBlocks" asp-controller="BlockByAdmin">
+                    <i class="fas fa-sharp fa-solid fa-house-lock"></i>
+                    <p>Admin Blocks</p>
+                </a>
+            </li>
+            <li>
+
+                <a asp-action="AllBlocks" asp-controller="BlockByUser">
+                    <i class="fas fa-user-lock"></i>
+                    <p>User Blocks</p>
+                </a>
+            </li>
+
+            <li>
+                <a asp-action="AllPostReports" asp-controller="PostReport">
+                    <i class="fa-sharp fa-solid fa-flag-checkered"></i>
+                    <p>Post Reports</p>
+                </a>
+            </li>
+            <li>
+                <a asp-action="AllUserReports" asp-controller="UserReport">
+                    <i class="fas fa-flag"></i>
+                    <p>User Reports</p>
+                </a>
+            </li>
+            @*  <li>
+            <a href="#">
+            <i class="fas fa-star"></i>
+            <p>Favourites</p>
+            </a>
+            </li> *@
+            <li>
+                <a asp-action="Setting" asp-controller="Account">
+                    <i class="fas fa-cog"></i>
+                    <p>Settings</p>
+                </a>
+            </li>
+            <li class="log-out">
+                <a asp-action="Logout" asp-controller="Account">
+                    <i class="fas fa-sign-out"></i>
+                    <p>Logout</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <div class="title-inf">
+            <p>Dashboard</p>
+            <i class="fas fa-chart-bar"></i>
+        </div>
+
+
+        <div class="data-inf">
+            <div class="box">
+                <i class="fas fa-user">
+                </i>
+                <div class="data">
+                    <p>User</p>
+                    <span>@Model.Users.Count()</span>
+                </div>
+            </div>
+            <div class="box">
+                <i class="fas fa-pen">
+                </i>
+                <div class="data">
+                    <p>Posts</p>
+                    <span>@Model.Posts.Count()</span>
+                </div>
+            </div>
+            <div class="box">
+                @* <i class="fas fa-dollar"> *@
+                <i class="fas fa-comment">
+                </i>
+                <div class="data">
+                    <p>Chats</p>
+                    <span>@Model.Chats.Count()</span>
+                </div>
+            </div>
+            <div class="box">
+                <i class="fas fa-message">
+                </i>
+                <div class="data">
+                    <p>Messages</p>
+                    <span>@Model.Messages.Count()</span>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="title-inf">
+            <p>Earnings</p>
+            <i class="fas fa-dollar"></i>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Posts Number</th>
+                    <th>Mony</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model.Users)
+                {
+                    <tr>
+                        
+                        <td>@item.UserName</td>
+                      
+                        @{
+                            var result = item.Posts.Count() * 1.5;
+                        }
+                        <td><span class="count">@item.Posts.Count()</span></td>
+                        <td><span class="price">$ @result</span></td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+
+
+    </div>
+</body>
+</html>

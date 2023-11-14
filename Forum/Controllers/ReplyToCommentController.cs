@@ -1,11 +1,13 @@
 ﻿using Forum.IRepository;
 using Forum.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace Forum.Controllers
 {
+    [Authorize]
     public class ReplyToCommentController : Controller
     {
         private readonly IReplyToCommentRepository _replyToCommentRepository;

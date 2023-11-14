@@ -1,0 +1,78 @@
+*{
+    padding:0;
+    margin: 0;
+    color:white;
+    font-family: sans-serif;
+}
+
+body{
+    background-color: #001;
+}
+.profile{
+    display: flex;
+    align-items: center;
+    gap: 30px;
+} 
+.profile h2{
+    font-size: 20px;
+    text-transform: capitalize;
+}
+.img-box{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid white;
+    flex-shrink: 0; /* اتعطيل انكماش الصورة */
+}
+
+.img-box img{
+    width: 100%;
+
+}
+
+.menu{
+    background-color: #123;
+    width: 60px;
+    height: 100vh;
+    padding: 20px;
+    overflow: hidden;
+    transition: .5s;
+}
+.menu:hover{
+    width: 260px;
+}
+
+ul{
+    list-style: none;
+    position: relative;   /* to allow log-out to move bottom inside the menu*/
+    height: 95%;  /* to make the ul tall to move log-out bottom*/
+}
+ul li a{
+display: block;
+text-decoration: none;
+/* background-color: rebeccapurple; */
+padding: 10px;
+margin: 10px 0;
+border-radius: 8px;
+display: flex;
+align-items: center;
+gap: 40px;
+transition: .5s;
+}
+ul li a:hover, .active{
+    background-color: #ffffff55 ;
+}
+.log-out{
+    position: absolute;
+    bottom: 0;
+    width: 100%;  /* cause it is absolute and it's width is short*/
+}
+.log-out a{
+    background-color: #a00;
+}
+ul li a i{
+    font-size: 30px;
+
+}
+

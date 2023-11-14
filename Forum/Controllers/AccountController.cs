@@ -1,29 +1,36 @@
-﻿using Forum.Models;
+﻿using Forum.DAL;
+using Forum.IService;
+using Forum.Models;
 using Forum.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace Forum.Controllers
 {
+    [Authorize]
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IWebHostEnvironment _environment;
+        private readonly IAdminService _adminService;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             RoleManager<IdentityRole> roleManager,
-            IWebHostEnvironment environment)
+            IWebHostEnvironment environment,
+            IAdminService adminService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _environment = environment;
+            _adminService = adminService;
         }
 
 
@@ -53,10 +60,30 @@ namespace Forum.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
+        public IActionResult AdminDash()
+        {
+            ViewBag.CurrentAdmin = CurrentUser();
+            AdminViewModel adminViewModel = new AdminViewModel()
+            {
+                Users = _userManager.Users.Include(a => a.Posts).ToList(),
+                Messages = _adminService.Messages().ToList(),
+                BlocksByAdmin = _adminService.AdminBlocks().ToList(),
+                BlocksByUser = _adminService.UserBlocks().ToList(),
+                LikePosts = _adminService.LikePosts().ToList(),
+                Posts = _adminService.Posts().ToList(),
+                UserReports = _adminService.UserReports().ToList(),
+                PostReports = _adminService.PostReports().ToList(),
+                Chats = _adminService.chats().ToList(),
+            };
+
+            return View(adminViewModel);
+        }
+
 
 
         // All Users
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Admin")]
         public IActionResult Users()
         {
             var users = _userManager.Users.ToList();
@@ -66,7 +93,7 @@ namespace Forum.Controllers
 
 
         // GET: Account/Register
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public IActionResult Register()
         {
             return View();
@@ -76,7 +103,7 @@ namespace Forum.Controllers
 
 
         // POST: Account/Register
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
@@ -142,8 +169,7 @@ namespace Forum.Controllers
 
 
         // Get: Account/AddUser
-        [Authorize(Roles = "Admin")]
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Admin")]
         public IActionResult AddUser()
         {
             return View();
@@ -152,7 +178,7 @@ namespace Forum.Controllers
 
 
         // Post: Account/AddUser
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddUser(RegisterViewModel model)
         {
 
@@ -197,7 +223,7 @@ namespace Forum.Controllers
 
 
         // GET: Account/login
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public IActionResult Login()
         {
             return View();
@@ -205,7 +231,7 @@ namespace Forum.Controllers
 
 
         // POST: Account/login
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)

@@ -1,12 +1,13 @@
 ﻿using Forum.IRepository;
 using Forum.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
 
 namespace Forum.Hubs
 {
-
+    [Authorize]
     public class chatHub : Hub
     {
 

@@ -1,11 +1,13 @@
 ﻿using Forum.IRepository;
 using Forum.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace Forum.Controllers
 {
+    [Authorize]
     public class UserReportController : Controller
     {
         private readonly IUserReportRepository _userReportRepository;
@@ -31,7 +33,7 @@ namespace Forum.Controllers
 
 
         // Get All User reports
-        [HttpGet]
+        [HttpGet, Authorize(Roles ="Admin")]
         public IActionResult AllUserReports()
         {
             var reports = _userReportRepository.GetAllReports();
