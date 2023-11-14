@@ -17,42 +17,7 @@ namespace Forum.Hubs
             _messageRepository = messageRepository;
         }
 
-
-        //[Authorize]
-        //public override async Task OnConnectedAsync()
-        //{
-        //    string user = Context.User.Identity.Name;
-        //    //enter code here to keep track of connected clients
-        //    var userId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier); // get the username of the connected user
-
-        //    await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{userId}");
-
-        //    await base.OnConnectedAsync();
-        //}
-
-        //public async Task SendMessage(Message message)
-        //{
-        //    try
-        //    {
-        //        //var currentUserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //        //message.SenderId = currentUserId;
-        //        //message.Read = true;
-        //        //message.Show = true;
-        //        //message.SendDate = DateTime.Now;
-
-        //        await _messageRepository.Add(message);
-
-        //        await Clients.All.SendAsync("ReceiveMessage", message);
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Log the exception or handle it appropriately
-        //        Console.Error.WriteLine($"Error in SendMessage: {ex.Message}");
-        //        throw; // Rethrow the exception if needed
-        //    }
-        //}
-
+        
         public async Task SendMessage( int chatId, string message)
         {
             // string currentUserId = Context.UserIdentifier;
@@ -77,6 +42,19 @@ namespace Forum.Hubs
 
             await Clients.All.SendAsync("ReceiveMessage",message, senderConnectionId);
         }
+
+        //[Authorize]
+        //public override async Task OnConnectedAsync()
+        //{
+        //    string user = Context.User.Identity.Name;
+        //    //enter code here to keep track of connected clients
+        //    var userId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier); // get the username of the connected user
+
+        //    await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{userId}");
+
+        //    await base.OnConnectedAsync();
+        //}
+
 
     }
 }
