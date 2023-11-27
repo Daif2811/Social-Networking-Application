@@ -1,6 +1,7 @@
 # Social Networking Website
 ------------------------------------------------------
 # DashBoard For Admin
+- Can controll Every thing
 
 ![AdminDash](https://github.com/Daif2811/Social-Networking-Application/assets/114764621/118adb58-0d12-4b95-b3a0-8f8d3091a163)
 
@@ -16,16 +17,15 @@
 
 ------------------------------------------------------------
 # Can Post Text, Images and Videos
-Can Change Audience Public, Friends and Only me
+- Can Change Audience Public, Friends and Only me
 ![New Post](https://github.com/Daif2811/Social-Networking-Application/assets/114764621/3347ab4b-5969-4648-bb95-6b7d02046fdb)
 
 
 -----------------------------------------------------------
 
 # Can LIke the post 
-- Can like comment
-- Can like Reply
-- Can Report Post, Comment and Reply
+- Can like comment and Reply
+
 ![Post](https://github.com/Daif2811/Social-Networking-Application/assets/114764621/1f98425b-9a67-4a6c-b859-aa5ace60ec05)
 
 ---------------------------------------------------------------
@@ -36,15 +36,16 @@ Can Change Audience Public, Friends and Only me
 
 ----------------------------------------------------------------
 
-# Can Edit Or Delete Your Post, Comment and Reply
+# Can Edit Or Delete Your Post. 
+-  Can Edit Comment and Reply too.
 ![drop](https://github.com/Daif2811/Social-Networking-Application/assets/114764621/23deb119-664e-4505-871f-85bd370dd590)
 
 
 ----------------------------------------------------------------
+# Can Report Post and Users
+- Choose the report reason 
 
 
-
-
-
+![Report](https://github.com/Daif2811/Social-Networking-Application/assets/114764621/46a09e56-4c10-4b62-8a79-c16d7d916eff)
 
 
