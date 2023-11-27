@@ -25,7 +25,7 @@
 
 -----------------------------------------------------------
 
-# Can LIke the post 
+# Can Like the post 
 - Can like comment and Reply
   
 
@@ -54,3 +54,12 @@
 ![Report](https://github.com/Daif2811/Social-Networking-Application/assets/114764621/46a09e56-4c10-4b62-8a79-c16d7d916eff)
 
 
+--------------------------------------------------------------
+# Open Your Profile
+- Can See Friends List
+- Can Edit Profile
+- Can See Toyr posts
+  
+
+
+![My profile](https://github.com/Daif2811/Social-Networking-Application/assets/114764621/5adaecf2-8407-4a09-af46-b50fb88424e8)
