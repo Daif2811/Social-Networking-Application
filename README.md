@@ -27,6 +27,7 @@
 
 # Can Like the post 
 - Can like comment and Reply
+- Can Search for Posts and Accounts
   
 
 ![Post](https://github.com/Daif2811/Social-Networking-Application/assets/114764621/1f98425b-9a67-4a6c-b859-aa5ace60ec05)
