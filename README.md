@@ -63,3 +63,61 @@
 
 
 ![My profile](https://github.com/Daif2811/Social-Networking-Application/assets/114764621/5adaecf2-8407-4a09-af46-b50fb88424e8)
+
+--------------------------------------------------------------
+
+# Open Others profile
+- Can Send Friend Request and Cancel it
+- Can Follow the user
+- Can Block the user
+- Can Report the user
+
+  
+
+![Another profile](https://github.com/Daif2811/Social-Networking-Application/assets/114764621/e645f3b6-e636-460e-ad6e-3a39b525c955)
+
+------------------------------------------------------------------
+
+# Edit Profile and Settings
+- Change Password
+- Change Picture
+- Change About Information
+
+  
+![Settings](https://github.com/Daif2811/Social-Networking-Application/assets/114764621/4b4dafc7-3ec6-4fe5-bcee-49108bdbaab2)
+
+-------------------------------------------------------------------------
+
+# Can See User Information
+
+
+
+![info](https://github.com/Daif2811/Social-Networking-Application/assets/114764621/970296c0-cf3e-403b-b2e0-3c63ac8b247e)
+
+------------------------------------------------------------------------
+# Can Accept Or Reject Friend Request
+
+
+![Accept](https://github.com/Daif2811/Social-Networking-Application/assets/114764621/de5c02d4-f820-4158-b631-c62765f8d2b1)
+
+
+
+
+------------------------------------------------------------------------
+# Can Open Chat and Send messages
+- Like Messenger and WhatsApp
+- Using SignalR to make it Real Time
+
+  
+![messages](https://github.com/Daif2811/Social-Networking-Application/assets/114764621/26f297f3-fc65-4623-bc22-11084a3ea408)
+
+
+---------------------------------------------------------------------
+# When happens Error You can Contact Customer Service 
+-
+
+![Error](https://github.com/Daif2811/Social-Networking-Application/assets/114764621/8ebe04cd-49ea-4a8f-b7d0-bf52181b415a)
+
+--------------------------------------------------------------------
+
+
