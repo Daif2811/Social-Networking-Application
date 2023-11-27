@@ -52,18 +52,19 @@ namespace Forum.Controllers
             try
             {
                 string currentUserId = CurrentUser().Id;
-
+             
                 // Check if blocked by Admin
                 bool blocked = _blockByAdminRepository.CheckBlock(currentUserId);
                 if (blocked)
                 {
-                    ModelState.AddModelError(string.Empty, "Sorry, You can not publish because You are blocked by Admin");
+                    
+                    return View("Error");
                 }
                 else
                 {
                     if (string.IsNullOrWhiteSpace(content))
                     {
-                        ModelState.AddModelError("", "Sorry, You can not publish nothing");
+                       return BadRequest("Sorry, You can not publish nothing");
                     }
                     else
                     {
@@ -90,9 +91,10 @@ namespace Forum.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                return BadRequest(ex.Message);
+                   
             }
-            return View();
+          
         }
 
 

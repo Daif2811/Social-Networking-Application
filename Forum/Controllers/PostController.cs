@@ -53,6 +53,23 @@ namespace Forum.Controllers
 
 
 
+
+        [HttpGet]
+        public IActionResult Search(string searchName)
+        {
+            if (!string.IsNullOrEmpty(searchName))
+            {
+                var searchResult = _postRepository.Search(searchName);
+                return View(searchResult);
+            }
+            return RedirectToAction("Index");
+        }
+
+
+
+
+
+
         // My Profile
         [HttpGet]
         public IActionResult MyProfile()

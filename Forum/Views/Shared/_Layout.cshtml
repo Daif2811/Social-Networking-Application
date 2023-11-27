@@ -42,16 +42,16 @@
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Like" asp-action="LikedPost">Liked</a>
                         </li>
-                        <li class="nav-item dropdown">
+                       @*  <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown">Dropdown</a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="#">Link</a></li>
                                 <li><a class="dropdown-item" href="#">Another link</a></li>
                                 <li><a class="dropdown-item" href="#">A third link</a></li>
                             </ul>
-                        </li>
-                        <li>
-                            @using (Html.BeginForm("Search", "Home", FormMethod.Post, new { @class = "form-inline my-2 my-lg-0 d-md-inline-flex" }))
+                        </li> *@
+                        <li style="margin-left:50px;">
+                            @using (Html.BeginForm("Search", "Post", FormMethod.Get, new { @class = "form-inline my-2 my-lg-0 d-md-inline-flex" }))
                             {
                                 <input class="form-control mr-sm-2  " type="text" name="searchName" placeholder="Search" aria-label="Search" width="40px;" id="searchName">
                             }

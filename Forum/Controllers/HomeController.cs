@@ -58,19 +58,8 @@ namespace Forum.Controllers
 
 
 
-        //// Search
-        //[HttpGet]
-        //public IActionResult Search(string searchName)
-        //{
-        //    if (!string.IsNullOrEmpty(searchName))
-        //    {
-        //        var searchResult = _postRepository.Search(searchName);
-        //        return View(searchResult);
-
-        //    }
-        //    return RedirectToAction("Index", "Post");
-
-        //}
+        // Search
+      
 
 
 
@@ -83,7 +72,7 @@ namespace Forum.Controllers
 
 
 
-      
+
 
     }
 }
